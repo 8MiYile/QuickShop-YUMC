@@ -226,12 +226,6 @@ public class QuickShop extends JavaPlugin {
 		ItemConfig.load(this);
 		// Create the shop manager.
 		this.shopManager = new ShopManager(this);
-		if (this.display) {
-			// Display item handler thread
-			getLogger().info("开启悬浮物品刷新线程...");
-			final ItemWatcher itemWatcher = new ItemWatcher(this);
-			itemWatcherTask = Bukkit.getScheduler().runTaskTimer(this, itemWatcher, 600, 600);
-		}
 		if (this.getConfig().getBoolean("log-actions")) {
 			// Logger Handler
 			this.logWatcher = new LogWatcher(this, new File(this.getDataFolder(), "qs.log"));
@@ -243,9 +237,8 @@ public class QuickShop extends JavaPlugin {
 		}
 		ConfigurationSection limitCfg = this.getConfig().getConfigurationSection("limits");
 		if (limitCfg != null) {
-			getLogger().info("发现物品限制配置...");
 			this.limit = limitCfg.getBoolean("use", false);
-			getLogger().info("Limits.use: " + limit);
+			getLogger().info("商店创建限制: " + limit);
 			limitCfg = limitCfg.getConfigurationSection("ranks");
 			for (final String key : limitCfg.getKeys(true)) {
 				limits.put(key, limitCfg.getInt(key));
@@ -351,13 +344,16 @@ public class QuickShop extends JavaPlugin {
 		MsgUtil.loadTransactionMessages();
 		MsgUtil.clean();
 		// Register events
-		getLogger().info("注册监听器...");
 		Bukkit.getServer().getPluginManager().registerEvents(blockListener, this);
 		Bukkit.getServer().getPluginManager().registerEvents(playerListener, this);
+		Bukkit.getServer().getPluginManager().registerEvents(worldListener, this);
 		if (this.display) {
 			Bukkit.getServer().getPluginManager().registerEvents(chunkListener, this);
+			// Display item handler thread
+			getLogger().info("开启悬浮物品刷新线程...");
+			final ItemWatcher itemWatcher = new ItemWatcher(this);
+			itemWatcherTask = Bukkit.getScheduler().runTaskTimer(this, itemWatcher, 20, 600);
 		}
-		Bukkit.getServer().getPluginManager().registerEvents(worldListener, this);
 		if (this.getConfig().getBoolean("force-bukkit-chat-handler", false) && Bukkit.getPluginManager().getPlugin("Herochat") != null) {
 			this.getLogger().info("Found Herochat... Hooking!");
 		} else {
