@@ -25,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.maxgamer.QuickShop.Command.QS;
+import org.maxgamer.QuickShop.Config.ItemConfig;
 import org.maxgamer.QuickShop.Database.Database;
 import org.maxgamer.QuickShop.Database.Database.ConnectionException;
 import org.maxgamer.QuickShop.Database.DatabaseCore;
@@ -227,7 +228,7 @@ public class QuickShop extends JavaPlugin {
 
 		// Initialize Util
 		Util.initialize();
-
+		ItemConfig.load(this);
 		// Create the shop manager.
 		this.shopManager = new ShopManager(this);
 		if (this.display) {
