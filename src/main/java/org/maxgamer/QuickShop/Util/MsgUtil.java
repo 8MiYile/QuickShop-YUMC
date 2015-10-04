@@ -31,7 +31,7 @@ public class MsgUtil {
 	 * on space.
 	 */
 	public static void clean() {
-		System.out.println("清理超过 一周 的 商店交易记录...");
+		plugin.getLogger().info("清理超过 一周 的 商店交易记录...");
 		// 604800,000 msec = 1 week.
 		final long weekAgo = System.currentTimeMillis() - 604800000;
 		plugin.getDB().execute("DELETE FROM messages WHERE time < ?", weekAgo);
