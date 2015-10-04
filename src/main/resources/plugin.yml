@@ -1,10 +1,9 @@
-name: ${name}
-main: ${package}.${name}
-version: ${version}
-author: Netherfoam, Timtower, KaiNoMood
-
-description: Economy Shops plugin
-softdepend: [Herochat, Vault]
+name: ${project.artifactId}
+description: ${project.description}
+main: ${project.groupId}.${project.artifactId}.${project.artifactId}
+version: ${project.version}
+authors: [Netherfoam,Timtower, KaiNoMood,喵♂呜]
+softdepend: [Vault]
 
 commands:
     qs:
