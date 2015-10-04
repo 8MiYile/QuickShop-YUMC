@@ -113,15 +113,11 @@ public class DisplayItem {
 		try {
 			this.item = shop.getLocation().getWorld().dropItem(dispLoc, this.iStack);
 			this.item.setVelocity(new Vector(0, 0.1, 0));
+			NMS.safeGuard(this.item);
 		} catch (final Exception e) {
 		}
 		if (QuickShop.debug) {
 			System.out.println("Spawned item. Safeguarding.");
-		}
-		try {
-			NMS.safeGuard(this.item);
-		} catch (final Exception e) {
-			System.out.println("QuickShop version mismatch! This version of QuickShop is incompatible with this version of bukkit! Try update?");
 		}
 	}
 }

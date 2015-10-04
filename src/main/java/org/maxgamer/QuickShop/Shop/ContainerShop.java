@@ -662,8 +662,9 @@ public class ContainerShop implements Shop {
 		try {
 			plugin.getDB().execute(q, this.getOwner(), Util.serialize(this.getItem()), unlimited, shopType.toID(), this.getPrice(), x, y, z, world);
 		} catch (final Exception e) {
+			plugin.getLogger().warning("无法保存商店到数据库!!!");
+			plugin.getLogger().warning("错误信息: " + e.getMessage());
 			e.printStackTrace();
-			System.out.println("Could not update shop in database! Changes will revert after a reboot!");
 		}
 	}
 
