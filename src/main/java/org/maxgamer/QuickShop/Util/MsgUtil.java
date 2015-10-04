@@ -84,7 +84,7 @@ public class MsgUtil {
 		try {
 			final ResultSet rs = plugin.getDB().getConnection().prepareStatement("SELECT * FROM messages").executeQuery();
 			while (rs.next()) {
-				final UUID owner = UUID.fromString(rs.getString("owner"));
+				final String owner = rs.getString("owner");
 				final String message = rs.getString("message");
 				LinkedList<String> msgs = player_messages.get(owner);
 				if (msgs == null) {
