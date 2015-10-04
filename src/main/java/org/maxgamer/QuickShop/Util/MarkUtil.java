@@ -1,6 +1,5 @@
 package org.maxgamer.QuickShop.Util;
 
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -9,7 +8,7 @@ public class MarkUtil {
 
 	public static void addMark(final ItemStack ci) {
 		final ItemMeta meta = ci.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + "QuickShop " + Util.getName(ci));
+		meta.setDisplayName(mark + Util.getName(ci));
 		ci.setItemMeta(meta);
 	}
 
