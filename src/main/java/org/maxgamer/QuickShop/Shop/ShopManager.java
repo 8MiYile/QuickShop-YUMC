@@ -3,7 +3,6 @@ package org.maxgamer.QuickShop.Shop;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -90,7 +89,7 @@ public class ShopManager {
 	}
 
 	private final QuickShop plugin;
-	private final HashMap<UUID, Info> actions = new HashMap<UUID, Info>();
+	private final HashMap<String, Info> actions = new HashMap<String, Info>();
 
 	private final HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>> shops = new HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>>();
 
@@ -113,13 +112,13 @@ public class ShopManager {
 			int owned = 0;
 			final Iterator<Shop> it = getShopIterator();
 			while (it.hasNext()) {
-				if (it.next().getOwner().equals(p.getUniqueId())) {
+				if (it.next().getOwner().equals(p.getName())) {
 					owned++;
 				}
 			}
 			final int max = plugin.getShopLimit(p);
 			if (owned + 1 > max) {
-				p.sendMessage(ChatColor.RED + "You have already created a maximum of " + owned + "/" + max + " shops!");
+				p.sendMessage(ChatColor.RED + "您已经创建了 " + owned + "/" + max + " 个商店!");
 				return false;
 			}
 		}
@@ -171,8 +170,9 @@ public class ShopManager {
 			// Add it to the world
 			addShop(loc.getWorld().getName(), shop);
 		} catch (final Exception e) {
+			plugin.getLogger().warning("无法保存商店到数据库! 下次重启商店将会消失!");
+			plugin.getLogger().warning("错误信息: " + e.getMessage());
 			e.printStackTrace();
-			System.out.println("Could not create shop! Changes will revert after a reboot!");
 		}
 	}
 
@@ -184,7 +184,7 @@ public class ShopManager {
 	 * @return Returns the HashMap<Player name, shopInfo>. Info contains what
 	 *         their last question etc was.
 	 */
-	public HashMap<UUID, Info> getActions() {
+	public HashMap<String, Info> getActions() {
 		return this.actions;
 	}
 
@@ -273,9 +273,9 @@ public class ShopManager {
 			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
-				final HashMap<UUID, Info> actions = getActions();
+				final HashMap<String, Info> actions = getActions();
 				// They wanted to do something.
-				final Info info = actions.remove(p.getUniqueId());
+				final Info info = actions.remove(p.getName());
 				if (info == null) {
 					return; // multithreaded means this can happen
 				}
@@ -323,26 +323,25 @@ public class ShopManager {
 						}
 						// Create the sample shop.
 						final Shop shop = new ContainerShop(info.getLocation(), price, info.getItem(), p.getName());
-						shop.onLoad();
-						final ShopCreateEvent e = new ShopCreateEvent(shop, p);
-						Bukkit.getPluginManager().callEvent(e);
-						if (e.isCancelled()) {
-							shop.onUnload();
-							return;
-						}
 						// This must be called after the event has been called.
 						// Else, if the event is cancelled, they won't get their
 						// money back.
 						if (tax != 0) {
 							if (!plugin.getEcon().withdraw(p.getName(), tax)) {
 								p.sendMessage(MsgUtil.p("you-cant-afford-a-new-shop", format(tax)));
-								shop.onUnload();
 								return;
 							}
 							plugin.getEcon().deposit(plugin.getConfig().getString("tax-account"), tax);
 						}
+						final ShopCreateEvent e = new ShopCreateEvent(shop, p);
+						Bukkit.getPluginManager().callEvent(e);
+						if (e.isCancelled()) {
+							return;
+						}
+						shop.onLoad();
 						/* The shop has hereforth been successfully created */
 						createShop(shop);
+						p.sendMessage(MsgUtil.p("success-created-shop"));
 						final Location loc = shop.getLocation();
 						plugin.log(p.getName() + " created a " + shop.getDataName() + " shop at (" + loc.getWorld().getName() + " - " + loc.getX() + "," + loc.getY() + "," + loc.getZ() + ")");
 						if (!plugin.getConfig().getBoolean("shop.lock")) {
@@ -363,34 +362,6 @@ public class ShopManager {
 							sign.setFacingDirection(bf);
 							bs.update(true);
 							shop.setSignText();
-							/*
-							 * Block b = shop.getLocation().getBlock();
-							 * ItemFrame iFrame = (ItemFrame)
-							 * b.getWorld().spawnEntity(b.getLocation(),
-							 * EntityType.ITEM_FRAME);
-							 *
-							 * BlockFace[] faces = new
-							 * BlockFace[]{BlockFace.NORTH, BlockFace.EAST,
-							 * BlockFace.SOUTH, BlockFace.WEST}; for(BlockFace
-							 * face : faces){ if(face == bf) continue; //This is
-							 * the sign's location iFrame.setFacingDirection(bf,
-							 * true); //iFrame.setItem(shop.getItem());
-							 * ItemStack iStack = shop.getItem().clone();
-							 * iStack.setAmount(0); iFrame.setItem(iStack); /*
-							 * Field handleField =
-							 * iFrame.getClass().getField("entity");
-							 * handleField.setAccessible(true); Object handle =
-							 * handleField.get(iFrame);
-							 *
-							 * ItemStack bukkitStack = shop.getItem();
-							 *
-							 * Field itemStackHandle =
-							 *
-							 * Method setItemStack =
-							 * handle.getClass().getMethod("a", Object.class);
-							 * setItemStack.
-							 */
-							// }
 						}
 						if (shop instanceof ContainerShop) {
 							final ContainerShop cs = (ContainerShop) shop;
@@ -456,7 +427,7 @@ public class ShopManager {
 							return; // Cancelled
 						}
 						// Money handling
-						if (!p.getUniqueId().equals(shop.getOwner())) {
+						if (!p.getName().equals(shop.getOwner())) {
 							// Check their balance. Works with *most* economy
 							// plugins*
 							if (plugin.getEcon().getBalance(p.getName()) < amount * shop.getPrice()) {
@@ -468,7 +439,7 @@ public class ShopManager {
 							// Do charge an amount of tax though.
 							final double tax = plugin.getConfig().getDouble("tax");
 							final double total = amount * shop.getPrice();
-							if (!plugin.getEcon().withdraw(p.getUniqueId(), total)) {
+							if (!plugin.getEcon().withdraw(p.getName(), total)) {
 								p.sendMessage(MsgUtil.p("you-cant-afford-to-buy", format(amount * shop.getPrice()), format(plugin.getEcon().getBalance(p.getName()))));
 								return;
 							}
@@ -521,7 +492,7 @@ public class ShopManager {
 							return;
 						}
 						// Money handling
-						if (!p.getUniqueId().equals(shop.getOwner())) {
+						if (!p.getName().equals(shop.getOwner())) {
 							// Don't tax them if they're purchasing from
 							// themselves.
 							// Do charge an amount of tax though.

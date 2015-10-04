@@ -1,7 +1,6 @@
 package org.maxgamer.QuickShop.Listeners;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -14,12 +13,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import org.maxgamer.QuickShop.QuickShop;
@@ -37,17 +38,6 @@ public class PlayerListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	/*
-	 * Could be useful one day private LinkedList<String> getParents(Class<?>
-	 * clazz){ LinkedList<String> classes = new LinkedList<String>();
-	 *
-	 * while(clazz != null){ classes.add("Extends " + ChatColor.GREEN +
-	 * clazz.getCanonicalName()); for(Class<?> iface : clazz.getInterfaces()){
-	 * classes.add("Implements " + ChatColor.RED + iface.getCanonicalName());
-	 * classes.addAll(getParents(iface)); }
-	 *
-	 * clazz = clazz.getSuperclass(); } return classes; }
-	 */
 	@SuppressWarnings("deprecation")
 	/**
 	 * Handles players left clicking a chest. Left click a NORMAL chest with
@@ -90,9 +80,9 @@ public class PlayerListener implements Listener {
 				p.sendMessage(MsgUtil.p("how-many-sell", "" + items));
 			}
 			// Add the new action
-			final HashMap<UUID, Info> actions = plugin.getShopManager().getActions();
+			final HashMap<String, Info> actions = plugin.getShopManager().getActions();
 			final Info info = new Info(shop.getLocation(), ShopAction.BUY, null, null, shop);
-			actions.put(p.getUniqueId(), info);
+			actions.put(p.getName(), info);
 			return;
 		}
 		// Handles creating shops
@@ -127,17 +117,31 @@ public class PlayerListener implements Listener {
 			}
 			// Send creation menu.
 			final Info info = new Info(b.getLocation(), ShopAction.CREATE, e.getItem(), last);
-			plugin.getShopManager().getActions().put(p.getUniqueId(), info);
+			plugin.getShopManager().getActions().put(p.getName(), info);
 			p.sendMessage(MsgUtil.p("how-much-to-trade-for", Util.getName(info.getItem())));
 		}
 	}
 
 	@EventHandler
 	public void onItemClick(final InventoryClickEvent e) {
+		final Player p = (Player) e.getWhoClicked();
 		final ItemStack ci = e.getCurrentItem();
+		final Inventory inv = e.getInventory();
+		final int solt = e.getSlot();
+		try {
+			if (MarkUtil.hasMark(ci)) {
+				inv.setItem(solt, new ItemStack(Material.AIR));
+				p.chat("§c非法获取快捷商店悬浮物品 已清理...");
+			}
+		} catch (final Exception ex) {
+		}
+	}
+
+	@EventHandler
+	public void onItemMove(final InventoryMoveItemEvent e) {
+		final ItemStack ci = e.getItem();
 		if (MarkUtil.hasMark(ci)) {
-			ci.setType(Material.AIR);
-			e.setCancelled(true);
+			e.setItem(new ItemStack(Material.AIR));
 		}
 	}
 
@@ -160,7 +164,7 @@ public class PlayerListener implements Listener {
 		if (e.isCancelled()) {
 			return;
 		}
-		final Info info = plugin.getShopManager().getActions().get(e.getPlayer().getUniqueId());
+		final Info info = plugin.getShopManager().getActions().get(e.getPlayer().getName());
 		if (info != null) {
 			final Player p = e.getPlayer();
 			final Location loc1 = info.getLocation();
@@ -171,7 +175,7 @@ public class PlayerListener implements Listener {
 				} else if (info.getAction() == ShopAction.BUY) {
 					p.sendMessage(MsgUtil.p("shop-purchase-cancelled"));
 				}
-				plugin.getShopManager().getActions().remove(p.getUniqueId());
+				plugin.getShopManager().getActions().remove(p.getName());
 				return;
 			}
 		}
@@ -180,13 +184,15 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerPickup(final PlayerPickupItemEvent e) {
 		final ItemStack ci = e.getItem().getItemStack();
-		e.setCancelled(!MarkUtil.hasMark(ci));
+		if (MarkUtil.hasMark(ci)) {
+			e.setCancelled(true);
+		}
 	}
 
 	@EventHandler
 	public void onPlayerQuit(final PlayerQuitEvent e) {
 		// Remove them from the menu
-		plugin.getShopManager().getActions().remove(e.getPlayer().getUniqueId());
+		plugin.getShopManager().getActions().remove(e.getPlayer().getName());
 	}
 
 	@EventHandler

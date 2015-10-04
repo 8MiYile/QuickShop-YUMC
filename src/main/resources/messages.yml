@@ -1,6 +1,7 @@
 # Colors:
 # &0-9, &a-f
 # {0}, {1}, {2}, etc are variables. You can swap them around, but adding a new variable won't work. Removing them will work
+Version: 1.0
 
 not-looking-at-shop: "&c没找到快捷商店. 你必须看着那个箱子."
 no-permission: "&4你没有此命令的权限."
@@ -43,14 +44,14 @@ empty-success: "&a库存清理成功"
 menu:
     successful-purchase: "&a商品购买成功:"
     successfully-sold: "&a商品出售成功:"
-    item-name-and-price: "&a花费：&e{2} &a获得 &e{0} &a件 &e{1} &a商品"
+    item-name-and-price: "&a花费：&e{2} &a获得 &e{0} &a件 &e{1}&b(查看详情) &a商品"
     
     shop-information: "&a商店信息:"
     owner: "&a所有者: {0}"
-    item: "&a物品: &e{0}"
+    item: "&a物品: &e{0} &b(查看详情)"
     space: "&aSpace: &e{0}"
-    stock: "&a库存： &e{0}"
-    price-per: "&a每件 &e{0} 的价格 &a为 &e{1}"
+    stock: "&a库存: &e{0}"
+    price-per: "&a单价: &e{1}元"
     total-value-of-chest: "&a所有存货总价格: &c{0}元"
     damage-percent-remaining: "&a耐久剩余: &e{0}% ."
     this-shop-is-buying: "&a此商店只 &d购买&a 物品."

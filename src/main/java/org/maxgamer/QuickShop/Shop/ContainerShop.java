@@ -638,13 +638,13 @@ public class ContainerShop implements Shop {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder(
-				"Shop " + (loc.getWorld() == null ? "unloaded world" : loc.getWorld().getName()) + "(" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ")");
-		sb.append(" Owner: " + getOwner().toString());
+				"商店 " + (loc.getWorld() == null ? "世界尚未载入" : "坐标: " + loc.getWorld().getName()) + "(" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ")");
+		sb.append(" 所有者: " + getOwner());
 		if (isUnlimited()) {
-			sb.append(" Unlimited: true");
+			sb.append("无限模式: true");
 		}
-		sb.append(" Price: " + getPrice());
-		sb.append("Item: " + getItem().toString());
+		sb.append("价格: " + getPrice());
+		sb.append("物品: " + getItem().toString());
 		return sb.toString();
 	}
 
@@ -660,7 +660,7 @@ public class ContainerShop implements Shop {
 		final int unlimited = this.isUnlimited() ? 1 : 0;
 		final String q = "UPDATE shops SET owner = ?, itemConfig = ?, unlimited = ?, type = ?, price = ? WHERE x = ? AND y = ? and z = ? and world = ?";
 		try {
-			plugin.getDB().execute(q, this.getOwner().toString(), Util.serialize(this.getItem()), unlimited, shopType.toID(), this.getPrice(), x, y, z, world);
+			plugin.getDB().execute(q, this.getOwner(), Util.serialize(this.getItem()), unlimited, shopType.toID(), this.getPrice(), x, y, z, world);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			System.out.println("Could not update shop in database! Changes will revert after a reboot!");

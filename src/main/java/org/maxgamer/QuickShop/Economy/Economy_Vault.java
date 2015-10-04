@@ -2,11 +2,11 @@ package org.maxgamer.QuickShop.Economy;
 
 import java.util.UUID;
 
-import net.milkbowl.vault.economy.Economy;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
+
+import net.milkbowl.vault.economy.Economy;
 
 public class Economy_Vault implements EconomyCore {
 	private Economy vault;
@@ -15,12 +15,37 @@ public class Economy_Vault implements EconomyCore {
 		setupEconomy();
 	}
 
-	private boolean setupEconomy() {
-		RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
-		if (economyProvider != null) {
-			this.vault = ((Economy) economyProvider.getProvider());
+	@Override
+	@Deprecated
+	public boolean deposit(final String name, final double amount) {
+		return this.vault.depositPlayer(name, amount).transactionSuccess();
+	}
+
+	@Override
+	public boolean deposit(final UUID name, final double amount) {
+		final OfflinePlayer p = Bukkit.getOfflinePlayer(name);
+		return this.vault.depositPlayer(p, amount).transactionSuccess();
+	}
+
+	@Override
+	public String format(final double balance) {
+		try {
+			return this.vault.format(balance);
+		} catch (final NumberFormatException e) {
 		}
-		return this.vault != null;
+		return "" + balance;
+	}
+
+	@Override
+	@Deprecated
+	public double getBalance(final String name) {
+		return this.vault.getBalance(name);
+	}
+
+	@Override
+	public double getBalance(final UUID name) {
+		final OfflinePlayer p = Bukkit.getOfflinePlayer(name);
+		return this.vault.getBalance(p);
 	}
 
 	@Override
@@ -30,19 +55,7 @@ public class Economy_Vault implements EconomyCore {
 
 	@Override
 	@Deprecated
-	public boolean deposit(String name, double amount) {
-		return this.vault.depositPlayer(name, amount).transactionSuccess();
-	}
-
-	@Override
-	@Deprecated
-	public boolean withdraw(String name, double amount) {
-		return this.vault.withdrawPlayer(name, amount).transactionSuccess();
-	}
-
-	@Override
-	@Deprecated
-	public boolean transfer(String from, String to, double amount) {
+	public boolean transfer(final String from, final String to, final double amount) {
 		if (this.vault.getBalance(from) >= amount) {
 			if (this.vault.withdrawPlayer(from, amount).transactionSuccess()) {
 				if (!this.vault.depositPlayer(to, amount).transactionSuccess()) {
@@ -57,36 +70,9 @@ public class Economy_Vault implements EconomyCore {
 	}
 
 	@Override
-	@Deprecated
-	public double getBalance(String name) {
-		return this.vault.getBalance(name);
-	}
-
-	@Override
-	public String format(double balance) {
-		try {
-			return this.vault.format(balance);
-		} catch (NumberFormatException e) {
-		}
-		return "$" + balance;
-	}
-
-	@Override
-	public boolean deposit(UUID name, double amount) {
-		OfflinePlayer p = Bukkit.getOfflinePlayer(name);
-		return this.vault.depositPlayer(p, amount).transactionSuccess();
-	}
-
-	@Override
-	public boolean withdraw(UUID name, double amount) {
-		OfflinePlayer p = Bukkit.getOfflinePlayer(name);
-		return this.vault.withdrawPlayer(p, amount).transactionSuccess();
-	}
-
-	@Override
-	public boolean transfer(UUID from, UUID to, double amount) {
-		OfflinePlayer pFrom = Bukkit.getOfflinePlayer(from);
-		OfflinePlayer pTo = Bukkit.getOfflinePlayer(to);
+	public boolean transfer(final UUID from, final UUID to, final double amount) {
+		final OfflinePlayer pFrom = Bukkit.getOfflinePlayer(from);
+		final OfflinePlayer pTo = Bukkit.getOfflinePlayer(to);
 		if (this.vault.getBalance(pFrom) >= amount) {
 			if (this.vault.withdrawPlayer(pFrom, amount).transactionSuccess()) {
 				if (!this.vault.depositPlayer(pTo, amount).transactionSuccess()) {
@@ -101,8 +87,22 @@ public class Economy_Vault implements EconomyCore {
 	}
 
 	@Override
-	public double getBalance(UUID name) {
-		OfflinePlayer p = Bukkit.getOfflinePlayer(name);
-		return this.vault.getBalance(p);
+	@Deprecated
+	public boolean withdraw(final String name, final double amount) {
+		return this.vault.withdrawPlayer(name, amount).transactionSuccess();
+	}
+
+	@Override
+	public boolean withdraw(final UUID name, final double amount) {
+		final OfflinePlayer p = Bukkit.getOfflinePlayer(name);
+		return this.vault.withdrawPlayer(p, amount).transactionSuccess();
+	}
+
+	private boolean setupEconomy() {
+		final RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
+		if (economyProvider != null) {
+			this.vault = (economyProvider.getProvider());
+		}
+		return this.vault != null;
 	}
 }

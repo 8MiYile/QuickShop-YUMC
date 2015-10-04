@@ -127,7 +127,7 @@ public class Util {
 		try {
 			return plugin.getEcon().format(n);
 		} catch (final NumberFormatException e) {
-			return "$" + n;
+			return "" + n;
 		}
 	}
 

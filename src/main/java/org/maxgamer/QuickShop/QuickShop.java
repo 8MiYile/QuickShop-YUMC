@@ -159,8 +159,8 @@ public class QuickShop extends JavaPlugin {
 		final EconomyCore core = new Economy_Vault();
 		if (!core.isValid()) {
 			// getLogger().severe("Economy is not valid!");
-			getLogger().severe("QuickShop could not hook an economy!");
-			getLogger().severe("QuickShop CANNOT start!");
+			getLogger().warning("无法找到经济管理类插件...");
+			getLogger().warning("卸载插件!!!");
 			this.getPluginLoader().disablePlugin(this);
 			// if(econ.equals("Vault"))
 			// getLogger().severe("(Does Vault have an Economy to hook into?!)");
@@ -283,7 +283,7 @@ public class QuickShop extends JavaPlugin {
 		int count = 0; // Shops count
 		Connection con;
 		try {
-			getLogger().info("从数据看载入商店数据...");
+			getLogger().info("从数据库载入商店数据...");
 			con = database.getConnection();
 			final PreparedStatement ps = con.prepareStatement("SELECT * FROM shops");
 			final ResultSet rs = ps.executeQuery();
