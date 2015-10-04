@@ -3,7 +3,6 @@ package org.maxgamer.QuickShop.Shop;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -26,7 +25,7 @@ import org.maxgamer.QuickShop.Util.Util;
 public class ContainerShop implements Shop {
 	private final Location loc;
 	private double price;
-	private UUID owner;
+	private String owner;
 	private final ItemStack item;
 	private DisplayItem displayItem;
 	private boolean unlimited;
@@ -46,7 +45,7 @@ public class ContainerShop implements Shop {
 	 * @param owner
 	 *            The player who owns this shop.
 	 */
-	public ContainerShop(final Location loc, final double price, final ItemStack item, final UUID owner) {
+	public ContainerShop(final Location loc, final double price, final ItemStack item, final String owner) {
 		this.loc = loc;
 		this.price = price;
 		this.owner = owner;
@@ -185,6 +184,7 @@ public class ContainerShop implements Shop {
 	 *            True if you are *NOT* iterating over this currently, *false if
 	 *            you are iterating*
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public void delete(final boolean fromMemory) {
 		// Delete the display item
@@ -301,7 +301,7 @@ public class ContainerShop implements Shop {
 	 * @return The name of the player who owns the shop.
 	 */
 	@Override
-	public UUID getOwner() {
+	public String getOwner() {
 		return this.owner;
 	}
 
@@ -562,7 +562,7 @@ public class ContainerShop implements Shop {
 	 *            it after a reboot.
 	 */
 	@Override
-	public void setOwner(final UUID owner) {
+	public void setOwner(final String owner) {
 		this.owner = owner;
 	}
 

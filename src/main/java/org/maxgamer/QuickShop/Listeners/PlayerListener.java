@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -26,6 +26,7 @@ import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Info;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopAction;
+import org.maxgamer.QuickShop.Util.MarkUtil;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
@@ -47,11 +48,11 @@ public class PlayerListener implements Listener {
 	 *
 	 * clazz = clazz.getSuperclass(); } return classes; }
 	 */
+	@SuppressWarnings("deprecation")
 	/**
 	 * Handles players left clicking a chest. Left click a NORMAL chest with
 	 * item : Send creation menu Left click a SHOP chest : Send purchase menu
 	 */
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onClick(final PlayerInteractEvent e) {
 		if (e.getAction() != Action.LEFT_CLICK_BLOCK) {
@@ -132,6 +133,15 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler
+	public void onItemClick(final InventoryClickEvent e) {
+		final ItemStack ci = e.getCurrentItem();
+		if (MarkUtil.hasMark(ci)) {
+			ci.setType(Material.AIR);
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
 	public void onJoin(final PlayerJoinEvent e) {
 		// Notify the player any messages they were sent
 		Bukkit.getScheduler().runTaskLater(QuickShop.instance, new Runnable() {
@@ -169,15 +179,8 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerPickup(final PlayerPickupItemEvent e) {
-		final ItemStack stack = e.getItem().getItemStack();
-		try {
-			if (stack.getItemMeta().getDisplayName().startsWith(ChatColor.RED + "QuickShop ")) {
-				e.setCancelled(true);
-				// You shouldn't be able to pick up that...
-			}
-		} catch (final NullPointerException ex) {
-		} // if meta/displayname/stack is null. We don't really care in that
-			// case.
+		final ItemStack ci = e.getItem().getItemStack();
+		e.setCancelled(!MarkUtil.hasMark(ci));
 	}
 
 	@EventHandler

@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,7 +26,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.maxgamer.QuickShop.Command.QS;
 import org.maxgamer.QuickShop.Config.ItemConfig;
 import org.maxgamer.QuickShop.Database.Database;
-import org.maxgamer.QuickShop.Database.Database.ConnectionException;
 import org.maxgamer.QuickShop.Database.DatabaseCore;
 import org.maxgamer.QuickShop.Database.DatabaseHelper;
 import org.maxgamer.QuickShop.Database.MySQLCore;
@@ -45,7 +43,6 @@ import org.maxgamer.QuickShop.Shop.ContainerShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopManager;
 import org.maxgamer.QuickShop.Shop.ShopType;
-import org.maxgamer.QuickShop.Util.Converter;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 import org.maxgamer.QuickShop.Watcher.ItemWatcher;
@@ -59,7 +56,7 @@ public class QuickShop extends JavaPlugin {
 	public static QuickShop instance;
 	// private Metrics metrics;
 	/** Whether debug info should be shown in the console */
-	public static boolean debug = true;
+	public static boolean debug = false;
 	/** The economy we hook into for transactions */
 	private Economy economy;
 	/** The Shop Manager used to store shops */
@@ -233,7 +230,7 @@ public class QuickShop extends JavaPlugin {
 		this.shopManager = new ShopManager(this);
 		if (this.display) {
 			// Display item handler thread
-			getLogger().info("Starting item scheduler");
+			getLogger().info("开启悬浮物品刷新线程...");
 			final ItemWatcher itemWatcher = new ItemWatcher(this);
 			itemWatcherTask = Bukkit.getScheduler().runTaskTimer(this, itemWatcher, 600, 600);
 		}
@@ -248,7 +245,7 @@ public class QuickShop extends JavaPlugin {
 		}
 		ConfigurationSection limitCfg = this.getConfig().getConfigurationSection("limits");
 		if (limitCfg != null) {
-			getLogger().info("Limit cfg found...");
+			getLogger().info("发现物品限制配置...");
 			this.limit = limitCfg.getBoolean("use", false);
 			getLogger().info("Limits.use: " + limit);
 			limitCfg = limitCfg.getConfigurationSection("ranks");
@@ -261,6 +258,7 @@ public class QuickShop extends JavaPlugin {
 			final ConfigurationSection dbCfg = getConfig().getConfigurationSection("database");
 			DatabaseCore dbCore;
 			if (dbCfg.getBoolean("mysql")) {
+				getLogger().info("启用MySQL 开始连接数据库...");
 				// MySQL database - Required database be created first.
 				final String user = dbCfg.getString("user");
 				final String pass = dbCfg.getString("password");
@@ -275,14 +273,11 @@ public class QuickShop extends JavaPlugin {
 			this.database = new Database(dbCore);
 			// Make the database up to date
 			DatabaseHelper.setup(getDB());
-		} catch (final ConnectionException e) {
+		} catch (final Exception e) {
+			getLogger().warning("数据库连接错误或配置错误...");
+			getLogger().warning("错误信息: " + e.getMessage());
 			e.printStackTrace();
-			getLogger().severe("Error connecting to database. Aborting plugin load.");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		} catch (final SQLException e) {
-			e.printStackTrace();
-			getLogger().severe("Error setting up database. Aborting plugin load.");
+			getLogger().warning("关闭插件!!!");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -290,15 +285,7 @@ public class QuickShop extends JavaPlugin {
 		int count = 0; // Shops count
 		Connection con;
 		try {
-			getLogger().info("Loading shops from database...");
-			final int res = Converter.convert();
-			if (res < 0) {
-				System.out.println("Could not convert shops. Exitting.");
-				return;
-			}
-			if (res > 0) {
-				System.out.println("Conversion success. Continuing...");
-			}
+			getLogger().info("从数据看载入商店数据...");
 			con = database.getConnection();
 			final PreparedStatement ps = con.prepareStatement("SELECT * FROM shops");
 			final ResultSet rs = ps.executeQuery();
@@ -320,7 +307,7 @@ public class QuickShop extends JavaPlugin {
 					final Location loc = new Location(world, x, y, z);
 					/* Skip invalid shops, if we know of any */
 					if (world != null && (loc.getBlock().getState() instanceof InventoryHolder) == false) {
-						getLogger().info("Shop is not an InventoryHolder in " + rs.getString("world") + " at: " + x + ", " + y + ", " + z + ".  Deleting.");
+						getLogger().info("商店不是一个可存储的方块 坐标 " + rs.getString("world") + " at: " + x + ", " + y + ", " + z + ".  删除...");
 						final PreparedStatement delps = getDB().getConnection().prepareStatement("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?");
 						delps.setInt(1, x);
 						delps.setInt(2, y);
@@ -330,7 +317,7 @@ public class QuickShop extends JavaPlugin {
 						continue;
 					}
 					final int type = rs.getInt("type");
-					final Shop shop = new ContainerShop(loc, price, item, UUID.fromString(owner));
+					final Shop shop = new ContainerShop(loc, price, item, owner);
 					shop.setUnlimited(rs.getBoolean("unlimited"));
 					shop.setShopType(ShopType.fromID(type));
 					shopManager.loadShop(rs.getString("world"), shop);
@@ -341,9 +328,9 @@ public class QuickShop extends JavaPlugin {
 				} catch (final Exception e) {
 					errors++;
 					e.printStackTrace();
-					getLogger().severe("Error loading a shop! Coords: " + worldName + " (" + x + ", " + y + ", " + z + ")...");
+					getLogger().warning("载入商店数据时发生错误! 商店位置: " + worldName + " (" + x + ", " + y + ", " + z + ")...");
 					if (errors < 3) {
-						getLogger().info("Deleting the shop...");
+						getLogger().warning("删除错误的商店数据...");
 						final PreparedStatement delps = getDB().getConnection().prepareStatement("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?");
 						delps.setInt(1, x);
 						delps.setInt(2, y);
@@ -351,21 +338,22 @@ public class QuickShop extends JavaPlugin {
 						delps.setString(4, worldName);
 						delps.execute();
 					} else {
-						getLogger().severe("Multiple errors in shops - Something seems to be wrong with your shops database! Please check it out immediately!");
+						getLogger().warning("过多的错误数据 可能您的数据库文件已损坏! 请检查数据库文件!");
 						e.printStackTrace();
 					}
 				}
 			}
 		} catch (final SQLException e) {
+			getLogger().warning("无法载入商店数据...");
+			getLogger().warning("错误信息: " + e.getMessage());
 			e.printStackTrace();
-			getLogger().severe("Could not load shops.");
 		}
 
-		getLogger().info("Loaded " + count + " shops.");
+		getLogger().info("已载入 " + count + " 个商店...");
 		MsgUtil.loadTransactionMessages();
 		MsgUtil.clean();
 		// Register events
-		getLogger().info("Registering Listeners");
+		getLogger().info("注册监听器...");
 		Bukkit.getServer().getPluginManager().registerEvents(blockListener, this);
 		Bukkit.getServer().getPluginManager().registerEvents(playerListener, this);
 		if (this.display) {
@@ -374,8 +362,6 @@ public class QuickShop extends JavaPlugin {
 		Bukkit.getServer().getPluginManager().registerEvents(worldListener, this);
 		if (this.getConfig().getBoolean("force-bukkit-chat-handler", false) && Bukkit.getPluginManager().getPlugin("Herochat") != null) {
 			this.getLogger().info("Found Herochat... Hooking!");
-			// this.heroChatListener = new HeroChatListener(this);
-			// Bukkit.getServer().getPluginManager().registerEvents(heroChatListener, this);
 		} else {
 			this.chatListener = new ChatListener(this);
 			Bukkit.getServer().getPluginManager().registerEvents(chatListener, this);
@@ -384,7 +370,7 @@ public class QuickShop extends JavaPlugin {
 		final QS commandExecutor = new QS(this);
 		getCommand("qs").setExecutor(commandExecutor);
 		if (getConfig().getInt("shop.find-distance") > 100) {
-			getLogger().severe("Shop.find-distance is too high! Pick a number under 100!");
+			getLogger().warning("商店查找半径过大 可能导致服务器Lag! 推荐使用低于 100 的配置!");
 		}
 		new VersionChecker(this);
 		try {

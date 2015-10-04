@@ -24,7 +24,7 @@ import mkremins.fanciful.FancyMessage;
 public class MsgUtil {
 	private static QuickShop plugin;
 	private static FileConfig messages;
-	private static HashMap<UUID, LinkedList<String>> player_messages = new HashMap<UUID, LinkedList<String>>();
+	private static HashMap<String, LinkedList<String>> player_messages = new HashMap<String, LinkedList<String>>();
 
 	static {
 		plugin = QuickShop.instance;
@@ -82,7 +82,7 @@ public class MsgUtil {
 		try {
 			final ResultSet rs = plugin.getDB().getConnection().prepareStatement("SELECT * FROM messages").executeQuery();
 			while (rs.next()) {
-				final UUID owner = UUID.fromString(rs.getString("owner"));
+				final String owner = rs.getString("owner");
 				final String message = rs.getString("message");
 				LinkedList<String> msgs = player_messages.get(owner);
 				if (msgs == null) {
@@ -119,7 +119,8 @@ public class MsgUtil {
 	 *            they're online. Else, if they're not online, queues it for
 	 *            them in the database.
 	 */
-	public static void send(final UUID player, final String message) { // TODO Converted to UUID
+	public static void send(final String player, final String message) { // TODO Converted to UUID
+		@SuppressWarnings("deprecation")
 		final OfflinePlayer p = Bukkit.getOfflinePlayer(player);
 		if (p == null || !p.isOnline()) {
 			LinkedList<String> msgs = player_messages.get(player);
@@ -219,6 +220,7 @@ public class MsgUtil {
 		sendShopInfo(p, shop, shop.getRemainingStock());
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void sendShopInfo(final Player p, final Shop shop, final int stock) {
 		// Potentially faster with an array?
 		final ItemStack items = shop.getItem();
