@@ -205,7 +205,6 @@ public class QuickShop extends JavaPlugin {
 			e.printStackTrace();
 		}
 		this.warnings.clear();
-		this.reloadConfig();
 	}
 
 	@Override
@@ -222,7 +221,6 @@ public class QuickShop extends JavaPlugin {
 		if (loadEcon() == false) {
 			return;
 		}
-
 		// Initialize Util
 		Util.initialize();
 		ItemConfig.load(this);

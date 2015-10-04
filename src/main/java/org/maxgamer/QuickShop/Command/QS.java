@@ -384,6 +384,7 @@ public class QS implements CommandExecutor {
 			sender.sendMessage(MsgUtil.p("command.reloading"));
 			Bukkit.getPluginManager().disablePlugin(plugin);
 			Bukkit.getPluginManager().enablePlugin(plugin);
+			plugin.reloadConfig();
 			return;
 		}
 		sender.sendMessage(MsgUtil.p("no-permission"));
