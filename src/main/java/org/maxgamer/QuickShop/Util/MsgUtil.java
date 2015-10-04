@@ -11,7 +11,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,10 +21,9 @@ import org.maxgamer.QuickShop.Shop.Shop;
 import cn.citycraft.PluginHelper.config.FileConfig;
 import mkremins.fanciful.FancyMessage;
 
-@SuppressWarnings("deprecation")
 public class MsgUtil {
 	private static QuickShop plugin;
-	private static YamlConfiguration messages;
+	private static FileConfig messages;
 	private static HashMap<UUID, LinkedList<String>> player_messages = new HashMap<UUID, LinkedList<String>>();
 
 	static {
@@ -71,7 +69,7 @@ public class MsgUtil {
 	 */
 	public static void loadCfgMessages() {
 		// Load messages.yml
-		messages = new FileConfig(plugin, "message.yml");
+		messages = new FileConfig(plugin, "messages.yml");
 		// Parse colour codes
 		Util.parseColours(messages);
 	}
