@@ -1,7 +1,5 @@
 package org.maxgamer.QuickShop.Util;
 
-import java.io.File;
-import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -21,6 +19,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 
+import cn.citycraft.PluginHelper.config.FileConfig;
 import mkremins.fanciful.FancyMessage;
 
 @SuppressWarnings("deprecation")
@@ -72,18 +71,7 @@ public class MsgUtil {
 	 */
 	public static void loadCfgMessages() {
 		// Load messages.yml
-		final File messageFile = new File(plugin.getDataFolder(), "messages.yml");
-		if (!messageFile.exists()) {
-			plugin.getLogger().info("Creating messages.yml");
-			plugin.saveResource("messages.yml", true);
-		}
-		// Store it
-		messages = YamlConfiguration.loadConfiguration(messageFile);
-		messages.options().copyDefaults(true);
-		// Load default messages
-		final InputStream defMessageStream = plugin.getResource("messages.yml");
-		final YamlConfiguration defMessages = YamlConfiguration.loadConfiguration(defMessageStream);
-		messages.setDefaults(defMessages);
+		messages = new FileConfig(plugin, "message.yml");
 		// Parse colour codes
 		Util.parseColours(messages);
 	}
