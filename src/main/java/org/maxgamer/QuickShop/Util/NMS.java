@@ -5,22 +5,12 @@ import java.lang.reflect.Method;
 
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
-import org.maxgamer.QuickShop.QuickShop;
 
 public class NMS {
 
 	public static void safeGuard(final Item item) throws ClassNotFoundException {
-		if (QuickShop.debug) {
-			System.out.println("Renaming");
-		}
 		rename(item.getItemStack());
-		if (QuickShop.debug) {
-			System.out.println("Protecting");
-		}
 		protect(item);
-		if (QuickShop.debug) {
-			System.out.println("Seting pickup delay");
-		}
 		item.setPickupDelay(2147483647);
 	}
 

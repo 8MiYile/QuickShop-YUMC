@@ -406,7 +406,7 @@ public class QS implements CommandExecutor {
 			final Block b = bIt.next();
 			final Shop shop = plugin.getShopManager().getShop(b.getLocation());
 			if (shop != null) {
-				if (shop.getOwner().equals(p.getUniqueId())) {
+				if (shop.getOwner().equals(p.getName())) {
 					shop.delete();
 					sender.sendMessage(ChatColor.GREEN + "Success. Deleted shop.");
 				} else {
@@ -424,7 +424,7 @@ public class QS implements CommandExecutor {
 			while (bIt.hasNext()) {
 				final Block b = bIt.next();
 				final Shop shop = plugin.getShopManager().getShop(b.getLocation());
-				if (shop != null && shop.getOwner().equals(((Player) sender).getUniqueId())) {
+				if (shop != null && shop.getOwner().equals(((Player) sender).getName())) {
 					shop.setShopType(ShopType.BUYING);
 					shop.setSignText();
 					shop.update();
@@ -486,9 +486,9 @@ public class QS implements CommandExecutor {
 				return;
 			}
 			double fee = 0;
-			if (plugin.priceChangeRequiresFee) {
-				fee = plugin.getConfig().getDouble("shop.fee-for-price-change");
-				if (fee > 0 && plugin.getEcon().getBalance(p.getUniqueId()) < fee) {
+			if (plugin.getConfigManager().isPriceChangeRequiresFee()) {
+				fee = plugin.getConfigManager().getFeeForPriceChange();
+				if (fee > 0 && plugin.getEcon().getBalance(p.getName()) < fee) {
 					sender.sendMessage(MsgUtil.p("you-cant-afford-to-change-price", plugin.getEcon().format(fee)));
 					return;
 				}
@@ -505,7 +505,7 @@ public class QS implements CommandExecutor {
 						return;
 					}
 					if (fee > 0) {
-						if (!plugin.getEcon().withdraw(p.getUniqueId(), fee)) {
+						if (!plugin.getEcon().withdraw(p.getName(), fee)) {
 							sender.sendMessage(MsgUtil.p("you-cant-afford-to-change-price", plugin.getEcon().format(fee)));
 							return;
 						}

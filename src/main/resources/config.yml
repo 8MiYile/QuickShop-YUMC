@@ -1,3 +1,8 @@
+Version: 1.0
+
+#超级工具(OP可以用该工具在创造模式打破所有商店)
+superitem: GOLD_AXE
+
 #Tax amount (decimal) - Eg, P1 buys $50 worth of stuff from P2.  Therefore, P1 loses $50, P2 gains $(1-0.05)*50, and tax-account gains $(0.05)*50.
 tax: 0.05
 #The fake player who money from taxing people goes to

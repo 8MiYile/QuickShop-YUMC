@@ -22,10 +22,6 @@ public class MsgUtil {
 	private static FileConfig messages;
 	private static HashMap<String, LinkedList<String>> player_messages = new HashMap<String, LinkedList<String>>();
 
-	static {
-		plugin = QuickShop.instance;
-	}
-
 	/**
 	 * Deletes any messages that are older than a week in the database, to save
 	 * on space.
@@ -60,10 +56,8 @@ public class MsgUtil {
 		return false;
 	}
 
-	/**
-	 * Loads all the messages from messages.yml
-	 */
-	public static void loadCfgMessages() {
+	public static void init(final QuickShop plugin) {
+		MsgUtil.plugin = plugin;
 		// Load messages.yml
 		messages = new FileConfig(plugin, "messages.yml");
 		// Parse colour codes

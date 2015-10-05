@@ -52,7 +52,7 @@ public class ContainerShop implements Shop {
 		this.item = item.clone();
 		this.plugin = (QuickShop) Bukkit.getPluginManager().getPlugin("QuickShop");
 		this.item.setAmount(1);
-		if (plugin.display) {
+		if (plugin.getConfigManager().isDisplay()) {
 			this.displayItem = new DisplayItem(this, this.item);
 		}
 		this.shopType = ShopType.SELLING;
@@ -371,7 +371,7 @@ public class ContainerShop implements Shop {
 				continue;
 			}
 			final Sign sign = (Sign) b.getState();
-			if (sign.getLine(0).contains("[QuickShop")) {
+			if (sign.getLine(0).contains("[QuickShop]")) {
 				signs.add(sign);
 			} else {
 				boolean text = false;
@@ -669,7 +669,7 @@ public class ContainerShop implements Shop {
 	}
 
 	private void checkDisplay() {
-		if (plugin.display == false) {
+		if (plugin.getConfigManager().isDisplay() == false) {
 			return;
 		}
 		if (getLocation().getWorld() == null) {

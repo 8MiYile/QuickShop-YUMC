@@ -13,7 +13,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -53,7 +52,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		final Player p = e.getPlayer();
-		if (plugin.sneak && !p.isSneaking()) {
+		if (plugin.getConfigManager().isSneak() != p.isSneaking()) {
 			// Sneak only
 			return;
 		}
@@ -69,7 +68,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 		// Purchase handling
-		if (shop != null && p.hasPermission("quickshop.use") && (plugin.sneakTrade == false || p.isSneaking())) {
+		if (shop != null && p.hasPermission("quickshop.use") && (plugin.getConfigManager().isSneakTrade() == p.isSneaking())) {
 			shop.onClick();
 			// Text menu
 			MsgUtil.sendShopInfo(p, shop);
@@ -86,8 +85,8 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		// Handles creating shops
-		else if (!e.isCancelled() && shop == null && item != null && item.getType() != Material.AIR && p.hasPermission("quickshop.create.sell") && Util.canBeShop(b)
-				&& p.getGameMode() != GameMode.CREATIVE && (plugin.sneakCreate == false || p.isSneaking())) {
+		else if (shop == null && item != null && item.getType() != Material.AIR && p.hasPermission("quickshop.create.sell") && Util.canBeShop(b) && p.getGameMode() != GameMode.CREATIVE
+				&& (plugin.getConfigManager().isSneakCreate() == p.isSneaking())) {
 			if (!plugin.getShopManager().canBuildShop(p, b, e.getBlockFace())) {
 				// As of the new checking system, most plugins will tell the
 				// player why they can't create a shop there.
@@ -131,17 +130,9 @@ public class PlayerListener implements Listener {
 		try {
 			if (MarkUtil.hasMark(ci)) {
 				inv.setItem(solt, new ItemStack(Material.AIR));
-				p.chat("§c非法获取快捷商店悬浮物品 已清理...");
+				Bukkit.broadcastMessage("§6[§b快捷商店§6] §4警告 " + p.getDisplayName() + " §c非法获取快捷商店悬浮物品 已清理...");
 			}
 		} catch (final Exception ex) {
-		}
-	}
-
-	@EventHandler
-	public void onItemMove(final InventoryMoveItemEvent e) {
-		final ItemStack ci = e.getItem();
-		if (MarkUtil.hasMark(ci)) {
-			e.setItem(new ItemStack(Material.AIR));
 		}
 	}
 

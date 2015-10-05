@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Info;
 import org.maxgamer.QuickShop.Shop.Shop;
@@ -42,18 +43,20 @@ public class BlockListener implements Listener {
 				return;
 			}
 			// If they're either survival or the owner, they can break it
-			if (p.getGameMode() == GameMode.CREATIVE && !p.getUniqueId().equals(shop.getOwner())) {
+			final ItemStack pinh = p.getItemInHand();
+			if (p.getName().equals(shop.getOwner()) || (pinh != null && pinh.getType() == plugin.getConfigManager().getSuperItem()) || (p.getGameMode() == GameMode.SURVIVAL)) {
+				// Cancel their current menu... Doesnt cancel other's menu's.
+				final Info action = plugin.getShopManager().getActions().get(p.getName());
+				if (action != null) {
+					action.setAction(ShopAction.CANCELLED);
+				}
+				shop.delete();
+				p.sendMessage(MsgUtil.p("success-removed-shop"));
+			} else {
 				e.setCancelled(true);
 				p.sendMessage(MsgUtil.p("no-creative-break"));
 				return;
 			}
-			// Cancel their current menu... Doesnt cancel other's menu's.
-			final Info action = plugin.getShopManager().getActions().get(p.getName());
-			if (action != null) {
-				action.setAction(ShopAction.CANCELLED);
-			}
-			shop.delete();
-			p.sendMessage(MsgUtil.p("success-removed-shop"));
 		} else if (b.getType() == Material.WALL_SIGN) {
 			final Shop shop = getShopNextTo(b.getLocation());
 			if (shop == null) {

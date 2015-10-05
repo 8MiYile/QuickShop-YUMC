@@ -1,6 +1,7 @@
 package org.maxgamer.QuickShop.Shop;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -108,7 +109,7 @@ public class ShopManager {
 	 * @return True if they're allowed to place a shop there.
 	 */
 	public boolean canBuildShop(final Player p, final Block b, final BlockFace bf) {
-		if (plugin.limit) {
+		if (plugin.getConfigManager().isLimit()) {
 			int owned = 0;
 			final Iterator<Shop> it = getShopIterator();
 			while (it.hasNext()) {
@@ -142,7 +143,7 @@ public class ShopManager {
 	 * the database. Call this on plugin disable ONLY.
 	 */
 	public void clear() {
-		if (plugin.display) {
+		if (plugin.getConfigManager().isDisplay()) {
 			for (final World world : Bukkit.getWorlds()) {
 				for (final Chunk chunk : world.getLoadedChunks()) {
 					final HashMap<Location, Shop> inChunk = this.getShops(chunk);
@@ -347,9 +348,10 @@ public class ShopManager {
 						if (!plugin.getConfig().getBoolean("shop.lock")) {
 							// Warn them if they haven't been warned since
 							// reboot
-							if (!plugin.warnings.contains(p.getName())) {
+							final HashSet<String> warings = plugin.getConfigManager().getWarnings();
+							if (!warings.contains(p.getName())) {
 								p.sendMessage(MsgUtil.p("shops-arent-locked"));
-								plugin.warnings.add(p.getName());
+								warings.add(p.getName());
 							}
 						}
 						// Figures out which way we should put the sign on and

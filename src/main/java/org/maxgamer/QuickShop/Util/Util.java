@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -169,25 +168,29 @@ public class Util {
 	// Let's make very long names shorter for our sign
 	public static String getNameForSign(final ItemStack itemStack) {
 		// final String name = getDataName(itemStack.getType(), itemStack.getDurability());
-		final String name = getName(itemStack);
+		String name = getName(itemStack);
 
-		final String[] nameParts = name.split("_");
-		if (nameParts.length == 1) {
-			return firstUppercase(nameParts[0]);
+		if (name.length() > 16) {
+			name = name.substring(0, 16);
 		}
-
-		for (int i = 0; i < nameParts.length - 1; i++) {
-			final int length = StringUtils.join(nameParts).length();
-			if (length > 16) {
-				nameParts[i] = nameParts[i].substring(0, 1) + ".";
-			} else {
-				nameParts[i] = firstUppercase(nameParts[i]);
-			}
-		}
-
-		nameParts[nameParts.length - 1] = firstUppercase(nameParts[nameParts.length - 1]);
-
-		return StringUtils.join(nameParts);
+		return name;
+		// final String[] nameParts = name.split("_");
+		// if (nameParts.length == 1) {
+		// return firstUppercase(nameParts[0]);
+		// }
+		//
+		// for (int i = 0; i < nameParts.length - 1; i++) {
+		// final int length = StringUtils.join(nameParts).length();
+		// if (length > 16) {
+		// nameParts[i] = nameParts[i].substring(0, 1) + ".";
+		// } else {
+		// nameParts[i] = firstUppercase(nameParts[i]);
+		// }
+		// }
+		//
+		// nameParts[nameParts.length - 1] = firstUppercase(nameParts[nameParts.length - 1]);
+		//
+		// return StringUtils.join(nameParts);
 	}
 
 	/**

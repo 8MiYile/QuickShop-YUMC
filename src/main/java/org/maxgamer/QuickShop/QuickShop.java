@@ -9,8 +9,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
@@ -18,12 +16,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.maxgamer.QuickShop.Command.QS;
+import org.maxgamer.QuickShop.Config.ConfigManager;
 import org.maxgamer.QuickShop.Config.ItemConfig;
 import org.maxgamer.QuickShop.Database.Database;
 import org.maxgamer.QuickShop.Database.DatabaseCore;
@@ -49,25 +49,23 @@ import org.maxgamer.QuickShop.Watcher.ItemWatcher;
 import org.maxgamer.QuickShop.Watcher.LogWatcher;
 import org.mcstats.Metrics;
 
+import cn.citycraft.PluginHelper.config.FileConfig;
 import cn.citycraft.PluginHelper.utils.VersionChecker;
 
 public class QuickShop extends JavaPlugin {
 	/** The active instance of QuickShop */
 	public static QuickShop instance;
-	// private Metrics metrics;
-	/** Whether debug info should be shown in the console */
-	public static boolean debug = false;
+	/** The plugin default config */
+	public FileConfig config;
 	/** The economy we hook into for transactions */
 	private Economy economy;
 	/** The Shop Manager used to store shops */
 	private ShopManager shopManager;
-	/**
-	 * A set of players who have been warned
-	 * ("Your shop isn't automatically locked")
-	 */
-	public HashSet<String> warnings = new HashSet<String>();
+	/** The Config Manager used to read config */
+	private ConfigManager configManager;
 	/** The database for storing all our data for persistence */
 	private Database database;
+
 	// Listeners - We decide which one to use at runtime
 	private ChatListener chatListener;
 	// private HeroChatListener heroChatListener;
@@ -78,24 +76,6 @@ public class QuickShop extends JavaPlugin {
 	private final WorldListener worldListener = new WorldListener(this);
 	private BukkitTask itemWatcherTask;
 	private LogWatcher logWatcher;
-	/** Whether players are required to sneak to create/buy from a shop */
-	public boolean sneak;
-	/** Whether players are required to sneak to create a shop */
-	public boolean sneakCreate;
-	/** Whether players are required to sneak to trade with a shop */
-	public boolean sneakTrade;
-	/** Whether we should use display items or not */
-	public boolean display = true;
-	/**
-	 * Whether we players are charged a fee to change the price on their shop
-	 * (To help deter endless undercutting
-	 */
-	public boolean priceChangeRequiresFee = false;
-	/** Whether or not to limit players shop amounts */
-	public boolean limit = false;
-	private final HashMap<String, Integer> limits = new HashMap<String, Integer>();
-	/** Use SpoutPlugin to get item / block names */
-	public boolean useSpout = false;
 
 	/**
 	 * Prints debug information if QuickShop is configured to do so.
@@ -104,10 +84,19 @@ public class QuickShop extends JavaPlugin {
 	 *            The string to print.
 	 */
 	public void debug(final String s) {
-		if (!debug) {
+		if (!configManager.isDebug()) {
 			return;
 		}
 		this.getLogger().info(ChatColor.YELLOW + "[Debug] " + s);
+	}
+
+	@Override
+	public FileConfiguration getConfig() {
+		return config;
+	}
+
+	public ConfigManager getConfigManager() {
+		return configManager;
 	}
 
 	/**
@@ -129,8 +118,8 @@ public class QuickShop extends JavaPlugin {
 	/** The plugin metrics from Hidendra */
 	// public Metrics getMetrics(){ return metrics; }
 	public int getShopLimit(final Player p) {
-		int max = getConfig().getInt("limits.default");
-		for (final Entry<String, Integer> entry : limits.entrySet()) {
+		int max = configManager.getLimitdefault();
+		for (final Entry<String, Integer> entry : configManager.getLimits().entrySet()) {
 			if (entry.getValue() > max && p.hasPermission(entry.getKey())) {
 				max = entry.getValue();
 			}
@@ -204,47 +193,30 @@ public class QuickShop extends JavaPlugin {
 		} catch (final SQLException e) {
 			e.printStackTrace();
 		}
-		this.warnings.clear();
+		configManager.getWarnings().clear();
 	}
 
 	@Override
 	public void onEnable() {
 		instance = this;
-		saveDefaultConfig(); // Creates the config folder and copies config.yml
-								// (If one doesn't exist) as required.
-		reloadConfig(); // Reloads messages.yml too, aswell as config.yml and
-						// others.
-		getConfig().options().copyDefaults(true); // Load defaults.
-		if (getConfig().contains("debug")) {
-			debug = true;
-		}
 		if (loadEcon() == false) {
 			return;
 		}
 		// Initialize Util
 		Util.initialize();
-		ItemConfig.load(this);
 		// Create the shop manager.
-		this.shopManager = new ShopManager(this);
-		if (this.getConfig().getBoolean("log-actions")) {
+		configManager = new ConfigManager(this);
+		shopManager = new ShopManager(this);
+		if (configManager.isLogAction()) {
 			// Logger Handler
 			this.logWatcher = new LogWatcher(this, new File(this.getDataFolder(), "qs.log"));
 			logWatcher.task = Bukkit.getScheduler().runTaskTimerAsynchronously(this, this.logWatcher, 150, 150);
 		}
-		if (getConfig().getBoolean("shop.lock")) {
+		if (configManager.isShopLock()) {
 			final LockListener ll = new LockListener(this);
 			getServer().getPluginManager().registerEvents(ll, this);
 		}
-		ConfigurationSection limitCfg = this.getConfig().getConfigurationSection("limits");
-		if (limitCfg != null) {
-			this.limit = limitCfg.getBoolean("use", false);
-			getLogger().info("商店创建限制: " + limit);
-			limitCfg = limitCfg.getConfigurationSection("ranks");
-			for (final String key : limitCfg.getKeys(true)) {
-				limits.put(key, limitCfg.getInt(key));
-			}
-			getLogger().info(limits.toString());
-		}
+
 		try {
 			final ConfigurationSection dbCfg = getConfig().getConfigurationSection("database");
 			DatabaseCore dbCore;
@@ -347,23 +319,19 @@ public class QuickShop extends JavaPlugin {
 		Bukkit.getServer().getPluginManager().registerEvents(blockListener, this);
 		Bukkit.getServer().getPluginManager().registerEvents(playerListener, this);
 		Bukkit.getServer().getPluginManager().registerEvents(worldListener, this);
-		if (this.display) {
+		if (configManager.isDisplay()) {
 			Bukkit.getServer().getPluginManager().registerEvents(chunkListener, this);
 			// Display item handler thread
 			getLogger().info("开启悬浮物品刷新线程...");
 			final ItemWatcher itemWatcher = new ItemWatcher(this);
 			itemWatcherTask = Bukkit.getScheduler().runTaskTimer(this, itemWatcher, 20, 600);
 		}
-		if (this.getConfig().getBoolean("force-bukkit-chat-handler", false) && Bukkit.getPluginManager().getPlugin("Herochat") != null) {
-			this.getLogger().info("Found Herochat... Hooking!");
-		} else {
-			this.chatListener = new ChatListener(this);
-			Bukkit.getServer().getPluginManager().registerEvents(chatListener, this);
-		}
+		this.chatListener = new ChatListener(this);
+		Bukkit.getServer().getPluginManager().registerEvents(chatListener, this);
 		// Command handlers
 		final QS commandExecutor = new QS(this);
 		getCommand("qs").setExecutor(commandExecutor);
-		if (getConfig().getInt("shop.find-distance") > 100) {
+		if (configManager.getFindDistance() > 100) {
 			getLogger().warning("商店查找半径过大 可能导致服务器Lag! 推荐使用低于 100 的配置!");
 		}
 		new VersionChecker(this);
@@ -374,16 +342,17 @@ public class QuickShop extends JavaPlugin {
 		}
 	}
 
+	@Override
+	public void onLoad() {
+		config = new FileConfig(this);
+		ItemConfig.load(this);
+		MsgUtil.init(this);
+	}
+
 	/** Reloads QuickShops config */
 	@Override
 	public void reloadConfig() {
-		super.reloadConfig();
-		// Load quick variables
-		this.display = this.getConfig().getBoolean("shop.display-items");
-		this.sneak = this.getConfig().getBoolean("shop.sneak-only");
-		this.sneakCreate = this.getConfig().getBoolean("shop.sneak-to-create");
-		this.sneakTrade = this.getConfig().getBoolean("shop.sneak-to-trade");
-		this.priceChangeRequiresFee = this.getConfig().getBoolean("shop.price-change-requires-fee");
-		MsgUtil.loadCfgMessages();
+		config.reload();
+		ItemConfig.reload();
 	}
 }

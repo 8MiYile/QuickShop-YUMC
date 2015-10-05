@@ -37,4 +37,8 @@ public class ItemConfig {
 		config = new FileConfig(p, CONFIG_NAME);
 	}
 
+	public static void reload() {
+		config.reload();
+	}
+
 }

@@ -6,7 +6,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Util.NMS;
 
 /**
@@ -85,9 +84,6 @@ public class DisplayItem {
 				if (this.shop.matches(near)) {
 					e.remove();
 					removed = true;
-					if (QuickShop.debug) {
-						System.out.println("Removed rogue item: " + near.getType());
-					}
 				}
 			}
 		}
@@ -115,9 +111,6 @@ public class DisplayItem {
 			this.item.setVelocity(new Vector(0, 0.1, 0));
 			NMS.safeGuard(this.item);
 		} catch (final Exception e) {
-		}
-		if (QuickShop.debug) {
-			System.out.println("Spawned item. Safeguarding.");
 		}
 	}
 }
