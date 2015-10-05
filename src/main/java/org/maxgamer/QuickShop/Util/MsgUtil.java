@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -42,7 +41,7 @@ public class MsgUtil {
 	 */
 	public static boolean flush(final OfflinePlayer p) { // TODO Changed to UUID
 		if (p != null && p.isOnline()) {
-			final UUID pName = p.getUniqueId();
+			final String pName = p.getName();
 			final LinkedList<String> msgs = player_messages.get(pName);
 			if (msgs != null) {
 				for (final String msg : msgs) {
