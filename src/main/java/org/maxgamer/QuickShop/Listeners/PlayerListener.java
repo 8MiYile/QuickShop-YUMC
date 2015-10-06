@@ -16,7 +16,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
@@ -169,14 +168,6 @@ public class PlayerListener implements Listener {
 				plugin.getShopManager().getActions().remove(p.getName());
 				return;
 			}
-		}
-	}
-
-	@EventHandler
-	public void onPlayerPickup(final PlayerPickupItemEvent e) {
-		final ItemStack ci = e.getItem().getItemStack();
-		if (MarkUtil.hasMark(ci)) {
-			e.setCancelled(true);
 		}
 	}
 

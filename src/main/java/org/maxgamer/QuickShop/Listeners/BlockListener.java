@@ -44,7 +44,7 @@ public class BlockListener implements Listener {
 			}
 			// If they're either survival or the owner, they can break it
 			final ItemStack pinh = p.getItemInHand();
-			if (p.getName().equals(shop.getOwner()) || (pinh != null && pinh.getType() == plugin.getConfigManager().getSuperItem()) || (p.getGameMode() == GameMode.SURVIVAL)) {
+			if (p.getName().equals(shop.getOwner()) || p.getGameMode() == GameMode.SURVIVAL || pinh == null || pinh.getType() == plugin.getConfigManager().getSuperItem()) {
 				// Cancel their current menu... Doesnt cancel other's menu's.
 				final Info action = plugin.getShopManager().getActions().get(p.getName());
 				if (action != null) {

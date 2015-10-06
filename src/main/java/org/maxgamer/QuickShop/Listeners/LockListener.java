@@ -37,7 +37,7 @@ public class LockListener implements Listener {
 				return; // Wasn't a shop
 			}
 			// If they owned it or have bypass perms, they can destroy it
-			if (!shop.getOwner().equals(p.getUniqueId()) && !p.hasPermission("quickshop.other.destroy")) {
+			if (!shop.getOwner().equals(p.getName()) && !p.hasPermission("quickshop.other.destroy")) {
 				e.setCancelled(true);
 				p.sendMessage(MsgUtil.p("no-permission"));
 				return;
@@ -50,13 +50,8 @@ public class LockListener implements Listener {
 			final Shop shop = plugin.getShopManager().getShop(b.getLocation());
 			if (shop == null) {
 				return;
-			}
-			// If they're the shop owner or have bypass perms, they can destroy
-			// it.
-			if (!shop.getOwner().equals(p.getUniqueId()) && !p.hasPermission("quickshop.other.destroy")) {
+			} else {
 				e.setCancelled(true);
-				p.sendMessage(MsgUtil.p("no-permission"));
-				return;
 			}
 		}
 	}
@@ -83,7 +78,7 @@ public class LockListener implements Listener {
 				return;
 			}
 		}
-		if (!shop.getOwner().equals(p.getUniqueId())) {
+		if (!shop.getOwner().equals(p.getName())) {
 			if (p.hasPermission("quickshop.other.open")) {
 				p.sendMessage(MsgUtil.p("bypassing-lock"));
 				return;
@@ -143,7 +138,7 @@ public class LockListener implements Listener {
 				return;
 			}
 		}
-		if (p.getUniqueId().equals(shop.getOwner()) == false) {
+		if (p.getName().equals(shop.getOwner()) == false) {
 			if (p.hasPermission("quickshop.other.open")) {
 				p.sendMessage(MsgUtil.p("bypassing-lock"));
 				return;
