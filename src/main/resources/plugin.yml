@@ -4,6 +4,7 @@ main: ${project.groupId}.${project.artifactId}.${project.artifactId}
 version: ${project.version}
 authors: [Netherfoam,Timtower, KaiNoMood,喵♂呜]
 softdepend: [Vault]
+website: http://ci.sumcraft.net:8080/job/${project.artifactId}/
 
 commands:
     qs:
