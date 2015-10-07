@@ -249,6 +249,7 @@ public class QuickShop extends JavaPlugin {
 		}
 		/* Load shops from database to memory */
 		int count = 0; // Shops count
+		int unload = 0;
 		Connection con;
 		try {
 			getLogger().info("从数据库载入商店数据...");
@@ -292,7 +293,7 @@ public class QuickShop extends JavaPlugin {
 					}
 					count++;
 				} catch (final IllegalStateException e) {
-					getLogger().warning("商店区块未载入 跳过商店载入...");
+					unload++;
 				} catch (final Exception e) {
 					errors++;
 					e.printStackTrace();
@@ -308,6 +309,7 @@ public class QuickShop extends JavaPlugin {
 					} else {
 						getLogger().warning("过多的错误数据 可能您的数据库文件已损坏! 请检查数据库文件!");
 						e.printStackTrace();
+						break;
 					}
 				}
 			}
@@ -316,8 +318,7 @@ public class QuickShop extends JavaPlugin {
 			getLogger().warning("错误信息: " + e.getMessage());
 			e.printStackTrace();
 		}
-
-		getLogger().info("已载入 " + count + " 个商店...");
+		getLogger().info("已载入 " + count + " 个商店 剩余 " + unload + " 个商店将在区块载入后加载...");
 		MsgUtil.loadTransactionMessages();
 		MsgUtil.clean();
 		// Register events
