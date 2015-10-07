@@ -37,7 +37,7 @@ public class ConfigManager {
 	protected int findDistance = 30;
 	protected Material superItem = Material.GOLD_AXE;
 	protected double feeForPriceChange = 0.0;
-
+	protected boolean preventhopper = false;
 	/** Use SpoutPlugin to get item / block names */
 	protected boolean useSpout = false;
 
@@ -65,6 +65,7 @@ public class ConfigManager {
 		this.priceChangeRequiresFee = plugin.getConfig().getBoolean("shop.price-change-requires-fee");
 		this.findDistance = plugin.getConfig().getInt("shop.find-distance");
 		this.feeForPriceChange = plugin.getConfig().getDouble("shop.fee-for-price-change");
+		this.preventhopper = plugin.getConfig().getBoolean("preventhopper");
 	}
 
 	public double getFeeForPriceChange() {
@@ -105,6 +106,10 @@ public class ConfigManager {
 
 	public boolean isLogAction() {
 		return logAction;
+	}
+
+	public boolean isPreventHopper() {
+		return preventhopper;
 	}
 
 	public boolean isPriceChangeRequiresFee() {

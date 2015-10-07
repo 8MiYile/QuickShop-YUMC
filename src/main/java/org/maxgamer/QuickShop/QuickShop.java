@@ -20,6 +20,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.maxgamer.QuickShop.Command.QS;
@@ -38,6 +39,7 @@ import org.maxgamer.QuickShop.Listeners.ChatListener;
 import org.maxgamer.QuickShop.Listeners.ChunkListener;
 import org.maxgamer.QuickShop.Listeners.LockListener;
 import org.maxgamer.QuickShop.Listeners.PlayerListener;
+import org.maxgamer.QuickShop.Listeners.ProtectListener;
 import org.maxgamer.QuickShop.Listeners.WorldListener;
 import org.maxgamer.QuickShop.Shop.ContainerShop;
 import org.maxgamer.QuickShop.Shop.Shop;
@@ -72,6 +74,7 @@ public class QuickShop extends JavaPlugin {
 	// Listeners (These don't)
 	private final BlockListener blockListener = new BlockListener(this);
 	private final PlayerListener playerListener = new PlayerListener(this);
+	private final ProtectListener protectListener = new ProtectListener(this);
 	private final ChunkListener chunkListener = new ChunkListener(this);
 	private final WorldListener worldListener = new WorldListener(this);
 	private BukkitTask itemWatcherTask;
@@ -316,9 +319,11 @@ public class QuickShop extends JavaPlugin {
 		MsgUtil.loadTransactionMessages();
 		MsgUtil.clean();
 		// Register events
-		Bukkit.getServer().getPluginManager().registerEvents(blockListener, this);
-		Bukkit.getServer().getPluginManager().registerEvents(playerListener, this);
-		Bukkit.getServer().getPluginManager().registerEvents(worldListener, this);
+		final PluginManager pm = this.getServer().getPluginManager();
+		pm.registerEvents(blockListener, this);
+		pm.registerEvents(playerListener, this);
+		pm.registerEvents(worldListener, this);
+		pm.registerEvents(protectListener, this);
 		if (configManager.isDisplay()) {
 			Bukkit.getServer().getPluginManager().registerEvents(chunkListener, this);
 			// Display item handler thread
@@ -334,6 +339,7 @@ public class QuickShop extends JavaPlugin {
 		if (configManager.getFindDistance() > 100) {
 			getLogger().warning("商店查找半径过大 可能导致服务器Lag! 推荐使用低于 100 的配置!");
 		}
+		this.getLogger().info("载入完成! 版本: " + this.getDescription().getVersion() + " 重制 by 喵♂呜");
 		new VersionChecker(this);
 		try {
 			final Metrics metrics = new Metrics(this);

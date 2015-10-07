@@ -12,20 +12,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Info;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopAction;
-import org.maxgamer.QuickShop.Util.MarkUtil;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
@@ -117,21 +114,6 @@ public class PlayerListener implements Listener {
 			final Info info = new Info(b.getLocation(), ShopAction.CREATE, e.getItem(), last);
 			plugin.getShopManager().getActions().put(p.getName(), info);
 			p.sendMessage(MsgUtil.p("how-much-to-trade-for", Util.getName(info.getItem())));
-		}
-	}
-
-	@EventHandler
-	public void onItemClick(final InventoryClickEvent e) {
-		final Player p = (Player) e.getWhoClicked();
-		final ItemStack ci = e.getCurrentItem();
-		final Inventory inv = e.getInventory();
-		final int solt = e.getSlot();
-		try {
-			if (MarkUtil.hasMark(ci)) {
-				inv.setItem(solt, new ItemStack(Material.AIR));
-				Bukkit.broadcastMessage("§6[§b快捷商店§6] §4警告 " + p.getDisplayName() + " §c非法获取快捷商店悬浮物品 已清理...");
-			}
-		} catch (final Exception ex) {
 		}
 	}
 
