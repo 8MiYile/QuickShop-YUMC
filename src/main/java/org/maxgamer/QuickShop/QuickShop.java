@@ -272,7 +272,7 @@ public class QuickShop extends JavaPlugin {
 					final double price = rs.getDouble("price");
 					final Location loc = new Location(world, x, y, z);
 					/* Skip invalid shops, if we know of any */
-					if (world != null && (loc.getBlock().getState() instanceof InventoryHolder) == false) {
+					if (world != null && loc.getChunk().isLoaded() && (loc.getBlock().getState() instanceof InventoryHolder) == false) {
 						getLogger().info("商店不是一个可存储的方块 坐标 " + rs.getString("world") + " at: " + x + ", " + y + ", " + z + ".  删除...");
 						final PreparedStatement delps = getDB().getConnection().prepareStatement("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?");
 						delps.setInt(1, x);
@@ -291,6 +291,8 @@ public class QuickShop extends JavaPlugin {
 						shop.onLoad();
 					}
 					count++;
+				} catch (final IllegalStateException e) {
+					getLogger().warning("商店区块未载入 跳过商店载入...");
 				} catch (final Exception e) {
 					errors++;
 					e.printStackTrace();
