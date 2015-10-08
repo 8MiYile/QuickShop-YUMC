@@ -227,7 +227,7 @@ public class Util {
 	public static String getToolPercentage(final ItemStack item) {
 		final double dura = item.getDurability();
 		final double max = item.getType().getMaxDurability();
-		return String.format("%.2f(%s/%s)", (1 - dura / max) * 100.0, dura, max);
+		return String.format("%.2f%%(剩余耐久%s/总耐久%s)", (1 - dura / max) * 100.0, max - dura, max);
 	}
 
 	public static void initialize() {

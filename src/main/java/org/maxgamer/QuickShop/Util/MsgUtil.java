@@ -39,7 +39,7 @@ public class MsgUtil {
 	 *            The player to message
 	 * @return true if success, false if the player is offline or null
 	 */
-	public static boolean flush(final OfflinePlayer p) { // TODO Changed to UUID
+	public static boolean flush(final OfflinePlayer p) {
 		if (p != null && p.isOnline()) {
 			final String pName = p.getName();
 			final LinkedList<String> msgs = player_messages.get(pName);
@@ -47,7 +47,7 @@ public class MsgUtil {
 				for (final String msg : msgs) {
 					p.getPlayer().sendMessage(msg);
 				}
-				plugin.getDB().execute("DELETE FROM messages WHERE owner = ?", pName.toString());
+				plugin.getDB().execute("DELETE FROM messages WHERE owner = ?", pName);
 				msgs.clear();
 			}
 			return true;
@@ -66,7 +66,7 @@ public class MsgUtil {
 	/**
 	 * loads all player purchase messages from the database.
 	 */
-	public static void loadTransactionMessages() { // TODO Converted to UUID
+	public static void loadTransactionMessages() {
 		player_messages.clear(); // Delete old messages
 		try {
 			final ResultSet rs = plugin.getDB().getConnection().prepareStatement("SELECT * FROM messages").executeQuery();
@@ -82,14 +82,14 @@ public class MsgUtil {
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
-			System.out.println("Could not load transaction messages from database. Skipping.");
+			System.out.println("无法从数据库获得玩家的交易记录 跳过...");
 		}
 	}
 
 	public static String p(final String loc, final String... args) {
 		String raw = messages.getString(loc);
 		if (raw == null || raw.isEmpty()) {
-			return "Invalid message: " + loc;
+			return "语言文件词条丢失: " + loc;
 		}
 		if (args == null) {
 			return raw;
@@ -108,7 +108,7 @@ public class MsgUtil {
 	 *            they're online. Else, if they're not online, queues it for
 	 *            them in the database.
 	 */
-	public static void send(final String player, final String message) { // TODO Converted to UUID
+	public static void send(final String player, final String message) {
 		@SuppressWarnings("deprecation")
 		final OfflinePlayer p = Bukkit.getOfflinePlayer(player);
 		if (p == null || !p.isOnline()) {

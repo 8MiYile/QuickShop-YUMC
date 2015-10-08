@@ -25,73 +25,9 @@ import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
 public class ShopManager {
-	public class ShopIterator implements Iterator<Shop> {
-		private Iterator<Shop> shops;
-		private Iterator<HashMap<Location, Shop>> chunks;
-		private final Iterator<HashMap<ShopChunk, HashMap<Location, Shop>>> worlds;
-		private Shop current;
-
-		public ShopIterator() {
-			worlds = getShops().values().iterator();
-		}
-
-		/**
-		 * Returns true if there is still more shops to iterate over.
-		 */
-		@Override
-		public boolean hasNext() {
-			if (shops == null || !shops.hasNext()) {
-				if (chunks == null || !chunks.hasNext()) {
-					if (!worlds.hasNext()) {
-						return false;
-					} else {
-						chunks = worlds.next().values().iterator();
-						return hasNext();
-					}
-				} else {
-					shops = chunks.next().values().iterator();
-					return hasNext();
-				}
-			}
-			return true;
-		}
-
-		/**
-		 * Fetches the next shop. Throws NoSuchElementException if there are no
-		 * more shops.
-		 */
-		@Override
-		public Shop next() {
-			if (shops == null || !shops.hasNext()) {
-				if (chunks == null || !chunks.hasNext()) {
-					if (!worlds.hasNext()) {
-						throw new NoSuchElementException("No more shops to iterate over!");
-					}
-					chunks = worlds.next().values().iterator();
-				}
-				shops = chunks.next().values().iterator();
-			}
-			if (!shops.hasNext()) {
-				return this.next(); // Skip to the next one (Empty iterator?)
-			}
-			current = shops.next();
-			return current;
-		}
-
-		/**
-		 * Removes the current shop. This method will delete the shop from
-		 * memory and the database.
-		 */
-		@Override
-		public void remove() {
-			current.delete(false);
-			shops.remove();
-		}
-	}
-
-	private final QuickShop plugin;
 	private final HashMap<String, Info> actions = new HashMap<String, Info>();
 
+	private final QuickShop plugin;
 	private final HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>> shops = new HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>>();
 
 	public ShopManager(final QuickShop plugin) {
@@ -439,7 +375,7 @@ public class ShopManager {
 							// Don't tax them if they're purchasing from
 							// themselves.
 							// Do charge an amount of tax though.
-							final double tax = plugin.getConfig().getDouble("tax");
+							final double tax = plugin.getConfigManager().getTax();
 							final double total = amount * shop.getPrice();
 							if (!plugin.getEcon().withdraw(p.getName(), total)) {
 								p.sendMessage(MsgUtil.p("you-cant-afford-to-buy", format(amount * shop.getPrice()), format(plugin.getEcon().getBalance(p.getName()))));
@@ -448,11 +384,11 @@ public class ShopManager {
 							if (!shop.isUnlimited() || plugin.getConfig().getBoolean("shop.pay-unlimited-shop-owners")) {
 								plugin.getEcon().deposit(shop.getOwner(), total * (1 - tax));
 								if (tax != 0) {
-									plugin.getEcon().deposit(plugin.getConfig().getString("tax-account"), total * tax);
+									plugin.getEcon().deposit(plugin.getConfigManager().getTaxAccount(), total * tax);
 								}
 							}
 							// Notify the shop owner
-							if (plugin.getConfig().getBoolean("show-tax")) {
+							if (plugin.getConfigManager().isShowTax()) {
 								String msg = MsgUtil.p("player-bought-from-your-store-tax", p.getName(), "" + amount, shop.getDataName(), Util.format((tax * total)));
 								if (stock == amount) {
 									msg += "\n" + MsgUtil.p("shop-out-of-stock", "" + shop.getLocation().getBlockX(), "" + shop.getLocation().getBlockY(), "" + shop.getLocation().getBlockZ(),
@@ -471,7 +407,7 @@ public class ShopManager {
 						// Transfers the item from A to B
 						shop.sell(p, amount);
 						MsgUtil.sendPurchaseSuccess(p, shop, amount);
-						plugin.log(p.getName() + " bought " + amount + " for " + (shop.getPrice() * amount) + " from " + shop.toString());
+						plugin.log(String.format("%s 从 %s 购买了 %s 件商品 花费 %s", p.getName(), shop.toString(), amount, shop.getPrice() * amount));
 					} else if (shop.isBuying()) {
 						final int space = shop.getRemainingSpace();
 						if (space < amount) {
@@ -498,7 +434,7 @@ public class ShopManager {
 							// Don't tax them if they're purchasing from
 							// themselves.
 							// Do charge an amount of tax though.
-							final double tax = plugin.getConfig().getDouble("tax");
+							final double tax = plugin.getConfigManager().getTax();
 							final double total = amount * shop.getPrice();
 							if (!shop.isUnlimited() || plugin.getConfig().getBoolean("shop.pay-unlimited-shop-owners")) {
 								// Tries to check their balance nicely to see if
@@ -513,7 +449,7 @@ public class ShopManager {
 									return;
 								}
 								if (tax != 0) {
-									plugin.getEcon().deposit(plugin.getConfig().getString("tax-account"), total * tax);
+									plugin.getEcon().deposit(plugin.getConfigManager().getTaxAccount(), total * tax);
 								}
 							}
 							// Give them the money after we know we succeeded
@@ -527,7 +463,7 @@ public class ShopManager {
 						}
 						shop.buy(p, amount);
 						MsgUtil.sendSellSuccess(p, shop, amount);
-						plugin.log(p.getName() + " sold " + amount + " for " + (shop.getPrice() * amount) + " to " + shop.toString());
+						plugin.log(String.format("%s 出售了 %s 件商品 到 %s 获得 %s", p.getName(), amount, shop.toString(), shop.getPrice() * amount));
 					}
 					shop.setSignText(); // Update the signs count
 				}
@@ -602,5 +538,69 @@ public class ShopManager {
 		}
 		// Put the shop in its location in the chunk list.
 		inChunk.put(shop.getLocation(), shop);
+	}
+
+	public class ShopIterator implements Iterator<Shop> {
+		private Iterator<HashMap<Location, Shop>> chunks;
+		private Shop current;
+		private Iterator<Shop> shops;
+		private final Iterator<HashMap<ShopChunk, HashMap<Location, Shop>>> worlds;
+
+		public ShopIterator() {
+			worlds = getShops().values().iterator();
+		}
+
+		/**
+		 * Returns true if there is still more shops to iterate over.
+		 */
+		@Override
+		public boolean hasNext() {
+			if (shops == null || !shops.hasNext()) {
+				if (chunks == null || !chunks.hasNext()) {
+					if (!worlds.hasNext()) {
+						return false;
+					} else {
+						chunks = worlds.next().values().iterator();
+						return hasNext();
+					}
+				} else {
+					shops = chunks.next().values().iterator();
+					return hasNext();
+				}
+			}
+			return true;
+		}
+
+		/**
+		 * Fetches the next shop. Throws NoSuchElementException if there are no
+		 * more shops.
+		 */
+		@Override
+		public Shop next() {
+			if (shops == null || !shops.hasNext()) {
+				if (chunks == null || !chunks.hasNext()) {
+					if (!worlds.hasNext()) {
+						throw new NoSuchElementException("No more shops to iterate over!");
+					}
+					chunks = worlds.next().values().iterator();
+				}
+				shops = chunks.next().values().iterator();
+			}
+			if (!shops.hasNext()) {
+				return this.next(); // Skip to the next one (Empty iterator?)
+			}
+			current = shops.next();
+			return current;
+		}
+
+		/**
+		 * Removes the current shop. This method will delete the shop from
+		 * memory and the database.
+		 */
+		@Override
+		public void remove() {
+			current.delete(false);
+			shops.remove();
+		}
 	}
 }

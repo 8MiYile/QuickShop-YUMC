@@ -2,11 +2,11 @@ Version: 1.1
 
 #超级工具(OP可以用该工具在创造模式打破所有商店)
 superitem: GOLD_AXE
-#阻止漏洞吸取商店物品(非特殊情况不要开启)
+#阻止漏斗吸取商店物品(非特殊情况不要开启)
 preventhopper: false
 
 #Tax amount (decimal) - Eg, P1 buys $50 worth of stuff from P2.  Therefore, P1 loses $50, P2 gains $(1-0.05)*50, and tax-account gains $(0.05)*50.
-tax: 0.05
+tax: 0.00
 #The fake player who money from taxing people goes to
 tax-account: tax
 #Whether or not to show taxes paid when selling to a shop
@@ -53,23 +53,23 @@ shop-blocks:
     - TRAPPED_CHEST
 
 shop:
-    #Cost to make a stall
-    cost: 10
-    #Should we refund when their shops are deleted/removed/broken?
+    #创建商店需花费
+    cost: 0
+    #是否需要再次扣费 当玩家 删除/移除/破坏 商店的时候?
     refund: false
 
-    #Is there a fee for changing prices on a shop (Help deter endless undercutting)
-    price-change-requires-fee: true
-    #If price changes require a fee, how much is the fee
-    fee-for-price-change: 50
+    #是否需要在玩家修改商店价格的时候扣费
+    price-change-requires-fee: false
+    #玩家修改商店价格时的扣费金额
+    fee-for-price-change: 0
 
-    #Should we try and lock their shops from other players, so people can't steal from them?
+    #是否需要锁定箱子防止其他玩家破坏
     lock: true
-    #Should we require players be sneaking to create and use shops?
+    #是否需要玩家按住Shift才可以创建或交易?
     sneak-to-create: false
     sneak-to-trade: false
     
-    #Should we automatically create the sign for the chest?
+    #是否需要自动创建木牌在箱子上?
     auto-sign: true
     #If a player owns an unlimited shop, should they receive the cash from it or not?
     #If you buy from YOUR unlimited shop, you will NEVER be charged $$, regardless of this setting

@@ -574,7 +574,7 @@ public class QS implements CommandExecutor {
 				if (shop != null) {
 					shop.setUnlimited(!shop.isUnlimited());
 					shop.update();
-					sender.sendMessage(MsgUtil.p("command.toggle-unlimited", (shop.isUnlimited() ? "unlimited" : "limited")));
+					sender.sendMessage(MsgUtil.p("command.toggle-unlimited", (shop.isUnlimited() ? "无限模式" : "有限模式")));
 					return;
 				}
 			}

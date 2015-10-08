@@ -10,36 +10,39 @@ import org.maxgamer.QuickShop.QuickShop;
 public class ConfigManager {
 	/** Whether debug info should be shown in the console */
 	protected boolean debug = false;
+	/** Whether we should use display items or not */
+	protected boolean display = true;
+	protected double feeForPriceChange = 0.0;
+	protected int findDistance = 30;
+	/** Whether or not to limit players shop amounts */
+	protected boolean limit = false;
+	protected int limitdefault = 0;
+	protected final HashMap<String, Integer> limits = new HashMap<String, Integer>();
+	protected boolean logAction = true;
+	protected boolean preventhopper = false;
 	/**
-	 * A set of players who have been warned
-	 * ("Your shop isn't automatically locked")
+	 * Whether we players are charged a fee to change the price on their shop
+	 * (To help deter endless undercutting
 	 */
-	protected HashSet<String> warnings = new HashSet<String>();
+	protected boolean priceChangeRequiresFee = false;
+	protected boolean shopLock = true;
+	protected boolean showTax;
 	/** Whether players are required to sneak to create/buy from a shop */
 	protected boolean sneak;
 	/** Whether players are required to sneak to create a shop */
 	protected boolean sneakCreate;
 	/** Whether players are required to sneak to trade with a shop */
 	protected boolean sneakTrade;
-	/** Whether we should use display items or not */
-	protected boolean display = true;
-	/**
-	 * Whether we players are charged a fee to change the price on their shop
-	 * (To help deter endless undercutting
-	 */
-	protected boolean priceChangeRequiresFee = false;
-	/** Whether or not to limit players shop amounts */
-	protected boolean limit = false;
-	protected int limitdefault = 0;
-	protected final HashMap<String, Integer> limits = new HashMap<String, Integer>();
-	protected boolean logAction = true;
-	protected boolean shopLock = true;
-	protected int findDistance = 30;
 	protected Material superItem = Material.GOLD_AXE;
-	protected double feeForPriceChange = 0.0;
-	protected boolean preventhopper = false;
+	protected double tax = 0;
+	protected String taxAccount;
 	/** Use SpoutPlugin to get item / block names */
 	protected boolean useSpout = false;
+	/**
+	 * A set of players who have been warned
+	 * ("Your shop isn't automatically locked")
+	 */
+	protected HashSet<String> warnings = new HashSet<String>();
 
 	public ConfigManager(final QuickShop plugin) {
 
@@ -56,6 +59,9 @@ public class ConfigManager {
 			this.superItem = Enum.valueOf(Material.class, plugin.getConfig().getString("superitem"));
 		} catch (final Exception e) {
 		}
+		this.tax = plugin.getConfig().getDouble("tax");
+		this.showTax = plugin.getConfig().getBoolean("show-tax");
+		this.taxAccount = plugin.getConfig().getString("tax-account");
 		this.logAction = plugin.getConfig().getBoolean("log-actions");
 		this.shopLock = plugin.getConfig().getBoolean("shop.lock");
 		this.display = plugin.getConfig().getBoolean("shop.display-items");
@@ -88,6 +94,14 @@ public class ConfigManager {
 		return superItem;
 	}
 
+	public double getTax() {
+		return tax;
+	}
+
+	public String getTaxAccount() {
+		return taxAccount;
+	}
+
 	public HashSet<String> getWarnings() {
 		return warnings;
 	}
@@ -118,6 +132,10 @@ public class ConfigManager {
 
 	public boolean isShopLock() {
 		return shopLock;
+	}
+
+	public boolean isShowTax() {
+		return showTax;
 	}
 
 	public boolean isSneak() {

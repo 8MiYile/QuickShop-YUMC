@@ -159,6 +159,27 @@ public class PlayerListener implements Listener {
 		plugin.getShopManager().getActions().remove(e.getPlayer().getName());
 	}
 
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onSuperItemClick(final PlayerInteractEvent e) {
+		if (e.getAction() == Action.LEFT_CLICK_BLOCK || e.getMaterial() != plugin.getConfigManager().getSuperItem()) {
+			return;
+		}
+		final Player p = e.getPlayer();
+		final Block b = e.getClickedBlock();
+		// If that wasn't a shop, search nearby shops
+		if (b.getType() == Material.WALL_SIGN) {
+			final Block attached = Util.getAttached(b);
+			final Shop shop = attached == null ? null : plugin.getShopManager().getShop(attached.getLocation());
+			if (shop != null) {
+				if (e.getAction() == Action.RIGHT_CLICK_BLOCK && p.hasPermission("quickshop.unlimited")) {
+					shop.setUnlimited(!shop.isUnlimited());
+					shop.update();
+					p.sendMessage(MsgUtil.p("command.toggle-unlimited", (shop.isUnlimited() ? "无限模式" : "有限模式")));
+				}
+			}
+		}
+	}
+
 	@EventHandler
 	public void onTeleport(final PlayerTeleportEvent e) {
 		final PlayerMoveEvent me = new PlayerMoveEvent(e.getPlayer(), e.getFrom(), e.getTo());
