@@ -17,9 +17,9 @@ import cn.citycraft.PluginHelper.config.FileConfig;
 import mkremins.fanciful.FancyMessage;
 
 public class MsgUtil {
-	private static QuickShop plugin;
 	private static FileConfig messages;
 	private static HashMap<String, LinkedList<String>> player_messages = new HashMap<String, LinkedList<String>>();
+	private static QuickShop plugin;
 
 	/**
 	 * Deletes any messages that are older than a week in the database, to save
@@ -141,7 +141,7 @@ public class MsgUtil {
 			final double tax = plugin.getConfig().getDouble("tax");
 			final double total = amount * shop.getPrice();
 			if (tax != 0) {
-				if (!p.getUniqueId().equals(shop.getOwner())) {
+				if (!p.getName().equals(shop.getOwner())) {
 					p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.sell-tax", "" + Util.format((tax * total))));
 				} else {
 					p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.sell-tax-self"));

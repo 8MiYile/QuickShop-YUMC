@@ -1,6 +1,5 @@
 package org.maxgamer.QuickShop.Util;
 
-import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +25,11 @@ import org.maxgamer.QuickShop.Config.ItemConfig;
 
 @SuppressWarnings("deprecation")
 public class Util {
-	private static HashSet<Material> tools = new HashSet<Material>();
 	private static HashSet<Material> blacklist = new HashSet<Material>();
-	private static HashSet<Material> shoppables = new HashSet<Material>();
-	private static HashSet<Material> transparent = new HashSet<Material>();
 	private static QuickShop plugin;
+	private static HashSet<Material> shoppables = new HashSet<Material>();
+	private static HashSet<Material> tools = new HashSet<Material>();
+	private static HashSet<Material> transparent = new HashSet<Material>();
 
 	public static void addTransparentBlock(final Material m) {
 		if (transparent.add(m) == false) {
@@ -228,8 +227,7 @@ public class Util {
 	public static String getToolPercentage(final ItemStack item) {
 		final double dura = item.getDurability();
 		final double max = item.getType().getMaxDurability();
-		final DecimalFormat formatter = new DecimalFormat("0");
-		return dura + "/" + max + "(" + formatter.format((1 - dura / max) * 100.0) + ")";
+		return String.format("%.2f(%s/%s)", (1 - dura / max) * 100.0, dura, max);
 	}
 
 	public static void initialize() {
