@@ -162,10 +162,10 @@ public class PlayerListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onSuperItemClick(final PlayerInteractEvent e) {
-		if (e.getAction() == Action.LEFT_CLICK_BLOCK || e.getMaterial() != plugin.getConfigManager().getSuperItem()) {
+		final Player p = e.getPlayer();
+		if (e.getAction() == Action.LEFT_CLICK_BLOCK || p.getGameMode() != GameMode.SURVIVAL || e.getMaterial() != plugin.getConfigManager().getSuperItem()) {
 			return;
 		}
-		final Player p = e.getPlayer();
 		final Block b = e.getClickedBlock();
 		// If that wasn't a shop, search nearby shops
 		if (b.getType() == Material.WALL_SIGN) {
@@ -173,24 +173,24 @@ public class PlayerListener implements Listener {
 			final Shop shop = attached == null ? null : plugin.getShopManager().getShop(attached.getLocation());
 			if (shop != null) {
 				if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-					if (p.hasPermission("quickshop.unlimited") && p.getGameMode() == GameMode.CREATIVE) {
+					if (p.hasPermission("quickshop.unlimited")) {
 						shop.setUnlimited(!shop.isUnlimited());
 						p.sendMessage(MsgUtil.p("command.toggle-unlimited", (shop.isUnlimited() ? "无限模式" : "有限模式")));
 						return;
-					} else if (p.getGameMode() == GameMode.SURVIVAL) {
-						if (shop.getShopType() == ShopType.BUYING && p.hasPermission("quickshop.create.sell")) {
-							shop.setShopType(ShopType.SELLING);
-							p.sendMessage(MsgUtil.p("command.now-selling", shop.getDataName()));
-							return;
-						} else if (shop.getShopType() == ShopType.SELLING && p.hasPermission("quickshop.create.buy")) {
-							shop.setShopType(ShopType.BUYING);
-							p.sendMessage(MsgUtil.p("command.now-buying", shop.getDataName()));
-							return;
-						}
 					}
-					shop.setSignText();
-					shop.update();
+				} else {
+					if (shop.getShopType() == ShopType.BUYING && p.hasPermission("quickshop.create.sell")) {
+						shop.setShopType(ShopType.SELLING);
+						p.sendMessage(MsgUtil.p("command.now-selling", shop.getDataName()));
+						return;
+					} else if (shop.getShopType() == ShopType.SELLING && p.hasPermission("quickshop.create.buy")) {
+						shop.setShopType(ShopType.BUYING);
+						p.sendMessage(MsgUtil.p("command.now-buying", shop.getDataName()));
+						return;
+					}
 				}
+				shop.setSignText();
+				shop.update();
 			}
 		}
 	}
