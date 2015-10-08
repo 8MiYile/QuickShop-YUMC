@@ -163,7 +163,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onSuperItemClick(final PlayerInteractEvent e) {
 		final Player p = e.getPlayer();
-		if (e.getAction() == Action.LEFT_CLICK_BLOCK || p.getGameMode() != GameMode.SURVIVAL || e.getMaterial() != plugin.getConfigManager().getSuperItem()) {
+		if (p.getGameMode() != GameMode.SURVIVAL || e.getMaterial() != plugin.getConfigManager().getSuperItem()) {
 			return;
 		}
 		final Block b = e.getClickedBlock();
