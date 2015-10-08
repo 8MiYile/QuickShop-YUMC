@@ -41,7 +41,7 @@ public class PlayerListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onClick(final PlayerInteractEvent e) {
-		if (e.getAction() != Action.LEFT_CLICK_BLOCK) {
+		if (e.getAction() != Action.LEFT_CLICK_BLOCK || e.getMaterial() == plugin.getConfigManager().getSuperItem()) {
 			return;
 		}
 		final Block b = e.getClickedBlock();
