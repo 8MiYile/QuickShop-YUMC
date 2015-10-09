@@ -89,11 +89,12 @@ command:
     clean: '&e清除所有0库存的商店'
     price: '&e更改商店 &b出售/收购 &e的价格'
     find: '&e查找附近的商店.'
-    reload: '&e从config.yml文件中重载快捷商店配置'
+    reload: '&e重载快捷商店配置'
     refill: '&e给一个商店加入指定数量的物品'
     empty: '&e清空一个商店的所有货物.'
     export: '&e导出 数据库 到 SQLite 或者 MySQL'
     info: '&e查看当前服务器商店信息.'
+    remove: '&e移除眼前的商店.'
     
 signs:
   selling: '出售数量: {0}'

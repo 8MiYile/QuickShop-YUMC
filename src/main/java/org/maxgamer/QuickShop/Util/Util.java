@@ -141,10 +141,7 @@ public class Util {
 			final Sign sign = (Sign) b.getState().getData(); // Throws a NPE
 			// sometimes??
 			final BlockFace attached = sign.getAttachedFace();
-			if (attached == null) {
-				return null;
-			}
-			return b.getRelative(attached);
+			return attached == null ? null : b.getRelative(attached);
 		} catch (final NullPointerException e) {
 			return null; // /Not sure what causes this.
 		}

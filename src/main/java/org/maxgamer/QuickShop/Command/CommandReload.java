@@ -16,6 +16,7 @@ public class CommandReload extends BaseCommand {
 		super("reload");
 		this.plugin = plugin;
 		setPermission("quickshop.reload");
+		setDescription(MsgUtil.p("command.description.reload"));
 	}
 
 	@Override

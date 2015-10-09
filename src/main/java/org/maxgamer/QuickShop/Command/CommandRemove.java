@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Shop;
+import org.maxgamer.QuickShop.Util.MsgUtil;
 
 import cn.citycraft.PluginHelper.commands.BaseCommand;
 
@@ -18,8 +19,9 @@ public class CommandRemove extends BaseCommand {
 	public CommandRemove(final QuickShop plugin) {
 		super("remove", "delete");
 		this.plugin = plugin;
-		setPermission("quickshop.delete");
 		setOnlyPlayerExecutable();
+		setPermission("quickshop.delete");
+		setDescription(MsgUtil.p("command.description.remove"));
 	}
 
 	@Override
@@ -32,13 +34,13 @@ public class CommandRemove extends BaseCommand {
 			if (shop != null) {
 				if (shop.getOwner().equals(p.getName())) {
 					shop.delete();
-					sender.sendMessage(ChatColor.GREEN + "Success. Deleted shop.");
+					sender.sendMessage(ChatColor.GREEN + "商店已成功移除");
 				} else {
-					p.sendMessage(ChatColor.RED + "That's not your shop!");
+					p.sendMessage(ChatColor.RED + "这个不是你的商店!");
 				}
 				return;
 			}
 		}
-		p.sendMessage(ChatColor.RED + "No shop found!");
+		p.sendMessage(ChatColor.RED + "未找到商店!");
 	}
 }

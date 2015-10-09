@@ -69,7 +69,7 @@ public class PlayerListener implements Listener {
 				p.sendMessage(MsgUtil.p("how-many-buy"));
 			} else {
 				final int items = Util.countItems(p.getInventory(), shop.getItem());
-				p.sendMessage(MsgUtil.p("how-many-sell", "" + items));
+				p.sendMessage(MsgUtil.p("how-many-sell", items));
 			}
 			// Add the new action
 			final HashMap<String, Info> actions = plugin.getShopManager().getActions();
