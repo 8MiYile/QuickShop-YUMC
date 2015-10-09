@@ -46,9 +46,6 @@ public class PlayerListener implements Listener {
 		if (e.getAction() != Action.LEFT_CLICK_BLOCK || (e.getMaterial() == plugin.getConfigManager().getSuperItem() && b.getType() == Material.WALL_SIGN)) {
 			return;
 		}
-		if (!Util.canBeShop(b) || plugin.getConfigManager().isSneak() != p.isSneaking()) {
-			return;
-		}
 		final Location loc = b.getLocation();
 		final ItemStack item = e.getItem();
 		// Get the shop

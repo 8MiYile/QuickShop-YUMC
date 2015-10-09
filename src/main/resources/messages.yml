@@ -46,12 +46,12 @@ menu:
   shop-information: '&a商店信息:'
   owner: '&a所有者: {0}'
   item: '&a物品: &e{0} &b(查看详情)'
-  space: '&aSpace: &e{0}'
-  stock: '&a库存: &e{0}'
+  space: '&a剩余容量: &e{0}'
+  stock: '&a剩余库存: &e{0}'
   price-per: '&a单价: &e{1}元'
   total-value-of-chest: '&a所有存货总价格: &c{0}元'
   damage-percent-remaining: '&a耐久剩余: &e{0}.'
-  this-shop-is-buying: '&a此商店只 &d购买&a 物品.'
+  this-shop-is-buying: '&a此商店只 &d收购&a 物品.'
   this-shop-is-selling: '&a此商店只 &b出售&a 商品.'
   
 info:
@@ -71,11 +71,11 @@ how-much-to-trade-for: '&a请输入物品 &e{0}&a 的价格在聊天栏开始&c�
 
 command:
   success-created-unlimited: '&a无限商店创建成功!'
-  toggle-unlimited: '&a商店现在 {0}'
+  toggle-unlimited: '&a商店模式切换为 {0}'
   no-owner-given: '&c此商店没有所有者. 请使用 &a/qs setowner <玩家>&c 设置!'
   new-owner: '&a新的所有者: &e{0}'
-  now-buying: '&a当前商店已改为 &d收购模式 &e{0}'
-  now-selling: '&a当前商店已改为 &b出售模式 &e{0}'
+  now-buying: '&a商店模式切换为 &d收购模式 &e{0}'
+  now-selling: '&a商店模式切换为 &b出售模式 &e{0}'
   cleaning: '&a正在清理0库存的商店...'
   reloading: '&a配置文件重新载入中...'
   cleaned: '&a清理 &e{0}&a 商店'
