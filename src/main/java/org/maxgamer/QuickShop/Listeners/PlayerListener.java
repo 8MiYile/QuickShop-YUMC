@@ -43,7 +43,7 @@ public class PlayerListener implements Listener {
 	public void onClick(final PlayerInteractEvent e) {
 		final Block b = e.getClickedBlock();
 		final Player p = e.getPlayer();
-		if (e.getAction() != Action.LEFT_CLICK_BLOCK || (e.getMaterial() == plugin.getConfigManager().getSuperItem() && b.getType() != Material.WALL_SIGN)) {
+		if (e.getAction() != Action.LEFT_CLICK_BLOCK || (e.getMaterial() == plugin.getConfigManager().getSuperItem() && b.getType() == Material.WALL_SIGN)) {
 			return;
 		}
 		if (!Util.canBeShop(b) || plugin.getConfigManager().isSneak() != p.isSneaking()) {
@@ -125,14 +125,11 @@ public class PlayerListener implements Listener {
 		}, 60);
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
 	/**
 	 * Waits for a player to move too far from a shop, then cancels the menu.
 	 */
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onMove(final PlayerMoveEvent e) {
-		if (e.isCancelled()) {
-			return;
-		}
 		final Info info = plugin.getShopManager().getActions().get(e.getPlayer().getName());
 		if (info != null) {
 			final Player p = e.getPlayer();
@@ -191,7 +188,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onTeleport(final PlayerTeleportEvent e) {
 		final PlayerMoveEvent me = new PlayerMoveEvent(e.getPlayer(), e.getFrom(), e.getTo());
 		onMove(me);

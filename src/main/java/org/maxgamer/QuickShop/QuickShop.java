@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.maxgamer.QuickShop.Command.QS;
+import org.maxgamer.QuickShop.Command.QuickShopCommands;
 import org.maxgamer.QuickShop.Config.ConfigManager;
 import org.maxgamer.QuickShop.Config.ItemConfig;
 import org.maxgamer.QuickShop.Database.Database;
@@ -59,26 +59,26 @@ public class QuickShop extends JavaPlugin {
 	public static QuickShop instance;
 	/** The plugin default config */
 	public FileConfig config;
-	/** The economy we hook into for transactions */
-	private Economy economy;
-	/** The Shop Manager used to store shops */
-	private ShopManager shopManager;
-	/** The Config Manager used to read config */
-	private ConfigManager configManager;
-	/** The database for storing all our data for persistence */
-	private Database database;
-
-	// Listeners - We decide which one to use at runtime
-	private ChatListener chatListener;
 	// private HeroChatListener heroChatListener;
 	// Listeners (These don't)
 	private final BlockListener blockListener = new BlockListener(this);
-	private final PlayerListener playerListener = new PlayerListener(this);
-	private final ProtectListener protectListener = new ProtectListener(this);
+	// Listeners - We decide which one to use at runtime
+	private ChatListener chatListener;
 	private final ChunkListener chunkListener = new ChunkListener(this);
-	private final WorldListener worldListener = new WorldListener(this);
+	/** The Config Manager used to read config */
+	private ConfigManager configManager;
+
+	/** The database for storing all our data for persistence */
+	private Database database;
+	/** The economy we hook into for transactions */
+	private Economy economy;
 	private BukkitTask itemWatcherTask;
 	private LogWatcher logWatcher;
+	private final PlayerListener playerListener = new PlayerListener(this);
+	private final ProtectListener protectListener = new ProtectListener(this);
+	/** The Shop Manager used to store shops */
+	private ShopManager shopManager;
+	private final WorldListener worldListener = new WorldListener(this);
 
 	/**
 	 * Prints debug information if QuickShop is configured to do so.
@@ -194,7 +194,6 @@ public class QuickShop extends JavaPlugin {
 		try {
 			this.database.getConnection().close();
 		} catch (final SQLException e) {
-			e.printStackTrace();
 		}
 		configManager.getWarnings().clear();
 	}
@@ -337,7 +336,7 @@ public class QuickShop extends JavaPlugin {
 		this.chatListener = new ChatListener(this);
 		Bukkit.getServer().getPluginManager().registerEvents(chatListener, this);
 		// Command handlers
-		final QS commandExecutor = new QS(this);
+		final QuickShopCommands commandExecutor = new QuickShopCommands(this);
 		getCommand("qs").setExecutor(commandExecutor);
 		if (configManager.getFindDistance() > 100) {
 			getLogger().warning("商店查找半径过大 可能导致服务器Lag! 推荐使用低于 100 的配置!");

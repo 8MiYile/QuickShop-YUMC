@@ -173,23 +173,6 @@ public class Util {
 			name = name.substring(0, 16);
 		}
 		return name;
-		// final String[] nameParts = name.split("_");
-		// if (nameParts.length == 1) {
-		// return firstUppercase(nameParts[0]);
-		// }
-		//
-		// for (int i = 0; i < nameParts.length - 1; i++) {
-		// final int length = StringUtils.join(nameParts).length();
-		// if (length > 16) {
-		// nameParts[i] = nameParts[i].substring(0, 1) + ".";
-		// } else {
-		// nameParts[i] = firstUppercase(nameParts[i]);
-		// }
-		// }
-		//
-		// nameParts[nameParts.length - 1] = firstUppercase(nameParts[nameParts.length - 1]);
-		//
-		// return StringUtils.join(nameParts);
 	}
 
 	/**

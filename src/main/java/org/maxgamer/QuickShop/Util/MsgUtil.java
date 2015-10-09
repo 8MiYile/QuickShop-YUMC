@@ -86,7 +86,7 @@ public class MsgUtil {
 		}
 	}
 
-	public static String p(final String loc, final String... args) {
+	public static String p(final String loc, final Object... args) {
 		String raw = messages.getString(loc);
 		if (raw == null || raw.isEmpty()) {
 			return "语言文件词条丢失: " + loc;
@@ -95,7 +95,7 @@ public class MsgUtil {
 			return raw;
 		}
 		for (int i = 0; i < args.length; i++) {
-			raw = raw.replace("{" + i + "}", args[i] == null ? "null" : args[i]);
+			raw = raw.replace("{" + i + "}", args[i] == null ? "null" : args[i].toString());
 		}
 		return raw;
 	}

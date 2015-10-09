@@ -55,14 +55,13 @@ public class ShopManager {
 			}
 			final int max = plugin.getShopLimit(p);
 			if (owned + 1 > max) {
-				p.sendMessage(ChatColor.RED + "您已经创建了 " + owned + "/" + max + " 个商店!");
+				p.sendMessage(MsgUtil.p("you-cant-create-more-shop", owned));
 				return false;
 			}
 		}
 		final PlayerInteractEvent pie = new PlayerInteractEvent(p, Action.RIGHT_CLICK_BLOCK, new ItemStack(Material.AIR), b, bf); // PIE = PlayerInteractEvent - What else?
 		Bukkit.getPluginManager().callEvent(pie);
-		pie.getPlayer().closeInventory(); // If the player has chat open, this
-											// will close their chat.
+		pie.getPlayer().closeInventory(); // If the player has chat open, this will close their chat.
 		if (pie.isCancelled()) {
 			return false;
 		}
