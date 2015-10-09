@@ -41,16 +41,12 @@ public class PlayerListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onClick(final PlayerInteractEvent e) {
-		if (e.getAction() != Action.LEFT_CLICK_BLOCK || e.getMaterial() == plugin.getConfigManager().getSuperItem()) {
-			return;
-		}
 		final Block b = e.getClickedBlock();
-		if (!Util.canBeShop(b) && b.getType() != Material.WALL_SIGN) {
+		final Player p = e.getPlayer();
+		if (e.getAction() != Action.LEFT_CLICK_BLOCK || (e.getMaterial() == plugin.getConfigManager().getSuperItem() && b.getType() != Material.WALL_SIGN)) {
 			return;
 		}
-		final Player p = e.getPlayer();
-		if (plugin.getConfigManager().isSneak() != p.isSneaking()) {
-			// Sneak only
+		if (!Util.canBeShop(b) || plugin.getConfigManager().isSneak() != p.isSneaking()) {
 			return;
 		}
 		final Location loc = b.getLocation();
@@ -175,7 +171,7 @@ public class PlayerListener implements Listener {
 				if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 					if (p.hasPermission("quickshop.unlimited")) {
 						shop.setUnlimited(!shop.isUnlimited());
-						p.sendMessage(MsgUtil.p("command.toggle-unlimited", (shop.isUnlimited() ? "无限模式" : "有限模式")));
+						p.sendMessage(MsgUtil.p("command.toggle-unlimited", (shop.isUnlimited() ? "§e无限模式" : "§c有限模式")));
 						return;
 					}
 				} else {
