@@ -18,19 +18,17 @@ public class CommandRefill extends BaseCommand {
 	public CommandRefill(final QuickShop plugin) {
 		super("refill");
 		this.plugin = plugin;
+		setMinimumArguments(1);
+		setPossibleArguments("<数量>");
 		setPermission("quickshop.refill");
 		setDescription(MsgUtil.p("command.description.refill"));
 	}
 
 	@Override
 	public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
-		if (args.length < 2) {
-			sender.sendMessage(MsgUtil.p("command.no-amount-given"));
-			return;
-		}
 		int add;
 		try {
-			add = Integer.parseInt(args[1]);
+			add = Integer.parseInt(args[0]);
 		} catch (final NumberFormatException e) {
 			sender.sendMessage(MsgUtil.p("thats-not-a-number"));
 			return;

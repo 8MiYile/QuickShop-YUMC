@@ -21,6 +21,7 @@ public class CommandPrice extends BaseCommand {
 		this.plugin = plugin;
 		setMinimumArguments(1);
 		setOnlyPlayerExecutable();
+		setPossibleArguments("<价格>");
 		setPermission("quickshop.create.changeprice");
 		setDescription(MsgUtil.p("command.description.price"));
 	}
@@ -29,13 +30,9 @@ public class CommandPrice extends BaseCommand {
 	@Override
 	public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
 		final Player p = (Player) sender;
-		if (args.length < 2) {
-			sender.sendMessage(MsgUtil.p("no-price-given"));
-			return;
-		}
 		double price;
 		try {
-			price = Double.parseDouble(args[1]);
+			price = Double.parseDouble(args[0]);
 		} catch (final NumberFormatException e) {
 			sender.sendMessage(MsgUtil.p("thats-not-a-number"));
 			return;
@@ -57,7 +54,7 @@ public class CommandPrice extends BaseCommand {
 		while (bIt.hasNext()) {
 			final Block b = bIt.next();
 			final Shop shop = plugin.getShopManager().getShop(b.getLocation());
-			if (shop != null && (shop.getOwner().equals(((Player) sender).getUniqueId()) || sender.hasPermission("quickshop.other.price"))) {
+			if (shop != null && (shop.getOwner().equals(p.getName()) || sender.hasPermission("quickshop.other.price"))) {
 				if (shop.getPrice() == price) {
 					// Stop here if there isn't a price change
 					sender.sendMessage(MsgUtil.p("no-price-change"));

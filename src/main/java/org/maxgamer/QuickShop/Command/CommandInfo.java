@@ -30,7 +30,7 @@ public class CommandInfo extends BaseCommand {
 		int buying, selling, doubles, chunks, worlds;
 		buying = selling = doubles = chunks = worlds = 0;
 		int nostock = 0;
-		sender.sendMessage(ChatColor.RED + "检索商店信息中...");
+		sender.sendMessage(ChatColor.RED + "开始检索商店信息中...");
 		for (final HashMap<ShopChunk, HashMap<Location, Shop>> inWorld : plugin.getShopManager().getShops().values()) {
 			worlds++;
 			for (final HashMap<Location, Shop> inChunk : inWorld.values()) {
