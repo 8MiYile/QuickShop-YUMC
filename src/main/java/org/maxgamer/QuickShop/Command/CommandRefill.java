@@ -16,7 +16,7 @@ public class CommandRefill extends BaseCommand {
 	QuickShop plugin;
 
 	public CommandRefill(final QuickShop plugin) {
-		super("clean");
+		super("refill");
 		this.plugin = plugin;
 		setPermission("quickshop.refill");
 		setDescription(MsgUtil.p("command.description.refill"));

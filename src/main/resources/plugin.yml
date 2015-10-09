@@ -9,8 +9,8 @@ website: http://ci.sumcraft.net:8080/job/${project.artifactId}/
 commands:
     qs:
         description: QuickShop command
-        usage: /qs
-        aliases: [shop]
+        usage: '§c未知的子命令 请输入 §b/qs help §c查看帮助!'
+        aliases: [quickshop,shop]
         
 permissions:
     quickshop.create.sell:

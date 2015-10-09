@@ -19,7 +19,7 @@ public class CommandInfo extends BaseCommand {
 	QuickShop plugin;
 
 	public CommandInfo(final QuickShop plugin) {
-		super("clean");
+		super("info");
 		this.plugin = plugin;
 		setPermission("quickshop.info");
 		setDescription(MsgUtil.p("command.description.info"));
