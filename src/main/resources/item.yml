@@ -1,4 +1,4 @@
-Version: 1.1
+Version: 1.2
 
 AIR_-1: 爪子
 AIR: 爪子
@@ -208,7 +208,8 @@ MUSHROOM_SOUP: 蘑菇煲
 GOLD_SWORD: 金剑
 GOLD_SPADE: 金楸
 GOLD_PICKAXE: 金稿
-GOLD_AXE: 金锄
+GOLD_AXE: 金斧
+GOLD_HOE: 金锄
 STRING: 线
 FEATHER: 羽毛
 SULPHUR: 火药
@@ -216,7 +217,6 @@ WOOD_HOE: 木锄
 STONE_HOE: 石锄
 IRON_HOE: 铁锄
 DIAMOND_HOE: 钻石锄
-GOLD_HOE: 金锄
 SEEDS: 种子
 WHEAT: 小麦
 BREAD: 面包
