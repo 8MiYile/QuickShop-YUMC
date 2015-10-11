@@ -4,7 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
@@ -61,6 +63,15 @@ public class ProtectListener implements Listener {
 				Bukkit.broadcastMessage("§6[§b快捷商店§6] §4警告 " + p.getDisplayName() + " §c非法 §d§l获取 " + ci.getItemMeta().getDisplayName() + " §a已清理...");
 			}
 		} catch (final Exception ex) {
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onItemDespawn(final ItemDespawnEvent e) {
+		final ItemStack ci = e.getEntity().getItemStack();
+		if (MarkUtil.hasMark(ci)) {
+			ci.setType(Material.AIR);
+			e.setCancelled(true);
 		}
 	}
 
