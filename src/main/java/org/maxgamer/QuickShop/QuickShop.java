@@ -229,7 +229,7 @@ public class QuickShop extends JavaPlugin {
 			fm.then("suggest").suggest("qs help");
 			fm.toJSONString();
 			getLogger().info("魔改库功能测试正常...");
-		} catch (final Exception e) {
+		} catch (final NoClassDefFoundError | NoSuchMethodError | Exception e) {
 			getLogger().info("启动魔改库失败 部分功能将被禁用...");
 		}
 
