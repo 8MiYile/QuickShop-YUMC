@@ -13,9 +13,9 @@ import org.maxgamer.QuickShop.Util.NMS;
  *         cannot be interacted with.
  */
 public class DisplayItem {
-	private final Shop shop;
 	private final ItemStack iStack;
 	private Item item;
+	private final Shop shop;
 
 	// private Location displayLoc;
 	/**
@@ -95,7 +95,9 @@ public class DisplayItem {
 	 */
 	public void respawn() {
 		remove();
-		spawn();
+		if (item.isValid()) {
+			spawn();
+		}
 	}
 
 	/**

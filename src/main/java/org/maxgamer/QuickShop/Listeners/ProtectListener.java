@@ -10,6 +10,7 @@ import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
@@ -57,6 +58,9 @@ public class ProtectListener implements Listener {
 		final ItemStack ci = e.getCurrentItem();
 		final Inventory inv = e.getInventory();
 		final int solt = e.getSlot();
+		if (inv.getType() != InventoryType.PLAYER && inv.getType() != InventoryType.HOPPER) {
+			return;
+		}
 		try {
 			if (MarkUtil.hasMark(ci)) {
 				inv.setItem(solt, new ItemStack(Material.AIR));

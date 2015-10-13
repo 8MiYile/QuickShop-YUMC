@@ -125,11 +125,20 @@ public class MsgUtil {
 		}
 	}
 
+	public static void sendItemMessage(final Player p, final ItemStack is, final String msg) {
+		try {
+			final FancyMessage fm = new FancyMessage();
+			fm.text(msg).itemTooltip(is).send(p);
+		} catch (Exception | NoClassDefFoundError | NoSuchMethodError e) {
+			p.sendMessage(msg);
+		}
+	}
+
 	public static void sendPurchaseSuccess(final Player p, final Shop shop, final int amount) {
 		p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
 		p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.successful-purchase"));
-		final FancyMessage fm = new FancyMessage();
-		fm.text(ChatColor.DARK_PURPLE + "| ").then(MsgUtil.p("menu.item-name-and-price", "" + amount, shop.getDataName(), Util.format((amount * shop.getPrice())))).itemTooltip(shop.getItem()).send(p);
+		final String msg = ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.item-name-and-price", "" + amount, shop.getDataName(), Util.format((amount * shop.getPrice())));
+		sendItemMessage(p, shop.getItem(), msg);
 		p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
 	}
 
@@ -165,8 +174,8 @@ public class MsgUtil {
 		p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.shop-information"));
 		p.sendMessage(ChatColor.DARK_PURPLE + "| "
 				+ MsgUtil.p("menu.owner", Bukkit.getOfflinePlayer(shop.getOwner()).getName() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : Bukkit.getOfflinePlayer(shop.getOwner()).getName()));
-		final FancyMessage fm = new FancyMessage();
-		fm.text(ChatColor.DARK_PURPLE + "| ").then(MsgUtil.p("menu.item", shop.getDataName())).itemTooltip(items).send(p);
+		final String msg = ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.item", shop.getDataName());
+		sendItemMessage(p, shop.getItem(), msg);
 		if (Util.isTool(items.getType())) {
 			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.damage-percent-remaining", Util.getToolPercentage(items)));
 		}
@@ -182,30 +191,6 @@ public class MsgUtil {
 		} else {
 			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.this-shop-is-selling"));
 		}
-		// Map<Enchantment, Integer> enchs = items.getItemMeta().getEnchants();
-		// if (enchs != null && !enchs.isEmpty()) {
-		// p.sendMessage(ChatColor.DARK_PURPLE + "+--------------------" + MsgUtil.getMessage("menu.enchants") + "-----------------------+");
-		// for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
-		// p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName() + " " + entries.getValue());
-		// }
-		// }
-		// try {
-		// Class.forName("org.bukkit.inventory.meta.EnchantmentStorageMeta");
-		// if (items.getItemMeta() instanceof EnchantmentStorageMeta) {
-		// final EnchantmentStorageMeta stor = (EnchantmentStorageMeta) items.getItemMeta();
-		// stor.getStoredEnchants();
-		// enchs = stor.getStoredEnchants();
-		// if (enchs != null && !enchs.isEmpty()) {
-		// p.sendMessage(ChatColor.DARK_PURPLE + "+-----------------" + MsgUtil.getMessage("menu.stored-enchants") + "--------------------+");
-		// for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
-		// p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName() + " " + entries.getValue());
-		// }
-		// }
-		// }
-		// } catch (final ClassNotFoundException e) {
-		// // They don't have an up to date enough build of CB to do this.
-		// // TODO: Remove this when it becomes redundant
-		// }
 		p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
 	}
 }

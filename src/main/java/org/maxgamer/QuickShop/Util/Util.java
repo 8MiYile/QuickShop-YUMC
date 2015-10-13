@@ -33,10 +33,10 @@ public class Util {
 
 	public static void addTransparentBlock(final Material m) {
 		if (transparent.add(m) == false) {
-			System.out.println("Already added as transparent: " + m.toString());
+			System.out.println("已添加透明方块: " + m.toString());
 		}
 		if (!m.isBlock()) {
-			System.out.println(m + " is not a block!");
+			System.out.println(m + " 不是一个方块!");
 		}
 	}
 
@@ -48,11 +48,15 @@ public class Util {
 	 * @return True if it can be made into a shop, otherwise false.
 	 */
 	public static boolean canBeShop(final Block b) {
-		final BlockState bs = b.getState();
-		if (bs instanceof InventoryHolder == false) {
+		try {
+			final BlockState bs = b.getState();
+			if (bs instanceof InventoryHolder == false) {
+				return false;
+			}
+			return shoppables.contains(bs.getType());
+		} catch (final Exception e) {
 			return false;
 		}
-		return shoppables.contains(bs.getType());
 	}
 
 	/**

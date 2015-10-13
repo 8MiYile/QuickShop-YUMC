@@ -225,12 +225,14 @@ public class QuickShop extends JavaPlugin {
 			getLogger().info("尝试启动魔改库...");
 			final FancyMessage fm = new FancyMessage("test");
 			fm.then("item").itemTooltip(new ItemStack(Material.DIAMOND_SWORD));
-			fm.then("link").link("ci.ccitycraft.cn");
+			fm.then("link").link("ci.citycraft.cn");
 			fm.then("suggest").suggest("qs help");
 			fm.toJSONString();
 			getLogger().info("魔改库功能测试正常...");
 		} catch (final NoClassDefFoundError | NoSuchMethodError | Exception e) {
-			getLogger().info("启动魔改库失败 部分功能将被禁用...");
+			getLogger().warning("========================================");
+			getLogger().warning("警告: 启动魔改库失败 部分功能将被禁用...");
+			getLogger().warning("========================================");
 		}
 
 		try {
@@ -287,13 +289,8 @@ public class QuickShop extends JavaPlugin {
 					final Location loc = new Location(world, x, y, z);
 					/* Skip invalid shops, if we know of any */
 					if (world != null && loc.getChunk().isLoaded() && (loc.getBlock().getState() instanceof InventoryHolder) == false) {
-						getLogger().info("商店不是一个可存储的方块 坐标 " + rs.getString("world") + " at: " + x + ", " + y + ", " + z + ".  删除...");
-						final PreparedStatement delps = getDB().getConnection().prepareStatement("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?");
-						delps.setInt(1, x);
-						delps.setInt(2, y);
-						delps.setInt(3, z);
-						delps.setString(4, worldName);
-						delps.execute();
+						getLogger().info("商店不是一个可存储的方块 坐标 " + rs.getString("world") + ", " + x + ", " + y + ", " + z + ". 删除...");
+						database.execute("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?", x, y, z, worldName);
 						continue;
 					}
 					final int type = rs.getInt("type");
@@ -313,12 +310,7 @@ public class QuickShop extends JavaPlugin {
 					getLogger().warning("载入商店数据时发生错误! 商店位置: " + worldName + " (" + x + ", " + y + ", " + z + ")...");
 					if (errors < 3) {
 						getLogger().warning("删除错误的商店数据...");
-						final PreparedStatement delps = getDB().getConnection().prepareStatement("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?");
-						delps.setInt(1, x);
-						delps.setInt(2, y);
-						delps.setInt(3, z);
-						delps.setString(4, worldName);
-						delps.execute();
+						database.execute("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?", x, y, z, worldName);
 					} else {
 						getLogger().warning("过多的错误数据 可能您的数据库文件已损坏! 请检查数据库文件!");
 						e.printStackTrace();
@@ -343,9 +335,9 @@ public class QuickShop extends JavaPlugin {
 		if (configManager.isDisplay()) {
 			Bukkit.getServer().getPluginManager().registerEvents(chunkListener, this);
 			// Display item handler thread
-			getLogger().info("开启悬浮物品刷新线程...");
+			getLogger().info("开启商店检查以及悬浮物刷新线程...");
 			final ItemWatcher itemWatcher = new ItemWatcher(this);
-			itemWatcherTask = Bukkit.getScheduler().runTaskTimer(this, itemWatcher, 20, 600);
+			itemWatcherTask = Bukkit.getScheduler().runTaskTimer(this, itemWatcher, 20, 1800);
 		}
 		this.chatListener = new ChatListener(this);
 		Bukkit.getServer().getPluginManager().registerEvents(chatListener, this);

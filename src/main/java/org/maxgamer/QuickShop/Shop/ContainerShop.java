@@ -23,14 +23,14 @@ import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
 public class ContainerShop implements Shop {
-	private final Location loc;
-	private double price;
-	private String owner;
-	private final ItemStack item;
 	private DisplayItem displayItem;
-	private boolean unlimited;
-	private ShopType shopType;
+	private final ItemStack item;
+	private final Location loc;
+	private String owner;
 	private final QuickShop plugin;
+	private double price;
+	private ShopType shopType;
+	private boolean unlimited;
 
 	/**
 	 * Adds a new shop.
@@ -637,8 +637,8 @@ public class ContainerShop implements Shop {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder(
-				"商店 " + (loc.getWorld() == null ? "世界尚未载入" : "坐标: " + loc.getWorld().getName()) + "(" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ")");
+		final StringBuilder sb = new StringBuilder("商店 " + (loc.getWorld() == null ? "世界尚未载入" : "坐标: " + loc.getWorld().getName()) + "(" + loc.getBlockX() + ", " + loc.getBlockY() + ", "
+				+ loc.getBlockZ() + ")");
 		sb.append(" 所有者: " + getOwner());
 		if (isUnlimited()) {
 			sb.append("无限模式: true");
@@ -679,6 +679,7 @@ public class ContainerShop implements Shop {
 		if (trans && this.getDisplayItem() == null) {
 			this.displayItem = new DisplayItem(this, this.getItem());
 			this.getDisplayItem().spawn();
+			return;
 		}
 		if (this.getDisplayItem() != null) {
 			if (!trans) { // We have a display item in a block... delete it
