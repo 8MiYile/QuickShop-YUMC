@@ -70,7 +70,6 @@ public class ProtectListener implements Listener {
 	public void onItemDespawn(final ItemDespawnEvent e) {
 		final ItemStack ci = e.getEntity().getItemStack();
 		if (MarkUtil.hasMark(ci)) {
-			ci.setType(Material.AIR);
 			e.setCancelled(true);
 		}
 	}

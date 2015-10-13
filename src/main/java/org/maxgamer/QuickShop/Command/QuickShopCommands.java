@@ -33,7 +33,7 @@ public class QuickShopCommands implements CommandExecutor, DefaultCommand {
 	}
 
 	@Override
-	public void defaultexecute(final CommandSender sender, final Command command, final String label) throws CommandException {
+	public void defaultExecute(final CommandSender sender, final Command command, final String label) throws CommandException {
 		hsc.sendHelp(sender, label);
 	}
 
