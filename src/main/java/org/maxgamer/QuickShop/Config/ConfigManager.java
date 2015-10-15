@@ -7,6 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.maxgamer.QuickShop.QuickShop;
 
+import cn.citycraft.PluginHelper.config.FileConfig;
+
 public class ConfigManager {
 	/** Whether debug info should be shown in the console */
 	protected boolean debug = false;
@@ -14,8 +16,10 @@ public class ConfigManager {
 	protected boolean display = true;
 	protected double feeForPriceChange = 0.0;
 	protected int findDistance = 30;
+	protected String guiTitle;
 	/** Whether or not to limit players shop amounts */
 	protected boolean limit = false;
+
 	protected int limitdefault = 0;
 	protected final HashMap<String, Integer> limits = new HashMap<String, Integer>();
 	protected boolean logAction = true;
@@ -45,33 +49,34 @@ public class ConfigManager {
 	protected HashSet<String> warnings = new HashSet<String>();
 
 	public ConfigManager(final QuickShop plugin) {
-
-		ConfigurationSection limitCfg = plugin.getConfig().getConfigurationSection("limits");
+		final FileConfig config = (FileConfig) plugin.getConfig();
+		ConfigurationSection limitCfg = config.getConfigurationSection("limits");
 		if (limitCfg != null) {
 			this.limit = limitCfg.getBoolean("use", false);
-			this.limitdefault = plugin.getConfig().getInt("limits.default");
+			this.limitdefault = config.getInt("limits.default");
 			limitCfg = limitCfg.getConfigurationSection("ranks");
 			for (final String key : limitCfg.getKeys(true)) {
 				limits.put(key, limitCfg.getInt(key));
 			}
 		}
 		try {
-			this.superItem = Enum.valueOf(Material.class, plugin.getConfig().getString("superitem"));
+			this.superItem = Enum.valueOf(Material.class, config.getString("superitem"));
 		} catch (final Exception e) {
 		}
-		this.tax = plugin.getConfig().getDouble("tax");
-		this.showTax = plugin.getConfig().getBoolean("show-tax");
-		this.taxAccount = plugin.getConfig().getString("tax-account");
-		this.logAction = plugin.getConfig().getBoolean("log-actions");
-		this.shopLock = plugin.getConfig().getBoolean("shop.lock");
-		this.display = plugin.getConfig().getBoolean("shop.display-items");
-		this.sneak = plugin.getConfig().getBoolean("shop.sneak-only");
-		this.sneakCreate = plugin.getConfig().getBoolean("shop.sneak-to-create");
-		this.sneakTrade = plugin.getConfig().getBoolean("shop.sneak-to-trade");
-		this.priceChangeRequiresFee = plugin.getConfig().getBoolean("shop.price-change-requires-fee");
-		this.findDistance = plugin.getConfig().getInt("shop.find-distance");
-		this.feeForPriceChange = plugin.getConfig().getDouble("shop.fee-for-price-change");
-		this.preventhopper = plugin.getConfig().getBoolean("preventhopper");
+		this.tax = config.getDouble("tax");
+		this.showTax = config.getBoolean("show-tax");
+		this.taxAccount = config.getString("tax-account");
+		this.logAction = config.getBoolean("log-actions");
+		this.shopLock = config.getBoolean("shop.lock");
+		this.display = config.getBoolean("shop.display-items");
+		this.sneak = config.getBoolean("shop.sneak-only");
+		this.sneakCreate = config.getBoolean("shop.sneak-to-create");
+		this.sneakTrade = config.getBoolean("shop.sneak-to-trade");
+		this.priceChangeRequiresFee = config.getBoolean("shop.price-change-requires-fee");
+		this.findDistance = config.getInt("shop.find-distance");
+		this.feeForPriceChange = config.getDouble("shop.fee-for-price-change");
+		this.preventhopper = config.getBoolean("preventhopper");
+		this.guiTitle = config.getMessage("guititle");
 	}
 
 	public double getFeeForPriceChange() {
@@ -80,6 +85,10 @@ public class ConfigManager {
 
 	public int getFindDistance() {
 		return findDistance;
+	}
+
+	public String getGuiTitle() {
+		return guiTitle;
 	}
 
 	public int getLimitdefault() {

@@ -74,7 +74,9 @@ public class QuickShop extends JavaPlugin {
 	private Database database;
 	/** The economy we hook into for transactions */
 	private Economy economy;
+	private boolean enableMagicLib;
 	private BukkitTask itemWatcherTask;
+
 	private LogWatcher logWatcher;
 	private final PlayerListener playerListener = new PlayerListener(this);
 	private final ProtectListener protectListener = new ProtectListener(this);
@@ -140,6 +142,10 @@ public class QuickShop extends JavaPlugin {
 	 */
 	public ShopManager getShopManager() {
 		return this.shopManager;
+	}
+
+	public boolean isEnableMagicLib() {
+		return enableMagicLib;
 	}
 
 	/**
@@ -229,10 +235,12 @@ public class QuickShop extends JavaPlugin {
 			fm.then("suggest").suggest("qs help");
 			fm.toJSONString();
 			getLogger().info("魔改库功能测试正常...");
+			this.enableMagicLib = true;
 		} catch (final NoClassDefFoundError | NoSuchMethodError | Exception e) {
-			getLogger().warning("========================================");
-			getLogger().warning("警告: 启动魔改库失败 部分功能将被禁用...");
-			getLogger().warning("========================================");
+			getLogger().warning("+=========================================");
+			getLogger().warning("| 警告: 启动魔改库失败 部分功能将被禁用...");
+			getLogger().warning("+=========================================");
+			this.enableMagicLib = false;
 		}
 
 		try {

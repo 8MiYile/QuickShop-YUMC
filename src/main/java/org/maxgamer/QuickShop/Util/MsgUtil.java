@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Shop;
@@ -192,5 +193,10 @@ public class MsgUtil {
 			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.this-shop-is-selling"));
 		}
 		p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
+		if (!plugin.isEnableMagicLib()) {
+			final Inventory in = Bukkit.createInventory(null, 9, plugin.getConfigManager().getGuiTitle());
+			in.setItem(4, items);
+			p.openInventory(in);
+		}
 	}
 }

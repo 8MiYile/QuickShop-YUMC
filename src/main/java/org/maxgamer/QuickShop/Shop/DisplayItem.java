@@ -65,8 +65,6 @@ public class DisplayItem {
 		if (shop.getLocation().getWorld() == null) {
 			return false;
 		}
-		// QuickShop qs = (QuickShop)
-		// Bukkit.getPluginManager().getPlugin("QuickShop");
 		final Location displayLoc = shop.getLocation().getBlock().getRelative(0, 1, 0).getLocation();
 		boolean removed = false;
 		final Chunk c = displayLoc.getChunk();
@@ -95,9 +93,7 @@ public class DisplayItem {
 	 */
 	public void respawn() {
 		remove();
-		if (item.isValid()) {
-			spawn();
-		}
+		spawn();
 	}
 
 	/**

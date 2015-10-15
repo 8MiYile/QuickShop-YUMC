@@ -4,6 +4,8 @@ Version: 1.1
 superitem: GOLD_AXE
 #阻止漏斗吸取商店物品(非特殊情况不要开启)
 preventhopper: false
+#商店GUI的标题
+guititle: '&6[&b快捷商店&6]&r'
 
 #Tax amount (decimal) - Eg, P1 buys $50 worth of stuff from P2.  Therefore, P1 loses $50, P2 gains $(1-0.05)*50, and tax-account gains $(0.05)*50.
 tax: 0.00
