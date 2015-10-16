@@ -16,7 +16,7 @@ public class ConfigManager {
 	protected boolean display = true;
 	protected double feeForPriceChange = 0.0;
 	protected int findDistance = 30;
-	protected String guiTitle;
+	protected String guiTitle = "§6[§b快捷商店§6]";
 	/** Whether or not to limit players shop amounts */
 	protected boolean limit = false;
 
