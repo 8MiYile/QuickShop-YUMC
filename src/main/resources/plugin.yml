@@ -9,7 +9,7 @@ authors:
 - 喵♂呜
 softdepend:
 - Vault
-website: http://ci.sumcraft.net:8080/job/${project.artifactId}/
+website: ${jenkins.url}/job/${project.artifactId}/
 commands:
   qs:
     description: QuickShop command
