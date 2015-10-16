@@ -14,7 +14,6 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -54,7 +53,6 @@ import org.mcstats.Metrics;
 
 import cn.citycraft.PluginHelper.config.FileConfig;
 import cn.citycraft.PluginHelper.utils.VersionChecker;
-import mkremins.fanciful.FancyMessage;
 
 public class QuickShop extends JavaPlugin {
 	/** The active instance of QuickShop */
@@ -74,7 +72,6 @@ public class QuickShop extends JavaPlugin {
 	private Database database;
 	/** The economy we hook into for transactions */
 	private Economy economy;
-	private boolean enableMagicLib;
 	private BukkitTask itemWatcherTask;
 
 	private LogWatcher logWatcher;
@@ -142,10 +139,6 @@ public class QuickShop extends JavaPlugin {
 	 */
 	public ShopManager getShopManager() {
 		return this.shopManager;
-	}
-
-	public boolean isEnableMagicLib() {
-		return enableMagicLib;
 	}
 
 	/**
@@ -226,23 +219,6 @@ public class QuickShop extends JavaPlugin {
 			final LockListener ll = new LockListener(this);
 			getServer().getPluginManager().registerEvents(ll, this);
 		}
-
-		try {
-			getLogger().info("尝试启动魔改库...");
-			final FancyMessage fm = new FancyMessage("test");
-			fm.then("item").itemTooltip(new ItemStack(Material.DIAMOND_SWORD));
-			fm.then("link").link("ci.citycraft.cn");
-			fm.then("suggest").suggest("qs help");
-			fm.toJSONString();
-			getLogger().info("魔改库功能测试正常...");
-			this.enableMagicLib = true;
-		} catch (final NoClassDefFoundError | NoSuchMethodError | Exception e) {
-			getLogger().warning("+=========================================");
-			getLogger().warning("| 警告: 启动魔改库失败 部分功能将被禁用...");
-			getLogger().warning("+=========================================");
-			this.enableMagicLib = false;
-		}
-
 		try {
 			final ConfigurationSection dbCfg = getConfig().getConfigurationSection("database");
 			DatabaseCore dbCore;
