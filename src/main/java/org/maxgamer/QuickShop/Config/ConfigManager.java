@@ -12,7 +12,7 @@ import cn.citycraft.PluginHelper.config.FileConfig;
 import mkremins.fanciful.FancyMessage;
 
 public class ConfigManager {
-	private boolean enableMagicLib;
+	private boolean enableMagicLib = false;
 	/** Whether debug info should be shown in the console */
 	protected boolean debug = false;
 	/** Whether we should use display items or not */
@@ -80,22 +80,23 @@ public class ConfigManager {
 		this.feeForPriceChange = config.getDouble("shop.fee-for-price-change");
 		this.preventhopper = config.getBoolean("preventhopper");
 		this.guiTitle = config.getMessage("guititle");
-		try {
-			plugin.getLogger().info("尝试启动魔改库...");
-			final FancyMessage fm = new FancyMessage("test");
-			fm.then("item").itemTooltip(new ItemStack(Material.DIAMOND_SWORD));
-			fm.then("link").link("ci.citycraft.cn");
-			fm.then("suggest").suggest("qs help");
-			fm.toJSONString();
-			plugin.getLogger().info("魔改库功能测试正常...");
-			this.enableMagicLib = true;
-		} catch (final NoClassDefFoundError | NoSuchMethodError | Exception e) {
-			plugin.getLogger().warning("+=========================================");
-			plugin.getLogger().warning("| 警告: 启动魔改库失败 将使用GUI界面...");
-			plugin.getLogger().warning("+=========================================");
-			this.enableMagicLib = false;
+		if (config.getBoolean("usemagiclib", true)) {
+			try {
+				plugin.getLogger().info("启用魔改库 尝试启动中...");
+				final FancyMessage fm = new FancyMessage("test");
+				fm.then("item").itemTooltip(new ItemStack(Material.DIAMOND_SWORD));
+				fm.then("link").link("ci.citycraft.cn");
+				fm.then("suggest").suggest("qs help");
+				fm.toJSONString();
+				plugin.getLogger().info("魔改库功能测试正常...");
+				this.enableMagicLib = true;
+			} catch (final NoClassDefFoundError | NoSuchMethodError | Exception e) {
+				plugin.getLogger().warning("+=========================================");
+				plugin.getLogger().warning("| 警告: 启动魔改库失败 将使用GUI商店界面...");
+				plugin.getLogger().warning("+=========================================");
+				this.enableMagicLib = false;
+			}
 		}
-		this.enableMagicLib = enableMagicLib && config.getBoolean("usemagiclib", true);
 	}
 
 	public double getFeeForPriceChange() {
