@@ -181,10 +181,10 @@ public class MsgUtil {
 			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.damage-percent-remaining", Util.getToolPercentage(items)));
 		}
 		if (shop.isSelling()) {
-			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.stock", "" + stock));
+			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.stock", "" + (stock == 10000 ? "无限" : stock)));
 		} else {
 			final int space = shop.getRemainingSpace();
-			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.space", "" + space));
+			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.space", "" + (space == 10000 ? "无限" : space)));
 		}
 		p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.price-per", shop.getDataName(), Util.format(shop.getPrice())));
 		if (shop.isBuying()) {

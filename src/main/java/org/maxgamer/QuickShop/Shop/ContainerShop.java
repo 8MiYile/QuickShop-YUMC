@@ -601,10 +601,12 @@ public class ContainerShop implements Shop {
 		final String[] lines = new String[4];
 		lines[0] = ChatColor.RED + "[QuickShop]";
 		if (this.isBuying()) {
-			lines[1] = MsgUtil.p("signs.buying", "" + this.getRemainingSpace());
+			final int remsp = this.getRemainingSpace();
+			lines[1] = MsgUtil.p("signs.buying", "" + (remsp == 10000 ? "无限" : remsp));
 		}
 		if (this.isSelling()) {
-			lines[1] = MsgUtil.p("signs.selling", "" + this.getRemainingStock());
+			final int remst = this.getRemainingStock();
+			lines[1] = MsgUtil.p("signs.selling", "" + (remst == 10000 ? "无限" : remst));
 		}
 		lines[2] = Util.getNameForSign(this.item);
 		lines[3] = MsgUtil.p("signs.price", "" + this.getPrice());
