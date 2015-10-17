@@ -15,7 +15,7 @@ import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 
 import cn.citycraft.PluginHelper.config.FileConfig;
-import mkremins.fanciful.FancyMessage;
+import cn.citycraft.PluginHelper.tellraw.FancyMessage;
 
 public class MsgUtil {
 	private static FileConfig messages;

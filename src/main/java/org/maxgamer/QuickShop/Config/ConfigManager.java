@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
 
 import cn.citycraft.PluginHelper.config.FileConfig;
-import mkremins.fanciful.FancyMessage;
+import cn.citycraft.PluginHelper.tellraw.FancyMessage;
 
 public class ConfigManager {
 	private boolean enableMagicLib = false;
