@@ -9,6 +9,7 @@ authors:
 - 喵♂呜
 softdepend:
 - Vault
+- WowSuchCleaner
 website: ${jenkins.url}/job/${project.artifactId}/
 commands:
   qs:

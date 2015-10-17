@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.4.2</version>
+	<version>1.4.3</version>
 	<build>
 		<finalName>${project.name}</finalName>
 		<resources>
@@ -96,6 +96,11 @@
 			<artifactId>PluginHelper</artifactId>
 			<type>jar</type>
 			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.Cnly.WowSuchCleaner</groupId>
+			<artifactId>WowSuchCleaner</artifactId>
+			<version>1.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mcstats.bukkit</groupId>

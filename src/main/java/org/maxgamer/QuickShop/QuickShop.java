@@ -20,6 +20,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -41,6 +42,7 @@ import org.maxgamer.QuickShop.Listeners.LockListener;
 import org.maxgamer.QuickShop.Listeners.PlayerListener;
 import org.maxgamer.QuickShop.Listeners.ProtectListener;
 import org.maxgamer.QuickShop.Listeners.WorldListener;
+import org.maxgamer.QuickShop.Listeners.WowSuchCleanerListener;
 import org.maxgamer.QuickShop.Shop.ContainerShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopManager;
@@ -61,25 +63,16 @@ public class QuickShop extends JavaPlugin {
 	public FileConfig config;
 	// private HeroChatListener heroChatListener;
 	// Listeners (These don't)
-	private final BlockListener blockListener = new BlockListener(this);
-	// Listeners - We decide which one to use at runtime
-	private ChatListener chatListener;
-	private final ChunkListener chunkListener = new ChunkListener(this);
 	/** The Config Manager used to read config */
 	private ConfigManager configManager;
-
 	/** The database for storing all our data for persistence */
 	private Database database;
 	/** The economy we hook into for transactions */
 	private Economy economy;
 	private BukkitTask itemWatcherTask;
-
 	private LogWatcher logWatcher;
-	private final PlayerListener playerListener = new PlayerListener(this);
-	private final ProtectListener protectListener = new ProtectListener(this);
 	/** The Shop Manager used to store shops */
 	private ShopManager shopManager;
-	private final WorldListener worldListener = new WorldListener(this);
 
 	/**
 	 * Prints debug information if QuickShop is configured to do so.
@@ -312,19 +305,29 @@ public class QuickShop extends JavaPlugin {
 		MsgUtil.clean();
 		// Register events
 		final PluginManager pm = this.getServer().getPluginManager();
-		pm.registerEvents(blockListener, this);
-		pm.registerEvents(playerListener, this);
-		pm.registerEvents(worldListener, this);
-		pm.registerEvents(protectListener, this);
+		final Plugin wsc = pm.getPlugin("WowSuchCleaner");
+		if (wsc != null && wsc.isEnabled()) {
+			getLogger().info("发现 WowSuchCleaner 插件 开启相关功能...");
+			try {
+				Class.forName("io.github.Cnly.WowSuchCleaner.WowSuchCleaner.ItemPreCleanEvent");
+				pm.registerEvents(new WowSuchCleanerListener(), this);
+			} catch (final ClassNotFoundException e) {
+				getLogger().info("WowSuchCleaner 版本过低 可能造成悬浮物上架...");
+			}
+		}
+		pm.registerEvents(new BlockListener(this), this);
+		pm.registerEvents(new PlayerListener(this), this);
+		pm.registerEvents(new WorldListener(this), this);
+		pm.registerEvents(new ProtectListener(this), this);
+		pm.registerEvents(new ChatListener(this), this);
 		if (configManager.isDisplay()) {
-			Bukkit.getServer().getPluginManager().registerEvents(chunkListener, this);
+			Bukkit.getServer().getPluginManager().registerEvents(new ChunkListener(this), this);
 			// Display item handler thread
 			getLogger().info("开启商店检查以及悬浮物刷新线程...");
 			final ItemWatcher itemWatcher = new ItemWatcher(this);
 			itemWatcherTask = Bukkit.getScheduler().runTaskTimer(this, itemWatcher, 20, 1800);
 		}
-		this.chatListener = new ChatListener(this);
-		Bukkit.getServer().getPluginManager().registerEvents(chatListener, this);
+
 		// Command handlers
 		final QuickShopCommands commandExecutor = new QuickShopCommands(this);
 		getCommand("qs").setExecutor(commandExecutor);
