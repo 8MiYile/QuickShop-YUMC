@@ -193,7 +193,7 @@ public class MsgUtil {
 			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.this-shop-is-selling"));
 		}
 		p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
-		if (!plugin.getConfigManager().isEnableMagicLib()) {
+		if (!plugin.getConfigManager().isEnableMagicLib() && !shop.getOwner().equalsIgnoreCase(p.getName())) {
 			final Inventory in = Bukkit.createInventory(null, 9, plugin.getConfigManager().getGuiTitle());
 			in.setItem(4, items);
 			p.openInventory(in);
