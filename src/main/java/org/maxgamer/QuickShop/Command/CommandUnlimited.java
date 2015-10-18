@@ -19,6 +19,7 @@ public class CommandUnlimited extends BaseCommand {
 		super("unlimited");
 		this.plugin = plugin;
 		setOnlyPlayerExecutable();
+		setPermission("quickshop.unlimited");
 		setDescription(MsgUtil.p("command.description.unlimited"));
 	}
 

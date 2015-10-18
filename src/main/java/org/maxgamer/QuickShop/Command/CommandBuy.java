@@ -19,8 +19,8 @@ public class CommandBuy extends BaseCommand {
 	public CommandBuy(final QuickShop plugin) {
 		super("buy");
 		this.plugin = plugin;
-		setPermission("quickshop.create.buy");
 		setOnlyPlayerExecutable();
+		setPermission("quickshop.create.buy");
 		setDescription(MsgUtil.p("command.description.buy"));
 	}
 

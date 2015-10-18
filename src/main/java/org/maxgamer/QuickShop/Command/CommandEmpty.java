@@ -19,7 +19,7 @@ public class CommandEmpty extends BaseCommand {
 	public CommandEmpty(final QuickShop plugin) {
 		super("empty");
 		this.plugin = plugin;
-		setPermission("quickshop.refill");
+		setPermission("quickshop.empty");
 		setDescription(MsgUtil.p("command.description.empty"));
 	}
 
