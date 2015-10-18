@@ -58,6 +58,7 @@ info:
   title: '&a当前加载的 &e{0} &a个区块中 共有 &e{1} &a个商店 覆盖 &e{2} &a个世界.'
   selling: '&b出售商店&a有 &e{0} &a个.'
   buying: '&d收购商店&a有 &e{0} &a个.'
+  unlimited: '&c无限商店&a有 &e{0} &a个.'
   double: '&3大箱子商店 &e{0} &a个.'
   canclean: '&a可以用 &b/qs clean &a清理的商店有 &e{0} &a个.'
   

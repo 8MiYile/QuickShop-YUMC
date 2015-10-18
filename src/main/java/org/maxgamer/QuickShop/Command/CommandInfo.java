@@ -27,8 +27,8 @@ public class CommandInfo extends BaseCommand {
 
 	@Override
 	public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
-		int buying, selling, doubles, chunks, worlds;
-		buying = selling = doubles = chunks = worlds = 0;
+		int buying, selling, doubles, chunks, worlds, unlimited;
+		buying = selling = doubles = chunks = worlds = unlimited = 0;
 		int nostock = 0;
 		sender.sendMessage(ChatColor.RED + "开始检索商店信息中...");
 		for (final HashMap<ShopChunk, HashMap<Location, Shop>> inWorld : plugin.getShopManager().getShops().values()) {
@@ -36,6 +36,9 @@ public class CommandInfo extends BaseCommand {
 			for (final HashMap<Location, Shop> inChunk : inWorld.values()) {
 				chunks++;
 				for (final Shop shop : inChunk.values()) {
+					if (shop.isUnlimited()) {
+						unlimited++;
+					}
 					if (shop.isBuying()) {
 						buying++;
 					} else if (shop.isSelling()) {
@@ -52,6 +55,7 @@ public class CommandInfo extends BaseCommand {
 		sender.sendMessage(MsgUtil.p("info.title", chunks, buying + selling, worlds));
 		sender.sendMessage(MsgUtil.p("info.selling", selling));
 		sender.sendMessage(MsgUtil.p("info.buying", buying));
+		sender.sendMessage(MsgUtil.p("info.unlimited", unlimited));
 		sender.sendMessage(MsgUtil.p("info.double", doubles));
 		sender.sendMessage(MsgUtil.p("info.canclean", nostock));
 	}
