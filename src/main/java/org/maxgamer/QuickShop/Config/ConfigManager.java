@@ -83,7 +83,7 @@ public class ConfigManager {
 		if (config.getBoolean("usemagiclib", true)) {
 			try {
 				plugin.getLogger().info("启用魔改库 尝试启动中...");
-				final FancyMessage fm = new FancyMessage("test");
+				final FancyMessage fm = FancyMessage.newFM("test");
 				fm.then("item").itemTooltip(new ItemStack(Material.DIAMOND_SWORD));
 				fm.then("link").link("ci.citycraft.cn");
 				fm.then("suggest").suggest("qs help");

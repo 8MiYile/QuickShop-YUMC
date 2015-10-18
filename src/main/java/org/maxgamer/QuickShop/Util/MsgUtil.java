@@ -90,7 +90,7 @@ public class MsgUtil {
 	public static String p(final String loc, final Object... args) {
 		String raw = messages.getString(loc);
 		if (raw == null || raw.isEmpty()) {
-			return "语言文件词条丢失: " + loc;
+			return ChatColor.RED + "语言文件词条丢失: " + loc;
 		}
 		if (args == null) {
 			return raw;
@@ -128,7 +128,7 @@ public class MsgUtil {
 
 	public static void sendItemMessage(final Player p, final ItemStack is, final String msg) {
 		try {
-			final FancyMessage fm = new FancyMessage();
+			final FancyMessage fm = FancyMessage.newFM();
 			fm.text(msg).itemTooltip(is).send(p);
 		} catch (Exception | NoClassDefFoundError | NoSuchMethodError e) {
 			p.sendMessage(msg);
