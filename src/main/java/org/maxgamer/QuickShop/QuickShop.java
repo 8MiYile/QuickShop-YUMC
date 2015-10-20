@@ -1,7 +1,6 @@
 package org.maxgamer.QuickShop;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,7 +50,6 @@ import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 import org.maxgamer.QuickShop.Watcher.ItemWatcher;
 import org.maxgamer.QuickShop.Watcher.LogWatcher;
-import org.mcstats.Metrics;
 
 import cn.citycraft.PluginHelper.config.FileConfig;
 import cn.citycraft.PluginHelper.utils.VersionChecker;
@@ -336,11 +334,6 @@ public class QuickShop extends JavaPlugin {
 		}
 		this.getLogger().info("载入完成! 版本: " + this.getDescription().getVersion() + " 重制 by 喵♂呜");
 		new VersionChecker(this);
-		try {
-			final Metrics metrics = new Metrics(this);
-			metrics.start();
-		} catch (final IOException e) {
-		}
 	}
 
 	@Override

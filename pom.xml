@@ -31,14 +31,9 @@
 					<artifactSet>
 						<includes>
 							<include>cn.citycraft:PluginHelper</include>
-							<include>org.mcstats.*:*</include>
 						</includes>
 					</artifactSet>
 					<relocations>
-						<relocation>
-							<pattern>org.mcstats</pattern>
-							<shadedPattern>${project.groupId}.${project.artifactId}.mcstats</shadedPattern>
-						</relocation>
 						<relocation>
 							<pattern>cn.citycraft.PluginHelper</pattern>
 							<shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
@@ -64,10 +59,6 @@
 		<repository>
 			<id>sumcraft-repo</id>
 			<url>${jenkins.url}/plugin/repository/everything/</url>
-		</repository>
-		<repository>
-			<id>Plugin Metrics</id>
-			<url>http://repo.mcstats.org/content/repositories/public</url>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -101,12 +92,6 @@
 			<groupId>io.github.Cnly.WowSuchCleaner</groupId>
 			<artifactId>WowSuchCleaner</artifactId>
 			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mcstats.bukkit</groupId>
-			<artifactId>metrics</artifactId>
-			<version>R8-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<properties>
