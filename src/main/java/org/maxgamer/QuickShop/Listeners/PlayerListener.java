@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import org.maxgamer.QuickShop.QuickShop;
@@ -62,6 +63,11 @@ public class PlayerListener implements Listener {
 			shop.onClick();
 			// Text menu
 			MsgUtil.sendShopInfo(p, shop);
+			if (!plugin.getConfigManager().isEnableMagicLib() && !shop.getOwner().equalsIgnoreCase(p.getName()) && b.getType() == Material.WALL_SIGN) {
+				final Inventory in = Bukkit.createInventory(null, 9, plugin.getConfigManager().getGuiTitle());
+				in.setItem(4, shop.getItem());
+				p.openInventory(in);
+			}
 			if (shop.isSelling()) {
 				p.sendMessage(MsgUtil.p("how-many-buy"));
 			} else {

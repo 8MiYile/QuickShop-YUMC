@@ -2,11 +2,12 @@ package org.maxgamer.QuickShop.Listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
@@ -14,8 +15,10 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
+import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Util.MarkUtil;
 
 public class ProtectListener implements Listener {
@@ -26,18 +29,41 @@ public class ProtectListener implements Listener {
 		this.plugin = plugin;
 	}
 
+	public Shop getShop(final Inventory inv) {
+		if (inv == null) {
+			return null;
+		}
+		InventoryHolder holder = inv.getHolder();
+		if (holder instanceof DoubleChest) {
+			holder = ((DoubleChest) holder).getLeftSide();
+		}
+
+		if (holder instanceof BlockState) {
+			final Block block = ((BlockState) holder).getBlock();
+			final Shop sp = plugin.getShopManager().getShop(block.getLocation());
+			if (sp != null) {
+				return sp;
+			}
+		}
+		return null;
+	}
+
 	@EventHandler
 	public void onInvMove(final InventoryMoveItemEvent e) {
 		final ItemStack ci = e.getItem();
 		if (MarkUtil.hasMark(ci)) {
 			e.setCancelled(true);
-			final ItemStack[] items = e.getSource().getContents();
-			for (final ItemStack itemStack : items) {
-				if (MarkUtil.hasMark(itemStack)) {
-					itemStack.setType(Material.AIR);
-				}
-			}
-			e.getSource().setContents(items);
+		}
+
+		final Inventory src = e.getSource();
+		final Inventory me = e.getInitiator();
+		final Inventory des = e.getDestination();
+		final Shop srcshop = getShop(src);
+		final Shop meshop = getShop(me);
+		final Shop desshop = getShop(des);
+
+		if ((srcshop != null && meshop == null) || (meshop != null && desshop == null) || (srcshop != null && desshop != null && srcshop.getOwner().equalsIgnoreCase(desshop.getOwner()))) {
+			e.setCancelled(true);
 		}
 	}
 
@@ -72,14 +98,6 @@ public class ProtectListener implements Listener {
 				p.closeInventory();
 			}
 		} catch (final Exception ex) {
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onItemDespawn(final ItemDespawnEvent e) {
-		final ItemStack ci = e.getEntity().getItemStack();
-		if (MarkUtil.hasMark(ci)) {
-			e.setCancelled(true);
 		}
 	}
 
