@@ -3,7 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.4.4</version>
+	<version>1.5</version>
+	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
 		<resources>
@@ -51,6 +52,11 @@
 			</plugin>
 		</plugins>
 	</build>
+	<properties>
+		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
+		<update.description>更新7老板的底层Gson库...</update.description>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<repositories>
 		<repository>
 			<id>spigot-repo</id>
@@ -94,8 +100,4 @@
 			<version>1.6.1</version>
 		</dependency>
 	</dependencies>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
-	</properties>
 </project>
