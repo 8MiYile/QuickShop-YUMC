@@ -180,9 +180,13 @@ public class QuickShop extends JavaPlugin {
 			logWatcher.close(); // Closes the file
 		}
 		/* Remove all display items, and any dupes we can find */
-		shopManager.clear();
+		if (shopManager != null) {
+			shopManager.clear();
+		}
 		/* Empty the buffer */
-		database.close();
+		if (database != null) {
+			database.close();
+		}
 		try {
 			this.database.getConnection().close();
 		} catch (final SQLException e) {

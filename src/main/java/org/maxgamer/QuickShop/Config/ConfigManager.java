@@ -90,7 +90,7 @@ public class ConfigManager {
 				fm.toJSONString();
 				plugin.getLogger().info("魔改库功能测试正常...");
 				this.enableMagicLib = true;
-			} catch (final NoClassDefFoundError | NoSuchMethodError | Exception e) {
+			} catch (final Error | Exception e) {
 				plugin.getLogger().warning("+=========================================");
 				plugin.getLogger().warning("| 警告: 启动魔改库失败 将使用GUI商店界面...");
 				plugin.getLogger().warning("+=========================================");
