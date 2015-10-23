@@ -15,14 +15,15 @@ public class ConfigManager {
 	private boolean enableMagicLib = false;
 	/** Whether debug info should be shown in the console */
 	protected boolean debug = false;
+
 	/** Whether we should use display items or not */
 	protected boolean display = true;
 	protected double feeForPriceChange = 0.0;
 	protected int findDistance = 30;
 	protected String guiTitle = "§6[§b快捷商店§6]";
-
 	/** Whether or not to limit players shop amounts */
 	protected boolean limit = false;
+
 	protected int limitdefault = 0;
 	protected final HashMap<String, Integer> limits = new HashMap<String, Integer>();
 	protected boolean logAction = true;
@@ -185,6 +186,10 @@ public class ConfigManager {
 
 	public boolean isUseSpout() {
 		return useSpout;
+	}
+
+	public void setEnableMagicLib(final boolean enableMagicLib) {
+		this.enableMagicLib = enableMagicLib;
 	}
 
 }

@@ -130,6 +130,7 @@ public class MsgUtil {
 			final FancyMessage fm = FancyMessage.newFM();
 			fm.text(msg).itemTooltip(is).send(p);
 		} catch (Exception | NoClassDefFoundError | NoSuchMethodError e) {
+			plugin.getConfigManager().setEnableMagicLib(false);
 			p.sendMessage(msg);
 		}
 	}

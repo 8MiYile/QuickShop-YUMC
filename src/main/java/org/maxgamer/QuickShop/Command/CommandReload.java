@@ -22,9 +22,9 @@ public class CommandReload extends BaseCommand {
 	@Override
 	public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
 		sender.sendMessage(MsgUtil.p("command.reloading"));
+		plugin.reloadConfig();
 		Bukkit.getPluginManager().disablePlugin(plugin);
 		Bukkit.getPluginManager().enablePlugin(plugin);
-		plugin.reloadConfig();
 		return;
 	}
 }
