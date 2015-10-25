@@ -168,7 +168,7 @@ public class MsgUtil {
 	@SuppressWarnings("deprecation")
 	public static void sendShopInfo(final Player p, final Shop shop, final int stock) {
 		// Potentially faster with an array?
-		final ItemStack items = shop.getItem();
+		final ItemStack item = shop.getItem();
 		p.sendMessage("");
 		p.sendMessage("");
 		p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
@@ -177,8 +177,8 @@ public class MsgUtil {
 				+ MsgUtil.p("menu.owner", Bukkit.getOfflinePlayer(shop.getOwner()).getName() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : Bukkit.getOfflinePlayer(shop.getOwner()).getName()));
 		final String msg = ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.item", shop.getDataName());
 		sendItemMessage(p, shop.getItem(), msg);
-		if (Util.isTool(items.getType())) {
-			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.damage-percent-remaining", Util.getToolPercentage(items)));
+		if (Util.isTool(item.getType())) {
+			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.damage-percent-remaining", Util.getToolPercentage(item)));
 		}
 		if (shop.isSelling()) {
 			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.stock", "" + (stock == 10000 ? "无限" : stock)));
@@ -193,5 +193,11 @@ public class MsgUtil {
 			p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.this-shop-is-selling"));
 		}
 		p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
+		if (shop.isSelling()) {
+			p.sendMessage(MsgUtil.p("how-many-buy"));
+		} else {
+			final int items = Util.countItems(p.getInventory(), shop.getItem());
+			p.sendMessage(MsgUtil.p("how-many-sell", items));
+		}
 	}
 }
