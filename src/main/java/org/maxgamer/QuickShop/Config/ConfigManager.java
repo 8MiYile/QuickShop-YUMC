@@ -12,7 +12,7 @@ import cn.citycraft.PluginHelper.config.FileConfig;
 import cn.citycraft.PluginHelper.tellraw.FancyMessage;
 
 public class ConfigManager {
-	private boolean enableMagicLib = false;
+	protected boolean enableMagicLib = false;
 	/** Whether debug info should be shown in the console */
 	protected boolean debug = false;
 
@@ -34,13 +34,13 @@ public class ConfigManager {
 	 */
 	protected boolean priceChangeRequiresFee = false;
 	protected boolean shopLock = true;
-	protected boolean showTax;
+	protected boolean showTax = false;
 	/** Whether players are required to sneak to create/buy from a shop */
-	protected boolean sneak;
+	protected boolean sneak = false;
 	/** Whether players are required to sneak to create a shop */
-	protected boolean sneakCreate;
+	protected boolean sneakCreate = false;
 	/** Whether players are required to sneak to trade with a shop */
-	protected boolean sneakTrade;
+	protected boolean sneakTrade = false;
 	protected Material superItem = Material.GOLD_AXE;
 	protected double tax = 0;
 	protected String taxAccount;
@@ -95,7 +95,6 @@ public class ConfigManager {
 				plugin.getLogger().warning("+=========================================");
 				plugin.getLogger().warning("| 警告: 启动魔改库失败 将使用GUI商店界面...");
 				plugin.getLogger().warning("+=========================================");
-				this.enableMagicLib = false;
 			}
 		}
 	}
