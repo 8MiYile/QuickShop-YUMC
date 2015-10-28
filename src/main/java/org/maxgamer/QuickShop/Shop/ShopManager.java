@@ -101,8 +101,16 @@ public class ShopManager {
 		try {
 			// Write it to the database
 			final String q = "INSERT INTO shops (owner, price, itemConfig, x, y, z, world, unlimited, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-			plugin.getDB().execute(q, shop.getOwner().toString(), shop.getPrice(), Util.serialize(item), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(),
-					(shop.isUnlimited() ? 1 : 0), shop.getShopType().toID());
+			plugin.getDB().execute(q,
+					shop.getOwner().toString(),
+					shop.getPrice(),
+					Util.serialize(item),
+					loc.getBlockX(),
+					loc.getBlockY(),
+					loc.getBlockZ(),
+					loc.getWorld().getName(),
+					(shop.isUnlimited() ? 1 : 0),
+					shop.getShopType().toID());
 			// Add it to the world
 			addShop(loc.getWorld().getName(), shop);
 		} catch (final Exception e) {
@@ -279,7 +287,7 @@ public class ShopManager {
 						createShop(shop);
 						p.sendMessage(MsgUtil.p("success-created-shop"));
 						final Location loc = shop.getLocation();
-						plugin.log(p.getName() + " created a " + shop.getDataName() + " shop at (" + loc.getWorld().getName() + " - " + loc.getX() + "," + loc.getY() + "," + loc.getZ() + ")");
+						plugin.log(String.format("玩家: %s 创建了一个 %s 商店 在 (%s - %s,%s,%s)", p.getName(), shop.getDataName(), loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ()));
 						if (!plugin.getConfig().getBoolean("shop.lock")) {
 							// Warn them if they haven't been warned since
 							// reboot
@@ -390,14 +398,20 @@ public class ShopManager {
 							if (plugin.getConfigManager().isShowTax()) {
 								String msg = MsgUtil.p("player-bought-from-your-store-tax", p.getName(), "" + amount, shop.getDataName(), Util.format((tax * total)));
 								if (stock == amount) {
-									msg += "\n" + MsgUtil.p("shop-out-of-stock", "" + shop.getLocation().getBlockX(), "" + shop.getLocation().getBlockY(), "" + shop.getLocation().getBlockZ(),
+									msg += "\n" + MsgUtil.p("shop-out-of-stock",
+											"" + shop.getLocation().getBlockX(),
+											"" + shop.getLocation().getBlockY(),
+											"" + shop.getLocation().getBlockZ(),
 											shop.getDataName());
 								}
 								MsgUtil.send(shop.getOwner(), msg);
 							} else {
 								String msg = MsgUtil.p("player-bought-from-your-store", p.getName(), "" + amount, shop.getDataName());
 								if (stock == amount) {
-									msg += "\n" + MsgUtil.p("shop-out-of-stock", "" + shop.getLocation().getBlockX(), "" + shop.getLocation().getBlockY(), "" + shop.getLocation().getBlockZ(),
+									msg += "\n" + MsgUtil.p("shop-out-of-stock",
+											"" + shop.getLocation().getBlockX(),
+											"" + shop.getLocation().getBlockY(),
+											"" + shop.getLocation().getBlockZ(),
 											shop.getDataName());
 								}
 								MsgUtil.send(shop.getOwner(), msg);
@@ -406,7 +420,7 @@ public class ShopManager {
 						// Transfers the item from A to B
 						shop.sell(p, amount);
 						MsgUtil.sendPurchaseSuccess(p, shop, amount);
-						plugin.log(String.format("%s 从 %s 购买了 %s 件商品 花费 %s", p.getName(), shop.toString(), amount, shop.getPrice() * amount));
+						plugin.log(String.format("玩家: %s 从 %s 购买了 %s 件商品 花费 %s", p.getName(), shop.toString(), amount, shop.getPrice() * amount));
 					} else if (shop.isBuying()) {
 						final int space = shop.getRemainingSpace();
 						if (space < amount) {
@@ -462,7 +476,7 @@ public class ShopManager {
 						}
 						shop.buy(p, amount);
 						MsgUtil.sendSellSuccess(p, shop, amount);
-						plugin.log(String.format("%s 出售了 %s 件商品 到 %s 获得 %s", p.getName(), amount, shop.toString(), shop.getPrice() * amount));
+						plugin.log(String.format("玩家: %s 出售了 %s 件商品 到 %s 获得 %s", p.getName(), amount, shop.toString(), shop.getPrice() * amount));
 					}
 					shop.setSignText(); // Update the signs count
 				}

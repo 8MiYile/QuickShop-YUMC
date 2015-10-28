@@ -162,22 +162,30 @@ public class PlayerListener implements Listener {
 			final Block attached = Util.getAttached(b);
 			final Shop shop = attached == null ? null : plugin.getShopManager().getShop(attached.getLocation());
 			if (shop != null) {
+				final Location loc = shop.getLocation();
+				String shopmode = "";
 				if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 					if (p.hasPermission("quickshop.unlimited")) {
 						shop.setUnlimited(!shop.isUnlimited());
-						p.sendMessage(MsgUtil.p("command.toggle-unlimited", (shop.isUnlimited() ? "§e无限模式" : "§c有限模式")));
+						shopmode = shop.isUnlimited() ? "§e无限模式" : "§c有限模式";
+						p.sendMessage(MsgUtil.p("command.toggle-unlimited", shopmode));
 						return;
 					}
 				} else {
 					if (shop.getShopType() == ShopType.BUYING && p.hasPermission("quickshop.create.sell")) {
 						shop.setShopType(ShopType.SELLING);
 						p.sendMessage(MsgUtil.p("command.now-selling", shop.getDataName()));
+						shopmode = "出售模式";
 						return;
 					} else if (shop.getShopType() == ShopType.SELLING && p.hasPermission("quickshop.create.buy")) {
 						shop.setShopType(ShopType.BUYING);
 						p.sendMessage(MsgUtil.p("command.now-buying", shop.getDataName()));
+						shopmode = "收购模式";
 						return;
 					}
+				}
+				if (!shopmode.isEmpty()) {
+					plugin.log(String.format("玩家: %s 将 %s(%s,%s,%s) 的商店切换为 %s !", p.getName(), loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ(), shopmode));
 				}
 				shop.setSignText();
 				shop.update();
