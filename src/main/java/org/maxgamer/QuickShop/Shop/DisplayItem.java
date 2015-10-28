@@ -77,12 +77,8 @@ public class DisplayItem {
 			}
 			final Location eLoc = e.getLocation().getBlock().getLocation();
 			if (eLoc.equals(displayLoc) || eLoc.equals(shop.getLocation())) {
-				final ItemStack near = ((Item) e).getItemStack();
-				// if its the same its a dupe
-				if (this.shop.matches(near)) {
-					e.remove();
-					removed = true;
-				}
+				e.remove();
+				removed = true;
 			}
 		}
 		return removed;
