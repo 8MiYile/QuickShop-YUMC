@@ -165,19 +165,19 @@ public class PlayerListener implements Listener {
 				final Location loc = shop.getLocation();
 				String shopmode = "";
 				if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-					if (p.hasPermission("quickshop.unlimited")) {
+					if (p.hasPermission("quickshop.unlimited") && (shop.getOwner().equalsIgnoreCase(p.getName()) || p.isOp())) {
 						shop.setUnlimited(!shop.isUnlimited());
 						shopmode = shop.isUnlimited() ? "§e无限模式" : "§c有限模式";
 						p.sendMessage(MsgUtil.p("command.toggle-unlimited", shopmode));
 						return;
 					}
 				} else {
-					if (shop.getShopType() == ShopType.BUYING && p.hasPermission("quickshop.create.sell")) {
+					if (shop.getShopType() == ShopType.BUYING && p.hasPermission("quickshop.create.sell") && (shop.getOwner().equalsIgnoreCase(p.getName()) || p.isOp())) {
 						shop.setShopType(ShopType.SELLING);
 						p.sendMessage(MsgUtil.p("command.now-selling", shop.getDataName()));
 						shopmode = "出售模式";
 						return;
-					} else if (shop.getShopType() == ShopType.SELLING && p.hasPermission("quickshop.create.buy")) {
+					} else if (shop.getShopType() == ShopType.SELLING && p.hasPermission("quickshop.create.buy") && (shop.getOwner().equalsIgnoreCase(p.getName()) || p.isOp())) {
 						shop.setShopType(ShopType.BUYING);
 						p.sendMessage(MsgUtil.p("command.now-buying", shop.getDataName()));
 						shopmode = "收购模式";

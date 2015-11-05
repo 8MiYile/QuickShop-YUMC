@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.5.1</version>
+	<version>1.5.2</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -54,7 +54,7 @@
 	</build>
 	<properties>
 		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
-		<update.description>完善7老板的底层Gson库...</update.description>
+		<update.description>&amp;4紧急更新 &amp;c修复金斧权限检测问题...</update.description>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>
