@@ -25,7 +25,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.maxgamer.QuickShop.Command.QuickShopCommands;
 import org.maxgamer.QuickShop.Config.ConfigManager;
-import org.maxgamer.QuickShop.Config.ItemConfig;
 import org.maxgamer.QuickShop.Database.Database;
 import org.maxgamer.QuickShop.Database.DatabaseCore;
 import org.maxgamer.QuickShop.Database.DatabaseHelper;
@@ -52,6 +51,7 @@ import org.maxgamer.QuickShop.Watcher.ItemWatcher;
 import org.maxgamer.QuickShop.Watcher.LogWatcher;
 
 import cn.citycraft.PluginHelper.config.FileConfig;
+import cn.citycraft.PluginHelper.utils.LocalUtil;
 import cn.citycraft.PluginHelper.utils.VersionChecker;
 
 public class QuickShop extends JavaPlugin {
@@ -343,7 +343,7 @@ public class QuickShop extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		config = new FileConfig(this);
-		ItemConfig.load(this);
+		LocalUtil.reload();
 		MsgUtil.init(this);
 	}
 
@@ -351,6 +351,6 @@ public class QuickShop extends JavaPlugin {
 	@Override
 	public void reloadConfig() {
 		config.reload();
-		ItemConfig.reload();
+		LocalUtil.reload();
 	}
 }

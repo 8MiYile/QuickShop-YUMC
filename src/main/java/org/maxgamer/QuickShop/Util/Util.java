@@ -21,7 +21,8 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sign;
 import org.maxgamer.QuickShop.QuickShop;
-import org.maxgamer.QuickShop.Config.ItemConfig;
+
+import cn.citycraft.PluginHelper.utils.LocalUtil;
 
 @SuppressWarnings("deprecation")
 public class Util {
@@ -161,7 +162,7 @@ public class Util {
 	 */
 	public static String getName(final ItemStack i) {
 		// final String vanillaName = getDataName(i.getType(), i.getDurability());
-		final String vanillaName = ItemConfig.getItemName(i);
+		final String vanillaName = LocalUtil.getItemName(i);
 		return prettifyText(vanillaName);
 	}
 
