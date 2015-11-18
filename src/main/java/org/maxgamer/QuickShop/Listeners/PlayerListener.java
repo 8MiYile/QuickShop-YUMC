@@ -157,6 +157,9 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		final Block b = e.getClickedBlock();
+		if (b == null || b.getType() == null) {
+			return;
+		}
 		// If that wasn't a shop, search nearby shops
 		if (b.getType() == Material.WALL_SIGN) {
 			final Block attached = Util.getAttached(b);
