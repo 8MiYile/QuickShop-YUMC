@@ -9,22 +9,17 @@ guititle: '&6[&b快捷商店&6]&r'
 #启用魔改库支持
 usemagiclib: true
 
-#Tax amount (decimal) - Eg, P1 buys $50 worth of stuff from P2.  Therefore, P1 loses $50, P2 gains $(1-0.05)*50, and tax-account gains $(0.05)*50.
+#税收数量 (decimal) - 例如 税收是0.05 玩家1 在玩家2的商店 购买了 50元的东西,那么,玩家1 减少 50, 玩家2 账户增加(1-0.05)*50, 并且 玩家2税收账户增加 (0.05)*50.
 tax: 0.00
-#The fake player who money from taxing people goes to
+#税收账户名称
 tax-account: tax
-#Whether or not to show taxes paid when selling to a shop
+#是否显示税收额度
 show-tax: false
 
-#Should we log transactions/creations to Bukkit\Plugins\QuickShop\qs.log?
+#是否需要记录玩家操作 保存在 服务器根目录\Plugins\QuickShop\qs.log?
 log-actions: true
 
-#For item-item based economies that don't use virtual coins.
-whole-number-prices-only: false
-
-#Force bukkit chat handler (https://github.com/KaiKikuchi/QuickShop/issues/10)
-force-bukkit-chat-handler: false
-
+#数据库配置
 database:
     mysql: false
     host: localhost
@@ -33,25 +28,26 @@ database:
     user: root
     password: passwd
     
-#Limits the number of shops a person can create and own at a single time.
+#限制玩家同一时间最多可以建造的商店
 limits:
-    #Disable these if you're not using them! If this is false, the rest of this section is ignored
+    #关闭则忽略限制
     use: false
-    #The default number of shops players can make
+    #默认限制
     default: 10
-    #Players with these permissions can create these amounts of shops.
+    #如果玩家有以下权限则拥有对应的数量
     ranks:
-        #Anyone with 'quickshop.vip' permissions, can create 20 shops instead of 10.
-        quickshop.vip: 20 #Players with quickshop.vip can make 20 shops.
+        #例如有 'quickshop.vip' 权限, 可以创建20个商店
+        quickshop.vip: 20
 
-#A list of block (materials) which can be used to create shops.
-#By default, chests are added to this list.
-#This will only work for blocks which implement InventoryHolder
-#in other words, no enderchest shops, no shops on dirt blocks, etc.
-#May cause unexpected behaviour with some blocks... Eg don't make a 
-#shop on a hopper (It sucks the display item in) and furnace shops
-#allow players to put whatever item they want in all 3 slots and
-#dispenser shops aren't protected from redstone... Etc.
+#下列列表允许玩家创建商店
+#箱子已经默认添加了
+#他只能工作在继承于 InventoryHolder 的方块上面
+#换句话说就是 末影箱不行 泥土不行 石头也不行 等等...
+#而且不要尝试写入有行为操作的方块
+#例如漏斗 (他会把悬浮物吸进去)
+#例如酿造台 (他不能放置所有物品)
+#例如发射器/投掷器 (他不能被保护 当有红石的时候)
+#注意: 所有非法方块将在下一次载入到服务器时被清理
 shop-blocks:
     - CHEST
     - TRAPPED_CHEST
@@ -75,18 +71,15 @@ shop:
     
     #是否需要自动创建木牌在箱子上?
     auto-sign: true
-    #If a player owns an unlimited shop, should they receive the cash from it or not?
-    #If you buy from YOUR unlimited shop, you will NEVER be charged $$, regardless of this setting
+    #是否给无限商店的店主支付金钱
     pay-unlimited-shop-owners: false
-    #Should we place display items on the chests?
+    #是否显示悬浮物品(拔刀剑MOD必须关闭)
     display-items: true
-    #Should we place item frames on chests?
-    frame-items: true
-    #When someone uses /qs find <item>, how far should we search in blocks?
-    #This command lets users shop quickly without wasting time searching
-    #Settings > 100 WILL cause lag. Don't do it, or don't cry when your server lags.
+    #当使用 /qs find <item>, 能查找多远的商店?
+    #这个命令可能会使服务器Lag 请谨慎调整数据...
+    #如果半径 > 100 可能会导致服务器崩溃. 请不要尝试, 不然你哭都来不及.
     find-distance: 45
 
-#List of items to disallow selling of.  Anyone with quickshop.bypass.<itemID> can bypass it    
+#物品的黑名单. 使用 quickshop.bypass.<itemID> 权限可以忽略限制
 blacklist:
     - 7 #Bedrock
