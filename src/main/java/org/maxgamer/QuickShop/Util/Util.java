@@ -163,7 +163,7 @@ public class Util {
 	public static String getName(final ItemStack i) {
 		// final String vanillaName = getDataName(i.getType(), i.getDurability());
 		final String vanillaName = LocalUtil.getItemName(i);
-		return prettifyText(vanillaName);
+		return vanillaName;
 	}
 
 	// Let's make very long names shorter for our sign
@@ -530,28 +530,6 @@ public class Util {
 			filtered = ChatColor.translateAlternateColorCodes('&', filtered);
 			config.set(key, filtered);
 		}
-	}
-
-	/**
-	 * Converts a name like IRON_INGOT into Iron Ingot to improve readability
-	 *
-	 * @param ugly
-	 *            The string such as IRON_INGOT
-	 * @return A nicer version, such as Iron Ingot
-	 *
-	 */
-	public static String prettifyText(final String ugly) {
-		final String[] nameParts = ugly.split("_");
-		if (nameParts.length == 1) {
-			return firstUppercase(ugly);
-		}
-
-		final StringBuilder sb = new StringBuilder();
-		for (final String part : nameParts) {
-			sb.append(firstUppercase(part) + " ");
-		}
-
-		return sb.toString();
 	}
 
 	public static String serialize(final ItemStack iStack) {

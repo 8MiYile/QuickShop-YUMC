@@ -142,12 +142,9 @@ public class QuickShop extends JavaPlugin {
 	public boolean loadEcon() {
 		final EconomyCore core = new Economy_Vault();
 		if (!core.isValid()) {
-			// getLogger().severe("Economy is not valid!");
 			getLogger().warning("无法找到经济管理类插件...");
 			getLogger().warning("卸载插件!!!");
 			this.getPluginLoader().disablePlugin(this);
-			// if(econ.equals("Vault"))
-			// getLogger().severe("(Does Vault have an Economy to hook into?!)");
 			return false;
 		} else {
 			this.economy = new Economy(core);
@@ -186,12 +183,14 @@ public class QuickShop extends JavaPlugin {
 		/* Empty the buffer */
 		if (database != null) {
 			database.close();
+			try {
+				database.getConnection().close();
+			} catch (final SQLException e) {
+			}
 		}
-		try {
-			this.database.getConnection().close();
-		} catch (final SQLException e) {
+		if (configManager != null) {
+			configManager.getWarnings().clear();
 		}
-		configManager.getWarnings().clear();
 	}
 
 	@Override
