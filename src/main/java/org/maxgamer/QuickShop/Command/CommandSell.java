@@ -30,7 +30,7 @@ public class CommandSell extends BaseCommand {
 		while (bIt.hasNext()) {
 			final Block b = bIt.next();
 			final Shop shop = plugin.getShopManager().getShop(b.getLocation());
-			if (shop != null && shop.getOwner().equals(((Player) sender).getUniqueId())) {
+			if (shop != null && shop.getOwner().equals(((Player) sender).getName())) {
 				shop.setShopType(ShopType.SELLING);
 				shop.setSignText();
 				shop.update();
