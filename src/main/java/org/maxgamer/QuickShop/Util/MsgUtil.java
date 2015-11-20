@@ -82,7 +82,7 @@ public class MsgUtil {
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
-			System.out.println("无法从数据库获得玩家的交易记录 跳过...");
+			plugin.getLogger().warning("无法从数据库获得玩家的交易记录 跳过...");
 		}
 	}
 
@@ -98,6 +98,11 @@ public class MsgUtil {
 			raw = raw.replace("{" + i + "}", args[i] == null ? "null" : args[i].toString());
 		}
 		return raw;
+	}
+
+	public static void reload() {
+		messages.reload();
+		Util.parseColours(messages);
 	}
 
 	/**
