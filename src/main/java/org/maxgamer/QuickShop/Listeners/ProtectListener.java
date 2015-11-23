@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Util.MarkUtil;
@@ -103,15 +104,28 @@ public class ProtectListener implements Listener {
 
 	@EventHandler
 	public void onPlayerHandlerItem(final PlayerItemHeldEvent e) {
-		final Player p = e.getPlayer();
-		final ItemStack[] cis = p.getInventory().getArmorContents();
-		for (final ItemStack itemStack : cis) {
-			if (MarkUtil.hasMark(itemStack)) {
-				Bukkit.broadcastMessage("§6[§b快捷商店§6] §4警告 " + p.getDisplayName() + " §c非法 §e§l穿戴 " + itemStack.getItemMeta().getDisplayName() + " §a已清理...");
-				itemStack.setType(Material.AIR);
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			@Override
+			public void run() {
+				final Player p = e.getPlayer();
+				final PlayerInventory inv = p.getInventory();
+				final ItemStack[] cis = inv.getArmorContents();
+				for (int i = 0; i < cis.length; i++) {
+					final ItemStack itemStack = cis[i];
+					if (MarkUtil.hasMark(itemStack)) {
+						cis[i] = new ItemStack(Material.AIR);
+						Bukkit.broadcastMessage("§6[§b快捷商店§6] §4警告 " + p.getDisplayName() + " §c非法 §e§l穿戴 " + itemStack.getItemMeta().getDisplayName() + " §a已清理...");
+					}
+				}
+				inv.setArmorContents(cis);
+				final int newslot = e.getNewSlot();
+				final ItemStack newItem = inv.getItem(newslot);
+				if (MarkUtil.hasMark(newItem)) {
+					inv.setItem(newslot, new ItemStack(Material.AIR));
+					Bukkit.broadcastMessage("§6[§b快捷商店§6] §4警告 " + p.getDisplayName() + " §c非法 §e§l使用 " + newItem.getItemMeta().getDisplayName() + " §a已清理...");
+				}
 			}
-		}
-		p.getInventory().setArmorContents(cis);
+		});
 	}
 
 	@EventHandler

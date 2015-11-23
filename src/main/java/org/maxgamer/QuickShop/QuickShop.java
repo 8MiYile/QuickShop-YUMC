@@ -55,9 +55,9 @@ import cn.citycraft.PluginHelper.utils.LocalUtil;
 import cn.citycraft.PluginHelper.utils.VersionChecker;
 
 public class QuickShop extends JavaPlugin {
-	/** The active instance of QuickShop */
+	/** 初始化 QuickShop 的接口 */
 	public static QuickShop instance;
-	/** The plugin default config */
+	/** 插件的配置文件 */
 	public FileConfig config;
 	// private HeroChatListener heroChatListener;
 	// Listeners (These don't)
@@ -110,8 +110,6 @@ public class QuickShop extends JavaPlugin {
 		return economy;
 	}
 
-	/** The plugin metrics from Hidendra */
-	// public Metrics getMetrics(){ return metrics; }
 	public int getShopLimit(final Player p) {
 		int max = configManager.getLimitdefault();
 		for (final Entry<String, Integer> entry : configManager.getLimits().entrySet()) {

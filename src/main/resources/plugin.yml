@@ -13,48 +13,48 @@ softdepend:
 website: ${jenkins.url}/job/${project.artifactId}/
 commands:
   qs:
-    description: QuickShop command
+    description: QuickShop 命令
     usage: §c未知的子命令 请输入 §b/qs help §c查看帮助!
     aliases:
     - quickshop
     - shop
 permissions:
   quickshop.create.sell:
-    description: Allows a player to sell from a shop
+    description: 允许玩家创建出售商店
     default: op
   quickshop.create.buy:
-    description: Allows a player to buy from a shop
+    description: 允许玩家创建收购商店
     default: op
   quickshop.create.double:
-    description: Allows a player to create a double shop
+    description: 允许玩家创建双箱商店
     default: op
   quickshop.use:
-    description: Allows a player to buy/sell using other players shops
+    description: 允许玩家在其他商店交易
     default: true
   quickshop.unlimited:
-    description: Allows a Staff Member to use /qs unlimited and make a shop infinite
+    description: 允许玩家使用/qs unlimited创建无限商店
   quickshop.bypass.<itemID>:
-    description: Allows a player to sell <itemID>, even if its blacklisted
+    description: 允许玩家出售 <itemID>, 即使物品在黑名单里
   quickshop.other.destroy:
-    description: Allows a Staff Member to destroy other players shops if they are locked in the config
+    description: 允许玩家摧毁其他玩家的商店
   quickshop.other.open:
-    description: Allows a Staff Member to open someone elses shop if they are locked in the config
+    description: 允许玩家打开其他玩家的商店
   quickshop.other.price:
-    description: Allows a Staff Member to change the price of someone elses shop
+    description: 允许玩家修改商店的价格
   quickshop.setowner:
-    description: Allows a Staff Member to change the owner of any shop
+    description: 允许管理员设置商店的所有者
   quickshop.find:
-    description: Allows a player to locate the nearest shop of a specific item type. Works in a 3 chunk radius.
+    description: 允许玩家查找附近的商店 (限制在3个区块内工作)
     default: true
   quickshop.refill:
-    description: Allows a Staff Member to refill the shop theyre looking at with the given number of items.
+    description: 允许玩家填满商店库存
     default: op
   quickshop.empty:
-    description: Allows a Staff Member to empty the shop theyre looking at of all items.
+    description: 允许玩家清空指定商店
     default: op
   quickshop.debug:
-    description: Enables debug info to console
+    description: 能够从控制台收到调试信息
     default: op
   quickshop.export:
-    description: Allows exporting database to mysql or sqlite
+    description: 允许导出数据到SQLite或者MySQL
     default: op
