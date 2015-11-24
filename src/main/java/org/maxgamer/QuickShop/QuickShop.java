@@ -328,8 +328,8 @@ public class QuickShop extends JavaPlugin {
 		}
 
 		// Command handlers
-		final QuickShopCommands commandExecutor = new QuickShopCommands(this);
-		getCommand("qs").setExecutor(commandExecutor);
+		new QuickShopCommands(this);
+
 		if (configManager.getFindDistance() > 100) {
 			getLogger().warning("商店查找半径过大 可能导致服务器Lag! 推荐使用低于 100 的配置!");
 		}
