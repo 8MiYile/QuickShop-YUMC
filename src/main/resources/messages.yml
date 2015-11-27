@@ -98,6 +98,6 @@ command:
     remove: '&e移除眼前的商店.'
     
 signs:
-  selling: '出售数量: {0}'
-  buying: '收购数量: {0}'
+  selling: '&b出售数量: &3{0}'
+  buying: '&d收购数量: &3{0}'
   price: '每件价格: {0}'

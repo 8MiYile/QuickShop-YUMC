@@ -643,10 +643,10 @@ public class ContainerShop implements Shop {
 				+ loc.getBlockZ() + ")");
 		sb.append(" 所有者: " + getOwner());
 		if (isUnlimited()) {
-			sb.append("无限模式: true");
+			sb.append(" 无限模式: true");
 		}
-		sb.append("价格: " + getPrice());
-		sb.append("物品: " + getItem().toString());
+		sb.append(" 价格: " + getPrice());
+		sb.append(" 物品: " + getItem().toString());
 		return sb.toString();
 	}
 

@@ -287,7 +287,7 @@ public class ShopManager {
 						createShop(shop);
 						p.sendMessage(MsgUtil.p("success-created-shop"));
 						final Location loc = shop.getLocation();
-						plugin.log(String.format("玩家: %s 创建了一个 %s 商店 在 (%s - %s,%s,%s)", p.getName(), shop.getDataName(), loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ()));
+						plugin.log(String.format("玩家: %s 创建了一个 %s 商店 在 (%s - %s, %s, %s)", p.getName(), shop.getDataName(), loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ()));
 						if (!plugin.getConfig().getBoolean("shop.lock")) {
 							// Warn them if they haven't been warned since
 							// reboot
