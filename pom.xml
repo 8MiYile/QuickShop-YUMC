@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.6.3.1</version>
+	<version>1.6.3.2</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -54,7 +54,7 @@
 	</build>
 	<properties>
 		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
-		<update.description>&amp;4修复下载问题 &amp;a修改扫描流程 &amp;c发现非法物品后扫描玩家背包...</update.description>
+		<update.description>&amp;a修改扫描流程 &amp;c修复设置玩家命令错误...</update.description>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>

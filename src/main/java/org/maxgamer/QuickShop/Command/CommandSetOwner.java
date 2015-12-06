@@ -1,6 +1,5 @@
 package org.maxgamer.QuickShop.Command;
 
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
@@ -19,27 +18,22 @@ public class CommandSetOwner extends BaseCommand {
 	public CommandSetOwner(final QuickShop plugin) {
 		super("so");
 		this.plugin = plugin;
-		setPermission("quickshop.setowner");
 		setOnlyPlayerExecutable();
+		setMinimumArguments(1);
+		setPermission("quickshop.setowner");
 		setDescription(MsgUtil.p("command.description.setowner"));
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
-		if (args.length < 2) {
-			sender.sendMessage(MsgUtil.p("command.no-owner-given"));
-			return;
-		}
 		final BlockIterator bIt = new BlockIterator((Player) sender, 10);
 		while (bIt.hasNext()) {
 			final Block b = bIt.next();
 			final Shop shop = plugin.getShopManager().getShop(b.getLocation());
 			if (shop != null) {
-				final OfflinePlayer p = this.plugin.getServer().getOfflinePlayer(args[1]);
-				shop.setOwner(p.getName());
+				shop.setOwner(args[0]);
 				shop.update();
-				sender.sendMessage(MsgUtil.p("command.new-owner", this.plugin.getServer().getOfflinePlayer(shop.getOwner()).getName()));
+				sender.sendMessage(MsgUtil.p("command.new-owner", args[0]));
 				return;
 			}
 		}
