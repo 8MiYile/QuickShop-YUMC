@@ -12,45 +12,43 @@ import cn.citycraft.PluginHelper.config.FileConfig;
 import cn.citycraft.PluginHelper.tellraw.FancyMessage;
 
 public class ConfigManager {
-	protected boolean enableMagicLib = false;
+	private boolean enableMagicLib = false;
 	/** Whether debug info should be shown in the console */
-	protected boolean debug = false;
+	private final boolean debug = false;
 
 	/** Whether we should use display items or not */
-	protected boolean display = true;
-	protected double feeForPriceChange = 0.0;
-	protected int findDistance = 30;
-	protected String guiTitle = "§6[§b快捷商店§6]";
+	private boolean display = true;
+	private double feeForPriceChange = 0.0;
+	private int findDistance = 30;
+	private String guiTitle = "§6[§b快捷商店§6]§r";
 	/** Whether or not to limit players shop amounts */
-	protected boolean limit = false;
+	private boolean limit = false;
 
-	protected int limitdefault = 0;
-	protected final HashMap<String, Integer> limits = new HashMap<String, Integer>();
-	protected boolean logAction = true;
-	protected boolean preventhopper = false;
+	private int limitdefault = 0;
+	private final HashMap<String, Integer> limits = new HashMap<>();
+	private boolean logAction = true;
+	private boolean preventhopper = false;
 	/**
 	 * Whether we players are charged a fee to change the price on their shop
 	 * (To help deter endless undercutting
 	 */
-	protected boolean priceChangeRequiresFee = false;
-	protected boolean shopLock = true;
-	protected boolean showTax = false;
+	private boolean priceChangeRequiresFee = false;
+	private boolean shopLock = true;
+	private boolean showTax = false;
 	/** Whether players are required to sneak to create/buy from a shop */
-	protected boolean sneak = false;
+	private boolean sneak = false;
 	/** Whether players are required to sneak to create a shop */
-	protected boolean sneakCreate = false;
+	private boolean sneakCreate = false;
 	/** Whether players are required to sneak to trade with a shop */
-	protected boolean sneakTrade = false;
-	protected Material superItem = Material.GOLD_AXE;
-	protected double tax = 0;
-	protected String taxAccount;
-	/** Use SpoutPlugin to get item / block names */
-	protected boolean useSpout = false;
+	private boolean sneakTrade = false;
+	private Material superItem = Material.GOLD_AXE;
+	private double tax = 0;
+	private final String taxAccount;
 	/**
 	 * A set of players who have been warned
 	 * ("Your shop isn't automatically locked")
 	 */
-	protected HashSet<String> warnings = new HashSet<String>();
+	private final HashSet<String> warnings = new HashSet<>();
 
 	public ConfigManager(final QuickShop plugin) {
 		final FileConfig config = (FileConfig) plugin.getConfig();
@@ -64,7 +62,7 @@ public class ConfigManager {
 			}
 		}
 		try {
-			this.superItem = Enum.valueOf(Material.class, config.getString("superitem"));
+			this.superItem = Material.valueOf(config.getString("superitem"));
 		} catch (final Exception e) {
 		}
 		this.tax = config.getDouble("tax");
@@ -80,7 +78,7 @@ public class ConfigManager {
 		this.findDistance = config.getInt("shop.find-distance");
 		this.feeForPriceChange = config.getDouble("shop.fee-for-price-change");
 		this.preventhopper = config.getBoolean("preventhopper");
-		this.guiTitle = config.getMessage("guititle");
+		this.guiTitle = config.getMessage("guititle", guiTitle);
 		if (config.getBoolean("usemagiclib", true)) {
 			try {
 				plugin.getLogger().info("启用魔改库 尝试启动中...");
@@ -181,10 +179,6 @@ public class ConfigManager {
 
 	public boolean isSneakTrade() {
 		return sneakTrade;
-	}
-
-	public boolean isUseSpout() {
-		return useSpout;
 	}
 
 	public void setEnableMagicLib(final boolean enableMagicLib) {
