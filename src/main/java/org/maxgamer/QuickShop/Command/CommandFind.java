@@ -20,7 +20,7 @@ public class CommandFind extends BaseCommand {
 	QuickShop plugin;
 
 	public CommandFind(final QuickShop plugin) {
-		super("find");
+		super("f");
 		this.plugin = plugin;
 		setMinimumArguments(2);
 		setOnlyPlayerExecutable();

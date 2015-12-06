@@ -16,7 +16,7 @@ public class CommandRefill extends BaseCommand {
 	QuickShop plugin;
 
 	public CommandRefill(final QuickShop plugin) {
-		super("refill");
+		super("r");
 		this.plugin = plugin;
 		setMinimumArguments(1);
 		setPossibleArguments("<数量>");

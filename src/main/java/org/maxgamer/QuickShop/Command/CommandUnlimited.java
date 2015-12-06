@@ -16,7 +16,7 @@ public class CommandUnlimited extends BaseCommand {
 	QuickShop plugin;
 
 	public CommandUnlimited(final QuickShop plugin) {
-		super("unlimited");
+		super("u");
 		this.plugin = plugin;
 		setOnlyPlayerExecutable();
 		setPermission("quickshop.unlimited");

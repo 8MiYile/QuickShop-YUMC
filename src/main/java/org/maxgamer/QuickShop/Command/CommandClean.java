@@ -16,7 +16,7 @@ public class CommandClean extends BaseCommand {
 	QuickShop plugin;
 
 	public CommandClean(final QuickShop plugin) {
-		super("clean");
+		super("c");
 		this.plugin = plugin;
 		setPermission("quickshop.clean");
 		setDescription(MsgUtil.p("command.description.clean"));

@@ -17,7 +17,7 @@ public class CommandSetOwner extends BaseCommand {
 	QuickShop plugin;
 
 	public CommandSetOwner(final QuickShop plugin) {
-		super("setowner");
+		super("so");
 		this.plugin = plugin;
 		setPermission("quickshop.setowner");
 		setOnlyPlayerExecutable();

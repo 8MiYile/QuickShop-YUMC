@@ -17,7 +17,7 @@ public class CommandPrice extends BaseCommand {
 	QuickShop plugin;
 
 	public CommandPrice(final QuickShop plugin) {
-		super("price");
+		super("p");
 		this.plugin = plugin;
 		setMinimumArguments(1);
 		setOnlyPlayerExecutable();

@@ -17,7 +17,7 @@ public class CommandSell extends BaseCommand {
 	QuickShop plugin;
 
 	public CommandSell(final QuickShop plugin) {
-		super("sell");
+		super("s");
 		this.plugin = plugin;
 		setPermission("quickshop.create.sell");
 		setOnlyPlayerExecutable();

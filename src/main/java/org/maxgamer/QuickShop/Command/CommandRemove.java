@@ -17,7 +17,7 @@ public class CommandRemove extends BaseCommand {
 	QuickShop plugin;
 
 	public CommandRemove(final QuickShop plugin) {
-		super("remove", "delete");
+		super("r");
 		this.plugin = plugin;
 		setOnlyPlayerExecutable();
 		setPermission("quickshop.delete");
