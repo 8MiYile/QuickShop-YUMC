@@ -95,7 +95,7 @@ public class ProtectListener implements Listener {
 		try {
 			if (MarkUtil.hasMark(ci)) {
 				inv.setItem(solt, new ItemStack(Material.AIR));
-				Bukkit.broadcastMessage("§6[§b快捷商店§6] §4警告 " + p.getDisplayName() + " §c非法 §d§l获取 " + ci.getItemMeta().getDisplayName() + " §a已清理...");
+				sendWarning(p, ci, "§d§l获取");
 				p.closeInventory();
 			}
 		} catch (final Exception ex) {
@@ -114,7 +114,7 @@ public class ProtectListener implements Listener {
 					final ItemStack itemStack = cis[i];
 					if (MarkUtil.hasMark(itemStack)) {
 						cis[i] = new ItemStack(Material.AIR);
-						Bukkit.broadcastMessage("§6[§b快捷商店§6] §4警告 " + p.getDisplayName() + " §c非法 §e§l穿戴 " + itemStack.getItemMeta().getDisplayName() + " §a已清理...");
+						sendWarning(p, itemStack, "§e§l穿戴");
 					}
 				}
 				inv.setArmorContents(cis);
@@ -122,7 +122,7 @@ public class ProtectListener implements Listener {
 				final ItemStack newItem = inv.getItem(newslot);
 				if (MarkUtil.hasMark(newItem)) {
 					inv.setItem(newslot, new ItemStack(Material.AIR));
-					Bukkit.broadcastMessage("§6[§b快捷商店§6] §4警告 " + p.getDisplayName() + " §c非法 §e§l使用 " + newItem.getItemMeta().getDisplayName() + " §a已清理...");
+					sendWarning(p, newItem, "§3§l使用");
 				}
 			}
 		});
@@ -134,5 +134,10 @@ public class ProtectListener implements Listener {
 		if (MarkUtil.hasMark(ci)) {
 			e.setCancelled(true);
 		}
+	}
+
+	private void sendWarning(final Player p, final ItemStack ci, final String action) {
+		Bukkit.broadcastMessage(plugin.getConfigManager().getGuiTitle() + " §4警告 " + p.getDisplayName() + " §c非法 " + action + " " + ci.getItemMeta().getDisplayName());
+		Bukkit.broadcastMessage(plugin.getConfigManager().getGuiTitle() + " §d保护系统 §d已清理 §c非法获取的物品 §a并扫描玩家背包...");
 	}
 }
