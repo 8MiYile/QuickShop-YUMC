@@ -1,5 +1,6 @@
 package org.maxgamer.QuickShop.Util;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import cn.citycraft.PluginHelper.utils.LocalUtil;
 @SuppressWarnings("deprecation")
 public class Util {
 	private static HashSet<Material> blacklist = new HashSet<Material>();
+	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 	private static QuickShop plugin;
 	private static HashSet<Material> shoppables = new HashSet<Material>();
 	private static HashSet<Material> tools = new HashSet<Material>();
@@ -128,9 +130,9 @@ public class Util {
 	 */
 	public static String format(final double n) {
 		try {
-			return plugin.getEcon().format(n);
+			return DECIMAL_FORMAT.format(n) + plugin.getEcon().currencyNamePlural();
 		} catch (final NumberFormatException e) {
-			return "" + n;
+			return n + "元";
 		}
 	}
 

@@ -3,53 +3,91 @@ package org.maxgamer.QuickShop.Economy;
 import java.util.UUID;
 
 public class Economy implements EconomyCore {
-	private EconomyCore core;
+	private final EconomyCore core;
 
-	public Economy(EconomyCore core) {
+	public Economy(final EconomyCore core) {
 		this.core = core;
 	}
 
-	/**
-	 * Checks that this economy is valid. Returns false if it is not valid.
-	 * 
-	 * @return True if this economy will work, false if it will not.
-	 */
-	public boolean isValid() {
-		return core.isValid();
+	@Override
+	public String currencyNamePlural() {
+		return this.core.currencyNamePlural();
 	}
 
 	/**
 	 * Deposits a given amount of money from thin air to the given username.
-	 * 
+	 *
 	 * @param name
 	 *            The exact (case insensitive) username to give money to
 	 * @param amount
 	 *            The amount to give them
 	 * @return True if success (Should be almost always)
 	 */
+	@Override
 	@Deprecated
-	public boolean deposit(String name, double amount) {
-		return core.deposit(name, amount);
+	public boolean deposit(final String name, final double amount) {
+		return this.core.deposit(name, amount);
+	}
+
+	@Override
+	public boolean deposit(final UUID name, final double amount) {
+		return this.core.deposit(name, amount);
 	}
 
 	/**
-	 * Withdraws a given amount of money from the given username and turns it to
-	 * thin air.
-	 * 
-	 * @param name
-	 *            The exact (case insensitive) username to take money from
-	 * @param amount
-	 *            The amount to take from them
-	 * @return True if success, false if they didn't have enough cash
+	 * Formats the given number... E.g. 50.5 becomes $50.5 Dollars, or 50
+	 * Dollars 5 Cents
+	 *
+	 * @param balance
+	 *            The given number
+	 * @return The balance in human readable text.
 	 */
+	@Override
+	public String format(final double balance) {
+		return this.core.format(balance);
+	}
+
+	/**
+	 * Fetches the balance of the given account name
+	 *
+	 * @param name
+	 *            The name of the account
+	 * @return Their current balance.
+	 */
+	@Override
 	@Deprecated
-	public boolean withdraw(String name, double amount) {
-		return core.withdraw(name, amount);
+	public double getBalance(final String name) {
+		return this.core.getBalance(name);
+	}
+
+	@Override
+	public double getBalance(final UUID name) {
+		return this.core.getBalance(name);
+	}
+
+	@Deprecated
+	public boolean has(final String name, final double amount) {
+		return this.core.getBalance(name) >= amount;
+	}
+
+	/**
+	 * Checks that this economy is valid. Returns false if it is not valid.
+	 *
+	 * @return True if this economy will work, false if it will not.
+	 */
+	@Override
+	public boolean isValid() {
+		return this.core.isValid();
+	}
+
+	@Override
+	public String toString() {
+		return this.core.getClass().getName().split("_")[1];
 	}
 
 	/**
 	 * Transfers the given amount of money from Player1 to Player2
-	 * 
+	 *
 	 * @param from
 	 *            The player who is paying money
 	 * @param to
@@ -59,61 +97,35 @@ public class Economy implements EconomyCore {
 	 * @return true if success (Payer had enough cash, receiver was able to
 	 *         receive the funds)
 	 */
+	@Override
 	@Deprecated
-	public boolean transfer(String from, String to, double amount) {
-		return core.transfer(from, to, amount);
+	public boolean transfer(final String from, final String to, final double amount) {
+		return this.core.transfer(from, to, amount);
+	}
+
+	@Override
+	public boolean transfer(final UUID from, final UUID to, final double amount) {
+		return this.core.transfer(from, to, amount);
 	}
 
 	/**
-	 * Fetches the balance of the given account name
-	 * 
+	 * Withdraws a given amount of money from the given username and turns it to
+	 * thin air.
+	 *
 	 * @param name
-	 *            The name of the account
-	 * @return Their current balance.
+	 *            The exact (case insensitive) username to take money from
+	 * @param amount
+	 *            The amount to take from them
+	 * @return True if success, false if they didn't have enough cash
 	 */
+	@Override
 	@Deprecated
-	public double getBalance(String name) {
-		return core.getBalance(name);
-	}
-
-	/**
-	 * Formats the given number... E.g. 50.5 becomes $50.5 Dollars, or 50
-	 * Dollars 5 Cents
-	 * 
-	 * @param balance
-	 *            The given number
-	 * @return The balance in human readable text.
-	 */
-	public String format(double balance) {
-		return core.format(balance);
-	}
-	@Deprecated
-	public boolean has(String name, double amount) {
-		return core.getBalance(name) >= amount;
+	public boolean withdraw(final String name, final double amount) {
+		return this.core.withdraw(name, amount);
 	}
 
 	@Override
-	public String toString() {
-		return core.getClass().getName().split("_")[1];
-	}
-
-	@Override
-	public boolean deposit(UUID name, double amount) {
-		return core.deposit(name,amount);
-	}
-
-	@Override
-	public boolean withdraw(UUID name, double amount) {
-		return core.withdraw(name, amount);
-	}
-
-	@Override
-	public boolean transfer(UUID from, UUID to, double amount) {
-		return core.transfer(from, to, amount);
-	}
-
-	@Override
-	public double getBalance(UUID name) {
-		return core.getBalance(name);
+	public boolean withdraw(final UUID name, final double amount) {
+		return this.core.withdraw(name, amount);
 	}
 }

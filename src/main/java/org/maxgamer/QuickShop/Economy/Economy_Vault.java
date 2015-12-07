@@ -16,6 +16,11 @@ public class Economy_Vault implements EconomyCore {
 	}
 
 	@Override
+	public String currencyNamePlural() {
+		return this.vault.currencyNamePlural();
+	}
+
+	@Override
 	@Deprecated
 	public boolean deposit(final String name, final double amount) {
 		return this.vault.depositPlayer(name, amount).transactionSuccess();
