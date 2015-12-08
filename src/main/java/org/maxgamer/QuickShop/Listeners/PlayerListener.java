@@ -172,19 +172,16 @@ public class PlayerListener implements Listener {
 						shop.setUnlimited(!shop.isUnlimited());
 						shopmode = shop.isUnlimited() ? "§e无限模式" : "§c有限模式";
 						p.sendMessage(MsgUtil.p("command.toggle-unlimited", shopmode));
-						return;
 					}
 				} else {
 					if (shop.getShopType() == ShopType.BUYING && p.hasPermission("quickshop.create.sell") && (shop.getOwner().equalsIgnoreCase(p.getName()) || p.isOp())) {
 						shop.setShopType(ShopType.SELLING);
 						p.sendMessage(MsgUtil.p("command.now-selling", shop.getDataName()));
 						shopmode = "出售模式";
-						return;
 					} else if (shop.getShopType() == ShopType.SELLING && p.hasPermission("quickshop.create.buy") && (shop.getOwner().equalsIgnoreCase(p.getName()) || p.isOp())) {
 						shop.setShopType(ShopType.BUYING);
 						p.sendMessage(MsgUtil.p("command.now-buying", shop.getDataName()));
 						shopmode = "收购模式";
-						return;
 					}
 				}
 				if (!shopmode.isEmpty()) {
