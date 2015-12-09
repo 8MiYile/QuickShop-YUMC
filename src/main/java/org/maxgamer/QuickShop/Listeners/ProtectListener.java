@@ -138,6 +138,6 @@ public class ProtectListener implements Listener {
 
 	private void sendWarning(final Player p, final ItemStack ci, final String action) {
 		Bukkit.broadcastMessage(plugin.getConfigManager().getGuiTitle() + " §4警告 " + p.getDisplayName() + " §c非法 " + action + " " + ci.getItemMeta().getDisplayName());
-		Bukkit.broadcastMessage(plugin.getConfigManager().getGuiTitle() + " §d保护系统 §d已清理 §c非法获取的物品 §a并扫描玩家背包...");
+		Bukkit.broadcastMessage(plugin.getConfigManager().getGuiTitle() + " §4提示 §d系统 §d已清理 §a" + p.getName() + " §c非法获取的物品 §a并扫描玩家背包...");
 	}
 }
