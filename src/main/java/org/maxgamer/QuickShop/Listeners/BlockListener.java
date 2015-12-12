@@ -61,9 +61,8 @@ public class BlockListener implements Listener {
 			final Shop shop = getShopNextTo(b.getLocation());
 			if (shop == null) {
 				return;
-			} else {
-				e.setCancelled(true);
 			}
+			e.setCancelled(true);
 		}
 	}
 

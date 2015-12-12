@@ -117,9 +117,8 @@ public class Util {
 	public static String firstUppercase(final String string) {
 		if (string.length() > 1) {
 			return Character.toUpperCase(string.charAt(0)) + string.substring(1).toLowerCase();
-		} else {
-			return string.toUpperCase();
 		}
+		return string.toUpperCase();
 	}
 
 	/**
@@ -413,10 +412,9 @@ public class Util {
 		if (loc.getWorld().isChunkLoaded(x, z)) {
 			// System.out.println("Chunk is loaded " + x + ", " + z);
 			return true;
-		} else {
-			// System.out.println("Chunk is NOT loaded " + x + ", " + z);
-			return false;
 		}
+		// System.out.println("Chunk is NOT loaded " + x + ", " + z);
+		return false;
 	}
 
 	/**

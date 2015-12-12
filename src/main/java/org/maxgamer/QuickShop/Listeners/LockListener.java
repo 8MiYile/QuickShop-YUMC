@@ -50,9 +50,8 @@ public class LockListener implements Listener {
 			final Shop shop = plugin.getShopManager().getShop(b.getLocation());
 			if (shop == null) {
 				return;
-			} else {
-				e.setCancelled(true);
 			}
+			e.setCancelled(true);
 		}
 	}
 
@@ -131,9 +130,8 @@ public class LockListener implements Listener {
 			c = Util.getSecondHalf(c);
 			if (c == null) {
 				return; // You didn't place a hopper on a shop. Meh.
-			} else {
-				shop = plugin.getShopManager().getShop(c.getLocation());
 			}
+			shop = plugin.getShopManager().getShop(c.getLocation());
 			if (shop == null) {
 				return;
 			}

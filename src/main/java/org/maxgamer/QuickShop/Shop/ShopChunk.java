@@ -1,18 +1,31 @@
 package org.maxgamer.QuickShop.Shop;
 
 public class ShopChunk {
-	private String world;
-	private int x;
-	private int z;
+	private final String world;
+	private final int x;
+	private final int z;
 	private int hash = 0;
 
-	public ShopChunk(String world, int x, int z) {
+	public ShopChunk(final String world, final int x, final int z) {
 		this.world = world;
 		this.x = x;
 		this.z = z;
-		this.hash = this.x * this.z; 	// We don't need to use the world's hash,
+		this.hash = this.x * this.z; // We don't need to use the world's hash,
 										// as these are seperated by world in
 										// memory
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final ShopChunk shopChunk = (ShopChunk) obj;
+		return (this.getWorld().equals(shopChunk.getWorld()) && this.getX() == shopChunk.getX() && this.getZ() == shopChunk.getZ());
+	}
+
+	public String getWorld() {
+		return this.world;
 	}
 
 	public int getX() {
@@ -21,20 +34,6 @@ public class ShopChunk {
 
 	public int getZ() {
 		return this.z;
-	}
-
-	public String getWorld() {
-		return this.world;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj.getClass() != this.getClass()) {
-			return false;
-		} else {
-			ShopChunk shopChunk = (ShopChunk) obj;
-			return (this.getWorld().equals(shopChunk.getWorld()) && this.getX() == shopChunk.getX() && this.getZ() == shopChunk.getZ());
-		}
 	}
 
 	@Override

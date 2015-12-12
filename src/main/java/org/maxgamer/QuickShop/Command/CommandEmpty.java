@@ -34,11 +34,10 @@ public class CommandEmpty extends BaseCommand {
 					final ContainerShop cs = (ContainerShop) shop;
 					cs.getInventory().clear();
 					sender.sendMessage(MsgUtil.p("empty-success"));
-					return;
 				} else {
 					sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
-					return;
 				}
+				return;
 			}
 		}
 		sender.sendMessage(MsgUtil.p("not-looking-at-shop"));

@@ -420,13 +420,11 @@ public class ContainerShop implements Shop {
 				// They're both buying or both selling => Not a double shop,
 				// just two shops.
 				return false;
-			} else {
-				// One is buying, one is selling.
-				return true;
 			}
-		} else {
-			return false;
+			// One is buying, one is selling.
+			return true;
 		}
+		return false;
 	}
 
 	@Override

@@ -144,10 +144,9 @@ public class QuickShop extends JavaPlugin {
 			getLogger().warning("卸载插件!!!");
 			this.getPluginLoader().disablePlugin(this);
 			return false;
-		} else {
-			this.economy = new Economy(core);
-			return true;
 		}
+		this.economy = new Economy(core);
+		return true;
 	}
 
 	/**
