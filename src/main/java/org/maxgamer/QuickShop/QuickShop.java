@@ -196,6 +196,7 @@ public class QuickShop extends JavaPlugin {
 		if (loadEcon() == false) {
 			return;
 		}
+		LocalUtil.init(this);
 		// Initialize Util
 		Util.initialize();
 		// Create the shop manager.
@@ -339,7 +340,6 @@ public class QuickShop extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		config = new FileConfig(this);
-		LocalUtil.reload();
 		MsgUtil.init(this);
 	}
 
@@ -347,6 +347,6 @@ public class QuickShop extends JavaPlugin {
 	@Override
 	public void reloadConfig() {
 		config.reload();
-		LocalUtil.reload();
+		LocalUtil.reload(this);
 	}
 }

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.6.5</version>
+	<version>1.6.6</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -54,7 +54,8 @@
 	</build>
 	<properties>
 		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
-		<update.description>&amp;c修复超级工具修改无法保存数据的问题...</update.description>
+		<env.BUILD_NUMBER>DEBUG</env.BUILD_NUMBER>
+		<update.description>&amp;c修改本地化工具载入为异步(&amp;a妈妈再也不担心卡服啦&amp;c)...</update.description>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>
