@@ -149,6 +149,91 @@ public class QuickShop extends JavaPlugin {
 		return true;
 	}
 
+	public void loadShop() {
+		loadShop(false);
+	}
+
+	public void loadShop(final boolean async) {
+		if (!async && !LocalUtil.isInit()) {
+			this.getLogger().warning("本地化工具尚未初始化完成 商店将在稍后载入...");
+			this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
+				@Override
+				public void run() {
+					loadShop(true);
+				}
+			});
+			return;
+		}
+		while (LocalUtil.isInit()) {
+			try {
+				Thread.sleep(500);
+			} catch (final InterruptedException e) {
+			}
+		}
+		/* Load shops from database to memory */
+		int count = 0; // Shops count
+		int unload = 0;
+		Connection con;
+		try {
+			getLogger().info("本地化工具载入完成 从数据库载入商店数据...");
+			con = database.getConnection();
+			final PreparedStatement ps = con.prepareStatement("SELECT * FROM shops");
+			final ResultSet rs = ps.executeQuery();
+			int errors = 0;
+			while (rs.next()) {
+				int x = 0;
+				int y = 0;
+				int z = 0;
+				String worldName = null;
+				try {
+					x = rs.getInt("x");
+					y = rs.getInt("y");
+					z = rs.getInt("z");
+					worldName = rs.getString("world");
+					final World world = Bukkit.getWorld(worldName);
+					final ItemStack item = Util.deserialize(rs.getString("itemConfig"));
+					final String owner = rs.getString("owner");
+					final double price = rs.getDouble("price");
+					final Location loc = new Location(world, x, y, z);
+					/* Skip invalid shops, if we know of any */
+					if (world != null && loc.getChunk().isLoaded() && (loc.getBlock().getState() instanceof InventoryHolder) == false) {
+						getLogger().info("商店不是一个可存储的方块 坐标 " + rs.getString("world") + ", " + x + ", " + y + ", " + z + ". 删除...");
+						database.execute("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?", x, y, z, worldName);
+						continue;
+					}
+					final int type = rs.getInt("type");
+					final Shop shop = new ContainerShop(loc, price, item, owner);
+					shop.setUnlimited(rs.getBoolean("unlimited"));
+					shop.setShopType(ShopType.fromID(type));
+					shopManager.loadShop(rs.getString("world"), shop);
+					if (loc.getWorld() != null && loc.getChunk().isLoaded()) {
+						shop.onLoad();
+					}
+					count++;
+				} catch (final IllegalStateException e) {
+					unload++;
+				} catch (final Exception e) {
+					errors++;
+					e.printStackTrace();
+					getLogger().warning("载入商店数据时发生错误! 商店位置: " + worldName + " (" + x + ", " + y + ", " + z + ")...");
+					if (errors < 3) {
+						getLogger().warning("删除错误的商店数据...");
+						database.execute("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?", x, y, z, worldName);
+					} else {
+						getLogger().warning("过多的错误数据 可能您的数据库文件已损坏! 请检查数据库文件!");
+						e.printStackTrace();
+						break;
+					}
+				}
+			}
+		} catch (final SQLException e) {
+			getLogger().warning("无法载入商店数据...");
+			getLogger().warning("错误信息: " + e.getMessage());
+			e.printStackTrace();
+		}
+		getLogger().info("已载入 " + count + " 个商店 剩余 " + unload + " 个商店将在区块载入后加载...");
+	}
+
 	/**
 	 * Logs the given string to qs.log, if QuickShop is configured to do so.
 	 *
@@ -238,68 +323,7 @@ public class QuickShop extends JavaPlugin {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-		/* Load shops from database to memory */
-		int count = 0; // Shops count
-		int unload = 0;
-		Connection con;
-		try {
-			getLogger().info("从数据库载入商店数据...");
-			con = database.getConnection();
-			final PreparedStatement ps = con.prepareStatement("SELECT * FROM shops");
-			final ResultSet rs = ps.executeQuery();
-			int errors = 0;
-			while (rs.next()) {
-				int x = 0;
-				int y = 0;
-				int z = 0;
-				String worldName = null;
-				try {
-					x = rs.getInt("x");
-					y = rs.getInt("y");
-					z = rs.getInt("z");
-					worldName = rs.getString("world");
-					final World world = Bukkit.getWorld(worldName);
-					final ItemStack item = Util.deserialize(rs.getString("itemConfig"));
-					final String owner = rs.getString("owner");
-					final double price = rs.getDouble("price");
-					final Location loc = new Location(world, x, y, z);
-					/* Skip invalid shops, if we know of any */
-					if (world != null && loc.getChunk().isLoaded() && (loc.getBlock().getState() instanceof InventoryHolder) == false) {
-						getLogger().info("商店不是一个可存储的方块 坐标 " + rs.getString("world") + ", " + x + ", " + y + ", " + z + ". 删除...");
-						database.execute("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?", x, y, z, worldName);
-						continue;
-					}
-					final int type = rs.getInt("type");
-					final Shop shop = new ContainerShop(loc, price, item, owner);
-					shop.setUnlimited(rs.getBoolean("unlimited"));
-					shop.setShopType(ShopType.fromID(type));
-					shopManager.loadShop(rs.getString("world"), shop);
-					if (loc.getWorld() != null && loc.getChunk().isLoaded()) {
-						shop.onLoad();
-					}
-					count++;
-				} catch (final IllegalStateException e) {
-					unload++;
-				} catch (final Exception e) {
-					errors++;
-					e.printStackTrace();
-					getLogger().warning("载入商店数据时发生错误! 商店位置: " + worldName + " (" + x + ", " + y + ", " + z + ")...");
-					if (errors < 3) {
-						getLogger().warning("删除错误的商店数据...");
-						database.execute("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?", x, y, z, worldName);
-					} else {
-						getLogger().warning("过多的错误数据 可能您的数据库文件已损坏! 请检查数据库文件!");
-						e.printStackTrace();
-						break;
-					}
-				}
-			}
-		} catch (final SQLException e) {
-			getLogger().warning("无法载入商店数据...");
-			getLogger().warning("错误信息: " + e.getMessage());
-			e.printStackTrace();
-		}
-		getLogger().info("已载入 " + count + " 个商店 剩余 " + unload + " 个商店将在区块载入后加载...");
+		loadShop();
 		MsgUtil.loadTransactionMessages();
 		MsgUtil.clean();
 		// Register events
