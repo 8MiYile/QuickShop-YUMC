@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
@@ -150,32 +151,31 @@ public class QuickShop extends JavaPlugin {
 	}
 
 	public void loadShop() {
-		loadShop(false);
-	}
-
-	public void loadShop(final boolean async) {
-		if (!async && !LocalUtil.isInit()) {
-			this.getLogger().warning("本地化工具尚未初始化完成 商店将在稍后载入...");
+		if (!LocalUtil.isInit()) {
+			this.getLogger().warning("本地化工具尚未初始化完成 商店汉化信息将在稍后刷新...");
 			this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
 				@Override
 				public void run() {
-					loadShop(true);
+					while (!LocalUtil.isInit()) {
+						try {
+							Thread.sleep(500);
+						} catch (final InterruptedException e) {
+						}
+					}
+					getLogger().info("本地化工具载入完成 刷新汉化信息...");
+					final Iterator<Shop> shops = shopManager.getShopIterator();
+					while (shops.hasNext()) {
+						shops.next().onClick();
+					}
 				}
 			});
-			return;
 		}
-		while (LocalUtil.isInit()) {
-			try {
-				Thread.sleep(500);
-			} catch (final InterruptedException e) {
-			}
-		}
-		/* Load shops from database to memory */
-		int count = 0; // Shops count
+		/* 从数据库载入商店信息到内存 */
+		int count = 0; // 商店个数
 		int unload = 0;
 		Connection con;
 		try {
-			getLogger().info("本地化工具载入完成 从数据库载入商店数据...");
+			getLogger().info("开始从数据库载入商店数据...");
 			con = database.getConnection();
 			final PreparedStatement ps = con.prepareStatement("SELECT * FROM shops");
 			final ResultSet rs = ps.executeQuery();

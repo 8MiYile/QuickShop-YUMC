@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.6.6</version>
+	<version>1.6.6.1</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -55,7 +55,7 @@
 	<properties>
 		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
 		<env.BUILD_NUMBER>DEBUG</env.BUILD_NUMBER>
-		<update.description>&amp;c修改本地化工具载入为异步(&amp;a妈妈再也不担心卡服啦&amp;c)...</update.description>
+		<update.description>&amp;c修复异步载入商店信息未刷新的问题...</update.description>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>
