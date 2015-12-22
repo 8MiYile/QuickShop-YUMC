@@ -162,16 +162,13 @@ public class Util {
 	 * @return The human readable item name.
 	 */
 	public static String getName(final ItemStack i) {
-		// final String vanillaName = getDataName(i.getType(), i.getDurability());
-		final String vanillaName = LocalUtil.getItemName(i);
+		final String vanillaName = LocalUtil.getItemFullName(i);
 		return vanillaName;
 	}
 
 	// Let's make very long names shorter for our sign
 	public static String getNameForSign(final ItemStack itemStack) {
-		// final String name = getDataName(itemStack.getType(), itemStack.getDurability());
 		String name = getName(itemStack);
-
 		if (name.length() > 16) {
 			name = name.substring(0, 16);
 		}

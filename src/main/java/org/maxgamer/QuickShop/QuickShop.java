@@ -156,16 +156,24 @@ public class QuickShop extends JavaPlugin {
 			this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
 				@Override
 				public void run() {
-					while (!LocalUtil.isInit()) {
-						try {
-							Thread.sleep(500);
-						} catch (final InterruptedException e) {
+					int error = 0;
+					try {
+						while (!LocalUtil.isInit()) {
+							try {
+								Thread.sleep(500);
+							} catch (final InterruptedException e) {
+							}
 						}
+						getLogger().info("本地化工具载入完成 刷新汉化信息...");
+						final Iterator<Shop> shops = shopManager.getShopIterator();
+						while (shops.hasNext()) {
+							shops.next().onClick();
+						}
+					} catch (final Exception e) {
+						error++;
 					}
-					getLogger().info("本地化工具载入完成 刷新汉化信息...");
-					final Iterator<Shop> shops = shopManager.getShopIterator();
-					while (shops.hasNext()) {
-						shops.next().onClick();
+					if (error != 0) {
+						getLogger().info("信息刷新完成 期间发生 " + error + " 个错误 已忽略(不是BUG 无需反馈)...");
 					}
 				}
 			});
