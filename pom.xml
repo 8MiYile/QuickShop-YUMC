@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.6.7</version>
+	<version>1.6.7.1</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -55,7 +55,7 @@
 	<properties>
 		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
 		<env.BUILD_NUMBER>DEBUG</env.BUILD_NUMBER>
-		<update.description>&amp;c改名物品扩展显示原版物品名称(熊孩子防不胜防)...</update.description>
+		<update.description>&amp;c修复更新检测同步处理导致服务器崩溃...</update.description>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>
