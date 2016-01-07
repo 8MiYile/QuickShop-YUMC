@@ -55,14 +55,12 @@ public class ProtectListener implements Listener {
 		if (MarkUtil.hasMark(ci)) {
 			e.setCancelled(true);
 		}
-
 		final Inventory src = e.getSource();
 		final Inventory me = e.getInitiator();
 		final Inventory des = e.getDestination();
 		final Shop srcshop = getShop(src);
 		final Shop meshop = getShop(me);
 		final Shop desshop = getShop(des);
-
 		if ((srcshop != null && meshop == null) || (meshop != null && desshop == null) || (srcshop != null && desshop != null && srcshop.getOwner().equalsIgnoreCase(desshop.getOwner()))) {
 			e.setCancelled(true);
 		}
@@ -136,8 +134,28 @@ public class ProtectListener implements Listener {
 		}
 	}
 
+	private void clearIllegalItem(final Player player) {
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			@Override
+			public void run() {
+				final Inventory inv = player.getInventory();
+				int clearnum = 0;
+				for (final ItemStack itemStack : inv) {
+					if (MarkUtil.hasMark(itemStack)) {
+						inv.remove(itemStack);
+						clearnum++;
+					}
+				}
+				if (clearnum != 0) {
+					Bukkit.broadcastMessage(plugin.getConfigManager().getGuiTitle() + " §4提示 §d扫描完毕 §d已清理 §a" + player.getName() + " §c非法获取的物品 §4" + clearnum + " §c个物品...");
+				}
+			}
+		});
+	}
+
 	private void sendWarning(final Player p, final ItemStack ci, final String action) {
 		Bukkit.broadcastMessage(plugin.getConfigManager().getGuiTitle() + " §4警告 " + p.getDisplayName() + " §c非法 " + action + " " + ci.getItemMeta().getDisplayName());
 		Bukkit.broadcastMessage(plugin.getConfigManager().getGuiTitle() + " §4提示 §d系统 §d已清理 §a" + p.getName() + " §c非法获取的物品 §a并扫描玩家背包...");
+		clearIllegalItem(p);
 	}
 }

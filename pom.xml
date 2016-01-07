@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.6.8</version>
+	<version>1.6.9</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -55,7 +55,7 @@
 	<properties>
 		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
 		<env.BUILD_NUMBER>DEBUG</env.BUILD_NUMBER>
-		<update.description>&amp;c删除所谓的&amp;4&quot;DDOS&quot;&amp;c模块&amp;e停止插件所有更新...&amp;a你们提交PullRequest我还是会合并的...</update.description>
+		<update.description>&amp;a增加1.7版本兼容(&amp;e测试&amp;a) &amp;c完善异步背包检测流程 发现非法物品后自动扫描...</update.description>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>
