@@ -12,21 +12,27 @@ import org.maxgamer.QuickShop.Util.MarkUtil;
 import io.github.Cnly.WowSuchCleaner.WowSuchCleaner.ItemPreCleanEvent;
 
 public class WowSuchCleanerListener implements Listener {
-	@EventHandler
-	public void onWSCClear(final ItemPreCleanEvent e) {
-		final List<Item> clearList = new ArrayList<Item>();
-		final List<ItemStack> aucList = new ArrayList<ItemStack>();
-		for (final Item item : e.getItemsToClean()) {
-			if (MarkUtil.hasMark(item.getItemStack())) {
-				clearList.add(item);
-			}
-		}
-		for (final ItemStack itemStack : e.getItemsToAuction()) {
-			if (MarkUtil.hasMark(itemStack)) {
-				aucList.add(itemStack);
-			}
-		}
-		e.getItemsToClean().removeAll(clearList);
-		e.getItemsToAuction().removeAll(aucList);
-	}
+    @EventHandler
+    public void onWSCClear(final ItemPreCleanEvent e) {
+        final List<Item> clearList = new ArrayList<Item>();
+        final List<ItemStack> aucList = new ArrayList<ItemStack>();
+        final List<Item> cleanList = e.getItemsToClean();
+        final List<ItemStack> acList = e.getItemsToAuction();
+        if (cleanList != null) {
+            for (final Item item : cleanList) {
+                if (MarkUtil.hasMark(item.getItemStack())) {
+                    clearList.add(item);
+                }
+            }
+            e.getItemsToClean().removeAll(clearList);
+        }
+        if (acList != null) {
+            for (final ItemStack itemStack : acList) {
+                if (MarkUtil.hasMark(itemStack)) {
+                    aucList.add(itemStack);
+                }
+            }
+            e.getItemsToAuction().removeAll(aucList);
+        }
+    }
 }
