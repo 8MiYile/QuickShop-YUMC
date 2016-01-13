@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.6.9</version>
+	<version>1.7.0</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -55,7 +55,7 @@
 	<properties>
 		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
 		<env.BUILD_NUMBER>DEBUG</env.BUILD_NUMBER>
-		<update.description>&amp;a增加1.7版本兼容(&amp;e测试&amp;a) &amp;c完善异步背包检测流程 发现非法物品后自动扫描...</update.description>
+		<update.description>&amp;a修复手动处理无效的问题 使用ProtocolLib序列化物品(&amp;c感谢尘曲修复类库&amp;a)...</update.description>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>
