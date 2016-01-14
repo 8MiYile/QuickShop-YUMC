@@ -14,31 +14,31 @@ import org.maxgamer.QuickShop.Util.MsgUtil;
 import cn.citycraft.PluginHelper.commands.BaseCommand;
 
 public class CommandSell extends BaseCommand {
-	QuickShop plugin;
+    QuickShop plugin;
 
-	public CommandSell(final QuickShop plugin) {
-		super("s");
-		this.plugin = plugin;
-		setPermission("quickshop.create.sell");
-		setOnlyPlayerExecutable();
-		setDescription(MsgUtil.p("command.description.sell"));
-	}
+    public CommandSell(final QuickShop plugin) {
+        super("s");
+        this.plugin = plugin;
+        setPermission("quickshop.create.sell");
+        setOnlyPlayerExecutable();
+        setDescription(MsgUtil.p("command.description.sell"));
+    }
 
-	@Override
-	public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
-		final BlockIterator bIt = new BlockIterator((Player) sender, 10);
-		while (bIt.hasNext()) {
-			final Block b = bIt.next();
-			final Shop shop = plugin.getShopManager().getShop(b.getLocation());
-			if (shop != null && shop.getOwner().equals(((Player) sender).getName())) {
-				shop.setShopType(ShopType.SELLING);
-				shop.setSignText();
-				shop.update();
-				sender.sendMessage(MsgUtil.p("command.now-selling", shop.getDataName()));
-				return;
-			}
-		}
-		sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
-		return;
-	}
+    @Override
+    public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
+        final BlockIterator bIt = new BlockIterator((Player) sender, 10);
+        while (bIt.hasNext()) {
+            final Block b = bIt.next();
+            final Shop shop = plugin.getShopManager().getShop(b.getLocation());
+            if (shop != null && shop.getOwner().equals(((Player) sender).getName())) {
+                shop.setShopType(ShopType.SELLING);
+                shop.setSignText();
+                shop.update();
+                sender.sendMessage(MsgUtil.p("command.now-selling", shop.getDataName()));
+                return;
+            }
+        }
+        sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
+        return;
+    }
 }

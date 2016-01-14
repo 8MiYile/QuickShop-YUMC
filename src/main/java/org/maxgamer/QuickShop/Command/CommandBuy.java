@@ -14,32 +14,32 @@ import org.maxgamer.QuickShop.Util.MsgUtil;
 import cn.citycraft.PluginHelper.commands.BaseCommand;
 
 public class CommandBuy extends BaseCommand {
-	QuickShop plugin;
+    QuickShop plugin;
 
-	public CommandBuy(final QuickShop plugin) {
-		super("b");
-		this.plugin = plugin;
-		setOnlyPlayerExecutable();
-		setPermission("quickshop.create.buy");
-		setDescription(MsgUtil.p("command.description.buy"));
-	}
+    public CommandBuy(final QuickShop plugin) {
+        super("b");
+        this.plugin = plugin;
+        setOnlyPlayerExecutable();
+        setPermission("quickshop.create.buy");
+        setDescription(MsgUtil.p("command.description.buy"));
+    }
 
-	@Override
-	public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
-		final BlockIterator bIt = new BlockIterator((Player) sender, 10);
-		while (bIt.hasNext()) {
-			final Block b = bIt.next();
-			final Shop shop = plugin.getShopManager().getShop(b.getLocation());
-			if (shop != null && shop.getOwner().equals(((Player) sender).getName())) {
-				shop.setShopType(ShopType.BUYING);
-				shop.setSignText();
-				shop.update();
-				sender.sendMessage(MsgUtil.p("command.now-buying", shop.getDataName()));
-				return;
-			}
-		}
-		sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
-		return;
-	}
+    @Override
+    public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
+        final BlockIterator bIt = new BlockIterator((Player) sender, 10);
+        while (bIt.hasNext()) {
+            final Block b = bIt.next();
+            final Shop shop = plugin.getShopManager().getShop(b.getLocation());
+            if (shop != null && shop.getOwner().equals(((Player) sender).getName())) {
+                shop.setShopType(ShopType.BUYING);
+                shop.setSignText();
+                shop.update();
+                sender.sendMessage(MsgUtil.p("command.now-buying", shop.getDataName()));
+                return;
+            }
+        }
+        sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
+        return;
+    }
 
 }

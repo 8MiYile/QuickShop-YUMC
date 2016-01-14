@@ -13,31 +13,31 @@ import org.maxgamer.QuickShop.Util.MsgUtil;
 import cn.citycraft.PluginHelper.commands.BaseCommand;
 
 public class CommandUnlimited extends BaseCommand {
-	QuickShop plugin;
+    QuickShop plugin;
 
-	public CommandUnlimited(final QuickShop plugin) {
-		super("u");
-		this.plugin = plugin;
-		setOnlyPlayerExecutable();
-		setPermission("quickshop.unlimited");
-		setDescription(MsgUtil.p("command.description.unlimited"));
-	}
+    public CommandUnlimited(final QuickShop plugin) {
+        super("u");
+        this.plugin = plugin;
+        setOnlyPlayerExecutable();
+        setPermission("quickshop.unlimited");
+        setDescription(MsgUtil.p("command.description.unlimited"));
+    }
 
-	@Override
-	public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
-		final BlockIterator bIt = new BlockIterator((Player) sender, 10);
-		while (bIt.hasNext()) {
-			final Block b = bIt.next();
-			final Shop shop = plugin.getShopManager().getShop(b.getLocation());
-			if (shop != null) {
-				shop.setUnlimited(!shop.isUnlimited());
-				shop.update();
-				sender.sendMessage(MsgUtil.p("command.toggle-unlimited", (shop.isUnlimited() ? "无限模式" : "有限模式")));
-				return;
-			}
-		}
-		sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
-		return;
-	}
+    @Override
+    public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
+        final BlockIterator bIt = new BlockIterator((Player) sender, 10);
+        while (bIt.hasNext()) {
+            final Block b = bIt.next();
+            final Shop shop = plugin.getShopManager().getShop(b.getLocation());
+            if (shop != null) {
+                shop.setUnlimited(!shop.isUnlimited());
+                shop.update();
+                sender.sendMessage(MsgUtil.p("command.toggle-unlimited", (shop.isUnlimited() ? "无限模式" : "有限模式")));
+                return;
+            }
+        }
+        sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
+        return;
+    }
 
 }

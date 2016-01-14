@@ -16,47 +16,47 @@ import org.maxgamer.QuickShop.Util.MsgUtil;
 import cn.citycraft.PluginHelper.commands.BaseCommand;
 
 public class CommandInfo extends BaseCommand {
-	QuickShop plugin;
+    QuickShop plugin;
 
-	public CommandInfo(final QuickShop plugin) {
-		super("i");
-		this.plugin = plugin;
-		setPermission("quickshop.info");
-		setDescription(MsgUtil.p("command.description.info"));
-	}
+    public CommandInfo(final QuickShop plugin) {
+        super("i");
+        this.plugin = plugin;
+        setPermission("quickshop.info");
+        setDescription(MsgUtil.p("command.description.info"));
+    }
 
-	@Override
-	public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
-		int buying, selling, doubles, chunks, worlds, unlimited;
-		buying = selling = doubles = chunks = worlds = unlimited = 0;
-		int nostock = 0;
-		sender.sendMessage(ChatColor.RED + "开始检索商店信息中...");
-		for (final HashMap<ShopChunk, HashMap<Location, Shop>> inWorld : plugin.getShopManager().getShops().values()) {
-			worlds++;
-			for (final HashMap<Location, Shop> inChunk : inWorld.values()) {
-				chunks++;
-				for (final Shop shop : inChunk.values()) {
-					if (shop.isUnlimited()) {
-						unlimited++;
-					}
-					if (shop.isBuying()) {
-						buying++;
-					} else if (shop.isSelling()) {
-						selling++;
-					}
-					if (shop instanceof ContainerShop && ((ContainerShop) shop).isDoubleShop()) {
-						doubles++;
-					} else if (shop.isSelling() && shop.getRemainingStock() == 0) {
-						nostock++;
-					}
-				}
-			}
-		}
-		sender.sendMessage(MsgUtil.p("info.title", chunks, buying + selling, worlds));
-		sender.sendMessage(MsgUtil.p("info.selling", selling));
-		sender.sendMessage(MsgUtil.p("info.buying", buying));
-		sender.sendMessage(MsgUtil.p("info.unlimited", unlimited));
-		sender.sendMessage(MsgUtil.p("info.double", doubles));
-		sender.sendMessage(MsgUtil.p("info.canclean", nostock));
-	}
+    @Override
+    public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
+        int buying, selling, doubles, chunks, worlds, unlimited;
+        buying = selling = doubles = chunks = worlds = unlimited = 0;
+        int nostock = 0;
+        sender.sendMessage(ChatColor.RED + "开始检索商店信息中...");
+        for (final HashMap<ShopChunk, HashMap<Location, Shop>> inWorld : plugin.getShopManager().getShops().values()) {
+            worlds++;
+            for (final HashMap<Location, Shop> inChunk : inWorld.values()) {
+                chunks++;
+                for (final Shop shop : inChunk.values()) {
+                    if (shop.isUnlimited()) {
+                        unlimited++;
+                    }
+                    if (shop.isBuying()) {
+                        buying++;
+                    } else if (shop.isSelling()) {
+                        selling++;
+                    }
+                    if (shop instanceof ContainerShop && ((ContainerShop) shop).isDoubleShop()) {
+                        doubles++;
+                    } else if (shop.isSelling() && shop.getRemainingStock() == 0) {
+                        nostock++;
+                    }
+                }
+            }
+        }
+        sender.sendMessage(MsgUtil.p("info.title", chunks, buying + selling, worlds));
+        sender.sendMessage(MsgUtil.p("info.selling", selling));
+        sender.sendMessage(MsgUtil.p("info.buying", buying));
+        sender.sendMessage(MsgUtil.p("info.unlimited", unlimited));
+        sender.sendMessage(MsgUtil.p("info.double", doubles));
+        sender.sendMessage(MsgUtil.p("info.canclean", nostock));
+    }
 }

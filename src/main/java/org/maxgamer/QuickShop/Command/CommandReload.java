@@ -10,21 +10,21 @@ import org.maxgamer.QuickShop.Util.MsgUtil;
 import cn.citycraft.PluginHelper.commands.BaseCommand;
 
 public class CommandReload extends BaseCommand {
-	QuickShop plugin;
+    QuickShop plugin;
 
-	public CommandReload(final QuickShop plugin) {
-		super("reload");
-		this.plugin = plugin;
-		setPermission("quickshop.reload");
-		setDescription(MsgUtil.p("command.description.reload"));
-	}
+    public CommandReload(final QuickShop plugin) {
+        super("reload");
+        this.plugin = plugin;
+        setPermission("quickshop.reload");
+        setDescription(MsgUtil.p("command.description.reload"));
+    }
 
-	@Override
-	public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
-		sender.sendMessage(MsgUtil.p("command.reloading"));
-		plugin.reloadConfig();
-		Bukkit.getPluginManager().disablePlugin(plugin);
-		Bukkit.getPluginManager().enablePlugin(plugin);
-		return;
-	}
+    @Override
+    public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
+        sender.sendMessage(MsgUtil.p("command.reloading"));
+        plugin.reloadConfig();
+        Bukkit.getPluginManager().disablePlugin(plugin);
+        Bukkit.getPluginManager().enablePlugin(plugin);
+        return;
+    }
 }

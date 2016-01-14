@@ -14,33 +14,33 @@ import org.maxgamer.QuickShop.Util.MsgUtil;
 import cn.citycraft.PluginHelper.commands.BaseCommand;
 
 public class CommandRemove extends BaseCommand {
-	QuickShop plugin;
+    QuickShop plugin;
 
-	public CommandRemove(final QuickShop plugin) {
-		super("r");
-		this.plugin = plugin;
-		setOnlyPlayerExecutable();
-		setPermission("quickshop.delete");
-		setDescription(MsgUtil.p("command.description.remove"));
-	}
+    public CommandRemove(final QuickShop plugin) {
+        super("r");
+        this.plugin = plugin;
+        setOnlyPlayerExecutable();
+        setPermission("quickshop.delete");
+        setDescription(MsgUtil.p("command.description.remove"));
+    }
 
-	@Override
-	public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
-		final Player p = (Player) sender;
-		final BlockIterator bIt = new BlockIterator(p, 10);
-		while (bIt.hasNext()) {
-			final Block b = bIt.next();
-			final Shop shop = plugin.getShopManager().getShop(b.getLocation());
-			if (shop != null) {
-				if (shop.getOwner().equals(p.getName())) {
-					shop.delete();
-					sender.sendMessage(ChatColor.GREEN + "商店已成功移除");
-				} else {
-					p.sendMessage(ChatColor.RED + "这个不是你的商店!");
-				}
-				return;
-			}
-		}
-		p.sendMessage(ChatColor.RED + "未找到商店!");
-	}
+    @Override
+    public void execute(final CommandSender sender, final Command command, final String label, final String[] args) throws CommandException {
+        final Player p = (Player) sender;
+        final BlockIterator bIt = new BlockIterator(p, 10);
+        while (bIt.hasNext()) {
+            final Block b = bIt.next();
+            final Shop shop = plugin.getShopManager().getShop(b.getLocation());
+            if (shop != null) {
+                if (shop.getOwner().equals(p.getName())) {
+                    shop.delete();
+                    sender.sendMessage(ChatColor.GREEN + "商店已成功移除");
+                } else {
+                    p.sendMessage(ChatColor.RED + "这个不是你的商店!");
+                }
+                return;
+            }
+        }
+        p.sendMessage(ChatColor.RED + "未找到商店!");
+    }
 }
