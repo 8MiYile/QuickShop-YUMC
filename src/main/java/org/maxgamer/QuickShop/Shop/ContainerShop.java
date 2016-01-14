@@ -23,7 +23,7 @@ import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
 public class ContainerShop implements Shop {
-	private DisplayItem displayItem;
+	private DisplayItem displayName;
 	private final ItemStack item;
 	private final Location loc;
 	private String owner;
@@ -53,13 +53,17 @@ public class ContainerShop implements Shop {
 		this.plugin = (QuickShop) Bukkit.getPluginManager().getPlugin("QuickShop");
 		this.item.setAmount(1);
 		if (plugin.getConfigManager().isDisplay()) {
-			this.displayItem = new DisplayItem(this, this.item);
+			if (plugin.getConfigManager().isFakeItem()) {
+				this.displayName = new FakeItem(this, this.getItem());
+			} else {
+				this.displayName = new NormalItem(this, this.getItem());
+			}
 		}
 		this.shopType = ShopType.SELLING;
 	}
 
 	private ContainerShop(final ContainerShop s) {
-		this.displayItem = s.displayItem;
+		this.displayName = s.displayName;
 		this.shopType = s.shopType;
 		this.item = s.item;
 		this.loc = s.loc;
@@ -243,7 +247,7 @@ public class ContainerShop implements Shop {
 	 * @return The display item associated with this shop.
 	 */
 	public DisplayItem getDisplayItem() {
-		return this.displayItem;
+		return this.displayName;
 	}
 
 	/**
@@ -469,7 +473,7 @@ public class ContainerShop implements Shop {
 	public void onUnload() {
 		if (this.getDisplayItem() != null) {
 			this.getDisplayItem().remove();
-			this.displayItem = null;
+			this.displayName = null;
 		}
 	}
 
@@ -677,14 +681,18 @@ public class ContainerShop implements Shop {
 		}
 		final boolean trans = Util.isTransparent(getLocation().clone().add(0.5, 1.2, 0.5).getBlock().getType());
 		if (trans && this.getDisplayItem() == null) {
-			this.displayItem = new DisplayItem(this, this.getItem());
+			if (plugin.getConfigManager().isFakeItem()) {
+				this.displayName = new FakeItem(this, this.getItem());
+			} else {
+				this.displayName = new NormalItem(this, this.getItem());
+			}
 			this.getDisplayItem().spawn();
 			return;
 		}
 		if (this.getDisplayItem() != null) {
 			if (!trans) { // We have a display item in a block... delete it
 				this.getDisplayItem().remove();
-				this.displayItem = null;
+				this.displayName = null;
 				return;
 			}
 			final DisplayItem disItem = this.getDisplayItem();

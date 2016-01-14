@@ -8,6 +8,8 @@ preventhopper: false
 guititle: '&6[&b快捷商店&6]&r'
 #启用魔改库支持
 usemagiclib: true
+#启用魔改库支持
+fakeitem: true
 
 #税收数量 (decimal) - 例如 税收是0.05 玩家1 在玩家2的商店 购买了 50元的东西,那么,玩家1 减少 50, 玩家2 账户增加(1-0.05)*50, 并且 玩家2税收账户增加 (0.05)*50.
 tax: 0.00

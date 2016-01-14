@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
+import org.maxgamer.QuickShop.Shop.FakeItem;
 
 import cn.citycraft.PluginHelper.config.FileConfig;
 import cn.citycraft.PluginHelper.tellraw.FancyMessage;
@@ -44,6 +45,8 @@ public class ConfigManager {
 	private Material superItem = Material.GOLD_AXE;
 	private double tax = 0;
 	private final String taxAccount;
+	private boolean fakeItem = false;
+
 	/**
 	 * A set of players who have been warned
 	 * ("Your shop isn't automatically locked")
@@ -79,6 +82,19 @@ public class ConfigManager {
 		this.feeForPriceChange = config.getDouble("shop.fee-for-price-change");
 		this.preventhopper = config.getBoolean("preventhopper");
 		this.guiTitle = config.getMessage("guititle", guiTitle);
+		this.fakeItem = config.getBoolean("fakeitem", true);
+		if (config.getBoolean("fakeitem", true)) {
+			try {
+				plugin.getLogger().info("启用虚拟悬浮物 尝试启动中...");
+				FakeItem.register(plugin);
+				plugin.getLogger().info("虚拟悬浮物功能测试正常...");
+				fakeItem = true;
+			} catch (final Exception e) {
+				plugin.getLogger().warning("+=========================================");
+				plugin.getLogger().warning("| 警告: 虚拟物品启动失败 使用原版悬浮物品...");
+				plugin.getLogger().warning("+=========================================");
+			}
+		}
 		if (config.getBoolean("usemagiclib", true)) {
 			try {
 				plugin.getLogger().info("启用魔改库 尝试启动中...");
@@ -145,6 +161,10 @@ public class ConfigManager {
 		return enableMagicLib;
 	}
 
+	public boolean isFakeItem() {
+		return fakeItem;
+	}
+
 	public boolean isLimit() {
 		return limit;
 	}
@@ -183,6 +203,10 @@ public class ConfigManager {
 
 	public void setEnableMagicLib(final boolean enableMagicLib) {
 		this.enableMagicLib = enableMagicLib;
+	}
+
+	public void setFakeItem(final boolean fakeItem) {
+		this.fakeItem = fakeItem;
 	}
 
 }

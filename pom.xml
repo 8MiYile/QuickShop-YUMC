@@ -55,7 +55,8 @@
 	<properties>
 		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
 		<env.BUILD_NUMBER>DEBUG</env.BUILD_NUMBER>
-		<update.description>&amp;a修复手动处理无效的问题 使用ProtocolLib序列化物品(&amp;c感谢尘曲修复类库&amp;a)...</update.description>
+		<update.description>&amp;a修复手动处理无效的问题
+			使用ProtocolLib序列化物品(&amp;c感谢尘曲修复类库&amp;a)...</update.description>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>
@@ -88,6 +89,13 @@
 			<version>5.4.5</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/WorldEdit.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.comphenix.protocol</groupId>
+			<artifactId>ProtocolLib</artifactId>
+			<version>3.6.5-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/ProtocolLib-3.6.5-SNAPSHOT.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>cn.citycraft</groupId>

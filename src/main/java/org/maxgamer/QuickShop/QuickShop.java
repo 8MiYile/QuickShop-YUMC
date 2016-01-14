@@ -43,6 +43,7 @@ import org.maxgamer.QuickShop.Listeners.ProtectListener;
 import org.maxgamer.QuickShop.Listeners.WorldListener;
 import org.maxgamer.QuickShop.Listeners.WowSuchCleanerListener;
 import org.maxgamer.QuickShop.Shop.ContainerShop;
+import org.maxgamer.QuickShop.Shop.FakeItem;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopManager;
 import org.maxgamer.QuickShop.Shop.ShopType;
@@ -295,6 +296,14 @@ public class QuickShop extends JavaPlugin {
 		// Create the shop manager.
 		configManager = new ConfigManager(this);
 		shopManager = new ShopManager(this);
+		if (configManager.isFakeItem()) {
+			if (!FakeItem.isRegistered()) {
+				try {
+					FakeItem.register(this);
+				} catch (final Exception e) {
+				}
+			}
+		}
 		if (configManager.isLogAction()) {
 			// Logger Handler
 			this.logWatcher = new LogWatcher(this, new File(this.getDataFolder(), "qs.log"));
