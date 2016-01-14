@@ -689,7 +689,7 @@ public class ContainerShop implements Shop {
             this.getDisplayItem().spawn();
             return;
         }
-        if (this.getDisplayItem() != null && displayItem instanceof NormalItem) {
+        if (this.getDisplayItem() != null) {
             if (!trans) { // We have a display item in a block... delete it
                 this.getDisplayItem().remove();
                 this.displayItem = null;
@@ -700,6 +700,9 @@ public class ContainerShop implements Shop {
             if (dispLoc.getBlock() != null && dispLoc.getBlock().getType() == Material.WATER) { // Flowing
                 // water.Stationery water does not move items.
                 disItem.remove();
+                return;
+            }
+            if (disItem instanceof FakeItem) {
                 return;
             }
             if (disItem.getItem() == null) {
