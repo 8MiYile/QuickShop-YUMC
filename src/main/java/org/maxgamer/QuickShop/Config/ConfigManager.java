@@ -89,7 +89,7 @@ public class ConfigManager {
                 FakeItem.register(plugin);
                 plugin.getLogger().info("虚拟悬浮物功能测试正常...");
                 fakeItem = true;
-            } catch (final Exception e) {
+            } catch (final Error | Exception e) {
                 plugin.getLogger().warning("+=========================================");
                 plugin.getLogger().warning("| 警告: 虚拟物品启动失败 使用原版悬浮物品...");
                 plugin.getLogger().warning("+=========================================");

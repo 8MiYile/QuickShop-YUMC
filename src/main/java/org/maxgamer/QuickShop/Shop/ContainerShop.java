@@ -702,9 +702,6 @@ public class ContainerShop implements Shop {
                 disItem.remove();
                 return;
             }
-            if (disItem instanceof FakeItem) {
-                return;
-            }
             if (disItem.getItem() == null) {
                 disItem.removeDupe();
                 disItem.spawn();

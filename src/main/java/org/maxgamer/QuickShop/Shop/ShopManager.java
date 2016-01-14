@@ -304,11 +304,9 @@ public class ShopManager {
                             final BlockFace bf = info.getLocation().getBlock().getFace(info.getSignBlock());
                             bs.setType(Material.WALL_SIGN);
                             final Sign sign = (Sign) bs.getData();
-                            if (sign != null && bf != null) {
-                                sign.setFacingDirection(bf);
-                                bs.update(true);
-                                shop.setSignText();
-                            }
+                            sign.setFacingDirection(bf);
+                            bs.update(true);
+                            shop.setSignText();
                         }
                         if (shop instanceof ContainerShop) {
                             final ContainerShop cs = (ContainerShop) shop;

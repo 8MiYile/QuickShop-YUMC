@@ -122,13 +122,7 @@ public class FakeItem implements DisplayItem {
 
     public FakeItem(final ContainerShop containerShop, final ItemStack item) {
         this.itemStack = item;
-        this.location = containerShop.getLocation().clone().add(0.5, 1.2, 0.5);
-        this.eid = getFakeEntityId();
-    }
-
-    public FakeItem(final ItemStack itemStack, final Location loc) {
-        this.itemStack = itemStack;
-        this.location = loc;
+        this.location = containerShop.getLocation().clone().add(0.5, 1, 0.5);
         this.eid = getFakeEntityId();
     }
 
