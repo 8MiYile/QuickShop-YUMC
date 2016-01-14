@@ -25,71 +25,9 @@ import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
 public class ShopManager {
-	public class ShopIterator implements Iterator<Shop> {
-		private Iterator<HashMap<Location, Shop>> chunks;
-		private Shop current;
-		private Iterator<Shop> shops;
-		private final Iterator<HashMap<ShopChunk, HashMap<Location, Shop>>> worlds;
-
-		public ShopIterator() {
-			worlds = getShops().values().iterator();
-		}
-
-		/**
-		 * Returns true if there is still more shops to iterate over.
-		 */
-		@Override
-		public boolean hasNext() {
-			if (shops == null || !shops.hasNext()) {
-				if (chunks == null || !chunks.hasNext()) {
-					if (!worlds.hasNext()) {
-						return false;
-					}
-					chunks = worlds.next().values().iterator();
-					return hasNext();
-				}
-				shops = chunks.next().values().iterator();
-				return hasNext();
-			}
-			return true;
-		}
-
-		/**
-		 * Fetches the next shop. Throws NoSuchElementException if there are no
-		 * more shops.
-		 */
-		@Override
-		public Shop next() {
-			if (shops == null || !shops.hasNext()) {
-				if (chunks == null || !chunks.hasNext()) {
-					if (!worlds.hasNext()) {
-						throw new NoSuchElementException("No more shops to iterate over!");
-					}
-					chunks = worlds.next().values().iterator();
-				}
-				shops = chunks.next().values().iterator();
-			}
-			if (!shops.hasNext()) {
-				return this.next(); // Skip to the next one (Empty iterator?)
-			}
-			current = shops.next();
-			return current;
-		}
-
-		/**
-		 * Removes the current shop. This method will delete the shop from
-		 * memory and the database.
-		 */
-		@Override
-		public void remove() {
-			current.delete(false);
-			shops.remove();
-		}
-	}
-
 	private final HashMap<String, Info> actions = new HashMap<String, Info>();
-	private final QuickShop plugin;
 
+	private final QuickShop plugin;
 	private final HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>> shops = new HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>>();
 
 	public ShopManager(final QuickShop plugin) {
@@ -366,9 +304,11 @@ public class ShopManager {
 							final BlockFace bf = info.getLocation().getBlock().getFace(info.getSignBlock());
 							bs.setType(Material.WALL_SIGN);
 							final Sign sign = (Sign) bs.getData();
-							sign.setFacingDirection(bf);
-							bs.update(true);
-							shop.setSignText();
+							if (sign != null && bf != null) {
+								sign.setFacingDirection(bf);
+								bs.update(true);
+								shop.setSignText();
+							}
 						}
 						if (shop instanceof ContainerShop) {
 							final ContainerShop cs = (ContainerShop) shop;
@@ -613,5 +553,67 @@ public class ShopManager {
 		}
 		// Put the shop in its location in the chunk list.
 		inChunk.put(shop.getLocation(), shop);
+	}
+
+	public class ShopIterator implements Iterator<Shop> {
+		private Iterator<HashMap<Location, Shop>> chunks;
+		private Shop current;
+		private Iterator<Shop> shops;
+		private final Iterator<HashMap<ShopChunk, HashMap<Location, Shop>>> worlds;
+
+		public ShopIterator() {
+			worlds = getShops().values().iterator();
+		}
+
+		/**
+		 * Returns true if there is still more shops to iterate over.
+		 */
+		@Override
+		public boolean hasNext() {
+			if (shops == null || !shops.hasNext()) {
+				if (chunks == null || !chunks.hasNext()) {
+					if (!worlds.hasNext()) {
+						return false;
+					}
+					chunks = worlds.next().values().iterator();
+					return hasNext();
+				}
+				shops = chunks.next().values().iterator();
+				return hasNext();
+			}
+			return true;
+		}
+
+		/**
+		 * Fetches the next shop. Throws NoSuchElementException if there are no
+		 * more shops.
+		 */
+		@Override
+		public Shop next() {
+			if (shops == null || !shops.hasNext()) {
+				if (chunks == null || !chunks.hasNext()) {
+					if (!worlds.hasNext()) {
+						throw new NoSuchElementException("No more shops to iterate over!");
+					}
+					chunks = worlds.next().values().iterator();
+				}
+				shops = chunks.next().values().iterator();
+			}
+			if (!shops.hasNext()) {
+				return this.next(); // Skip to the next one (Empty iterator?)
+			}
+			current = shops.next();
+			return current;
+		}
+
+		/**
+		 * Removes the current shop. This method will delete the shop from
+		 * memory and the database.
+		 */
+		@Override
+		public void remove() {
+			current.delete(false);
+			shops.remove();
+		}
 	}
 }

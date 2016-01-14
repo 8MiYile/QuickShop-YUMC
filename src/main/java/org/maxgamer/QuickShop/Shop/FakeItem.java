@@ -203,8 +203,7 @@ public class FakeItem implements DisplayItem {
 	}
 
 	private PacketContainer getDestoryPacket() {
-		final PacketContainer fakePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
-		fakePacket.getIntegers().write(0, 1);
+		final PacketContainer fakePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY, true);
 		fakePacket.getIntegerArrays().write(0, new int[] { eid });
 		return fakePacket;
 	}
