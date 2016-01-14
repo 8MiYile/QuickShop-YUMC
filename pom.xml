@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.7.0</version>
+	<version>1.8</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -55,8 +55,7 @@
 	<properties>
 		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
 		<env.BUILD_NUMBER>DEBUG</env.BUILD_NUMBER>
-		<update.description>&amp;a修复手动处理无效的问题
-			使用ProtocolLib序列化物品(&amp;c感谢尘曲修复类库&amp;a)...</update.description>
+		<update.description>&amp;a全新版本 &amp;c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比) &amp;e7老板修复逗比BUG...</update.description>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>
