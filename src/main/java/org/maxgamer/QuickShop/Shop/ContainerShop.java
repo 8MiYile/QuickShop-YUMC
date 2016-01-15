@@ -695,8 +695,14 @@ public class ContainerShop implements Shop {
                 this.displayItem = null;
                 return;
             }
+            if (this.getLocation().getWorld() == null) {
+                return;// Ignore if world not loaded...
+            }
             final DisplayItem disItem = this.getDisplayItem();
             final Location dispLoc = disItem.getDisplayLocation();
+            if (dispLoc.getWorld() == null) {
+                return;
+            }
             if (dispLoc.getBlock() != null && dispLoc.getBlock().getType() == Material.WATER) { // Flowing
                 // water.Stationery water does not move items.
                 disItem.remove();
