@@ -55,10 +55,10 @@ public class FakeItem implements DisplayItem {
                 pm.enablePlugin(p);
             }
             if (!p.isEnabled()) {
-                throw new IllegalStateException("The ProtocolLib enable Failed.");
+                throw new IllegalStateException("前置插件ProtocolLib启动失败 请检查版本.");
             }
         } else {
-            throw new IllegalStateException("The Server Not Found ProtocolLib.");
+            throw new IllegalStateException("服务器未找到前置插件ProtocolLib.");
         }
         final PacketAdapter chunkPacketListener = new PacketAdapter(plugin, PacketType.Play.Server.MAP_CHUNK) {
             @Override
@@ -102,7 +102,6 @@ public class FakeItem implements DisplayItem {
                 }
             }
         };
-
         ProtocolLibrary.getProtocolManager().addPacketListener(chunkPacketListener);
         ProtocolLibrary.getProtocolManager().addPacketListener(chunkBulkPacketListener);
         registered = true;

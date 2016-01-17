@@ -91,7 +91,7 @@ public class ConfigManager {
                 fakeItem = true;
             } catch (final Error | Exception e) {
                 plugin.getLogger().warning("+=========================================");
-                plugin.getLogger().warning("| 警告: 虚拟物品启动失败 使用原版悬浮物品...");
+                plugin.getLogger().warning("| 警告: 启动虚拟物品失败 使用原版悬浮物品...");
                 plugin.getLogger().warning("+=========================================");
             }
         }
