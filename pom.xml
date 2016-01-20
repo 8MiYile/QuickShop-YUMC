@@ -54,8 +54,9 @@
 	</build>
 	<properties>
 		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
-		<env.BUILD_NUMBER>DEBUG</env.BUILD_NUMBER>
+		<env.GIT_COMMIT>DEBUG</env.GIT_COMMIT>
 		<update.description>&amp;a全新版本 &amp;c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比) &amp;e7老板修复逗比BUG...</update.description>
+		<update.changes>&amp;c修复PlayerInteractEvent错误参数导致GuiShopManager的报错...</update.changes>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>

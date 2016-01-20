@@ -59,11 +59,15 @@ public class ShopManager {
                 return false;
             }
         }
-        final PlayerInteractEvent pie = new PlayerInteractEvent(p, Action.RIGHT_CLICK_BLOCK, new ItemStack(Material.AIR), b, bf); // PIE = PlayerInteractEvent - What else?
-        Bukkit.getPluginManager().callEvent(pie);
-        pie.getPlayer().closeInventory(); // If the player has chat open, this will close their chat.
-        if (pie.isCancelled()) {
-            return false;
+        /* 修复其他插件调用产生的报错... */
+        try {
+            final PlayerInteractEvent pie = new PlayerInteractEvent(p, Action.RIGHT_CLICK_BLOCK, new ItemStack(Material.AIR), b, bf); // PIE = PlayerInteractEvent - What else?
+            Bukkit.getPluginManager().callEvent(pie);
+            pie.getPlayer().closeInventory(); // If the player has chat open, this will close their chat.
+            if (pie.isCancelled()) {
+                return false;
+            }
+        } catch (final Exception e) {
         }
         final ShopPreCreateEvent spce = new ShopPreCreateEvent(p, b.getLocation());
         Bukkit.getPluginManager().callEvent(spce);
