@@ -84,7 +84,7 @@ public class ProtectListener implements Listener {
         final Inventory inv = e.getInventory();
         final int solt = e.getSlot();
         if (inv.getType() != InventoryType.PLAYER && inv.getType() != InventoryType.HOPPER) {
-            if (inv.getTitle().equalsIgnoreCase(plugin.getConfigManager().getGuiTitle())) {
+            if (inv.getTitle() != null && inv.getTitle().equalsIgnoreCase(plugin.getConfigManager().getGuiTitle())) {
                 e.setCancelled(true);
                 p.closeInventory();
             }
