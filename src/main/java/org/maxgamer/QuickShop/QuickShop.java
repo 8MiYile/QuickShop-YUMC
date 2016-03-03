@@ -285,15 +285,14 @@ public class QuickShop extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
         if (loadEcon() == false) {
             return;
         }
+        configManager = new ConfigManager(this);
         LocalUtil.init(this);
         // Initialize Util
         Util.initialize();
         // Create the shop manager.
-        configManager = new ConfigManager(this);
         shopManager = new ShopManager(this);
         if (configManager.isLogAction()) {
             // Logger Handler
@@ -307,7 +306,7 @@ public class QuickShop extends JavaPlugin {
         try {
             final ConfigurationSection dbCfg = getConfig().getConfigurationSection("database");
             DatabaseCore dbCore;
-            if (dbCfg.getBoolean("mysql")) {
+            if (dbCfg != null && dbCfg.getBoolean("mysql")) {
                 getLogger().info("启用MySQL 开始连接数据库...");
                 // MySQL database - Required database be created first.
                 final String user = dbCfg.getString("user");
@@ -371,6 +370,7 @@ public class QuickShop extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        instance = this;
         config = new FileConfig(this);
         MsgUtil.init(this);
     }

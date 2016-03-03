@@ -16,7 +16,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
@@ -75,7 +74,12 @@ public class PlayerListener implements Listener {
             return;
         }
         // Handles creating shops
-        else if (shop == null && item != null && item.getType() != Material.AIR && p.hasPermission("quickshop.create.sell") && Util.canBeShop(b) && p.getGameMode() != GameMode.CREATIVE
+        else if (shop == null
+                && item != null
+                && item.getType() != Material.AIR
+                && p.hasPermission("quickshop.create.sell")
+                && Util.canBeShop(b)
+                && p.getGameMode() != GameMode.CREATIVE
                 && (plugin.getConfigManager().isSneakCreate() == p.isSneaking())) {
             if (!plugin.getShopManager().canBuildShop(p, b, e.getBlockFace())) {
                 // As of the new checking system, most plugins will tell the
@@ -191,11 +195,5 @@ public class PlayerListener implements Listener {
                 shop.update();
             }
         }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onTeleport(final PlayerTeleportEvent e) {
-        final PlayerMoveEvent me = new PlayerMoveEvent(e.getPlayer(), e.getFrom(), e.getTo());
-        onMove(me);
     }
 }

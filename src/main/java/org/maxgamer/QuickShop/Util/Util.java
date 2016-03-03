@@ -218,7 +218,6 @@ public class Util {
         blacklist.clear();
         shoppables.clear();
         transparent.clear();
-
         plugin = QuickShop.instance;
         for (final String s : plugin.getConfig().getStringList("shop-blocks")) {
             Material mat = Material.getMaterial(s.toUpperCase());
