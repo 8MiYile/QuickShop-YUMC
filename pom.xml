@@ -66,12 +66,12 @@
 	</properties>
 	<repositories>
 		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+			<id>yumc-repo</id>
+			<url>${jenkins.url}/plugin/repository/everything/</url>
 		</repository>
 		<repository>
-			<id>sumcraft-repo</id>
-			<url>${jenkins.url}/plugin/repository/everything/</url>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -85,6 +85,8 @@
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>VaultAPI</artifactId>
 			<version>1.5.6</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/Vault.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.sk89q</groupId>
