@@ -57,7 +57,7 @@
 		<env.GIT_COMMIT>DEBUG</env.GIT_COMMIT>
 		<update.description>&amp;a全新版本 &amp;c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比) &amp;e7老板修复逗比BUG...</update.description>
 		<update.changes>
-			&amp;b1.8.5 - &amp;e我是打酱油的 我上个兄弟抽风 不能下载更新...
+			&amp;b1.8.5 - &amp;e我是打酱油的 我上个兄弟抽风 不能下载更新...;
 			&amp;b1.8.4 - &amp;c清理多余的监听事件,修复部分版本不兼容问题 支持1.9...;
 			&amp;b1.8.3 - &amp;c修复漏斗传输NPE错误...;
 			&amp;b1.8.2 - &amp;c修复箱子的标题为Null是产生的报错...;
