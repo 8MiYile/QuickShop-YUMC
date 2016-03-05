@@ -111,7 +111,7 @@
 		<dependency>
 			<groupId>io.github.Cnly.WowSuchCleaner</groupId>
 			<artifactId>WowSuchCleaner</artifactId>
-			<version>1.6.1</version>
+			<version>1.6.5</version>
 		</dependency>
 	</dependencies>
 </project>
