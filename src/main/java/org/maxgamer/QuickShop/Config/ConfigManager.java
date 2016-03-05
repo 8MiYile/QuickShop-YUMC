@@ -82,7 +82,6 @@ public class ConfigManager {
         this.feeForPriceChange = config.getDouble("shop.fee-for-price-change");
         this.preventhopper = config.getBoolean("preventhopper");
         this.guiTitle = config.getMessage("guititle", guiTitle);
-        this.fakeItem = config.getBoolean("fakeitem", true);
         if (config.getBoolean("fakeitem", true)) {
             try {
                 plugin.getLogger().info("启用虚拟悬浮物 尝试启动中...");
