@@ -53,11 +53,11 @@
 		</plugins>
 	</build>
 	<properties>
-		<jenkins.url>http://ci.citycraft.cn:8080</jenkins.url>
+		<jenkins.url>http://hs.yumc.pw:8080</jenkins.url>
 		<env.GIT_COMMIT>DEBUG</env.GIT_COMMIT>
 		<update.description>&amp;a全新版本 &amp;c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比) &amp;e7老板修复逗比BUG...</update.description>
 		<update.changes>
-			&amp;b1.8.4 - &amp;c清理多余的监听事件...;
+			&amp;b1.8.4 - &amp;c清理多余的监听事件,修复部分版本不兼容问题 支持1.9...;
 			&amp;b1.8.3 - &amp;c修复漏斗传输NPE错误...;
 			&amp;b1.8.2 - &amp;c修复箱子的标题为Null是产生的报错...;
 			&amp;b1.8.1 - &amp;c修复PlayerInteractEvent错误参数导致GuiShopManager的报错...;
@@ -79,14 +79,12 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<type>jar</type>
-			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<version>1.9-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>VaultAPI</artifactId>
-			<version>1.5</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/Vault.jar</systemPath>
+			<version>1.5.6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sk89q</groupId>
