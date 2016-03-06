@@ -222,6 +222,9 @@ public class ContainerShop implements Shop {
      *         null if this shop is not attached to another.
      */
     public ContainerShop getAttachedShop() {
+        if (this.getLocation() != null) {
+            return null;
+        }
         final Block c = Util.getSecondHalf(this.getLocation().getBlock());
         if (c == null) {
             return null;
