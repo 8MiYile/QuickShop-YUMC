@@ -55,7 +55,7 @@
 	<properties>
 		<jenkins.url>http://hs.yumc.pw:8080</jenkins.url>
 		<env.GIT_COMMIT>DEBUG</env.GIT_COMMIT>
-		<update.description>&amp;a全新版本 &amp;c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比) &amp;e7老板修复逗比BUG...</update.description>
+		<update.description>&amp;a全新版本 &amp;c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比)&amp;e7老板修复逗比BUG...</update.description>
 		<update.changes>
 			&amp;b1.8.5 - &amp;e我是打酱油的 我上个兄弟抽风 不能下载更新...;
 			&amp;b1.8.4 - &amp;c清理多余的监听事件,修复部分版本不兼容问题 支持1.9...;
@@ -64,6 +64,13 @@
 		</update.changes>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	<distributionManagement>
+		<repository>
+			<id>jtb</id>
+			<name>YUMC</name>
+			<url>http://repo.yumc.pw/content/repositories/yumcenter/</url>
+		</repository>
+	</distributionManagement>
 	<repositories>
 		<repository>
 			<id>yumc-repo</id>
