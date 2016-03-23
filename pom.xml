@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.8.5</version>
+	<version>1.8.6</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -52,18 +52,30 @@
 			</plugin>
 		</plugins>
 	</build>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://ci.yumc.pw/job/${project.artifactId}/</url>
+	</ciManagement>
 	<properties>
-		<jenkins.url>http://hs.yumc.pw:8080</jenkins.url>
 		<env.GIT_COMMIT>DEBUG</env.GIT_COMMIT>
 		<update.description>&amp;a全新版本 &amp;c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比)&amp;e7老板修复逗比BUG...</update.description>
 		<update.changes>
-			&amp;b1.8.5 - &amp;e我是打酱油的 我上个兄弟抽风 不能下载更新...;
-			&amp;b1.8.4 - &amp;c清理多余的监听事件,修复部分版本不兼容问题 支持1.9...;
-			&amp;b1.8.3 - &amp;c修复漏斗传输NPE错误...;
-			&amp;b1.8.2 - &amp;c修复箱子的标题为Null是产生的报错...;
+			&amp;b1.8.6 - &amp;c修复getOfflinePlayer导致的服务器卡顿(连不上MOJANG...);
+			&amp;b1.8.4 - &amp;7清理多余的监听事件,修复部分版本不兼容问题 支持1.9...;
+			&amp;b1.8.3 - &amp;7修复漏斗传输NPE错误...;
 		</update.changes>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	<repositories>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>yumc-repo</id>
+			<url>http://repo.yumc.pw/content/groups/public/</url>
+		</repository>
+	</repositories>
 	<distributionManagement>
 		<repository>
 			<id>jtb</id>
@@ -71,16 +83,6 @@
 			<url>http://repo.yumc.pw/content/repositories/yumcenter/</url>
 		</repository>
 	</distributionManagement>
-	<repositories>
-		<repository>
-			<id>yumc-repo</id>
-			<url>${jenkins.url}/plugin/repository/everything/</url>
-		</repository>
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.spigotmc</groupId>

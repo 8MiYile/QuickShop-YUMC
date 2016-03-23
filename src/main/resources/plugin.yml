@@ -10,7 +10,7 @@ authors:
 softdepend:
 - Vault
 - WowSuchCleaner
-website: ${jenkins.url}/job/${project.artifactId}/
+website: ${ciManagement.url}
 commands:
   qs:
     description: QuickShop 命令
