@@ -114,20 +114,25 @@ public class MsgUtil {
      *            them in the database.
      */
     public static void send(final String player, final String message) {
-        @SuppressWarnings("deprecation")
-        final OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-        if (p == null || !p.isOnline()) {
-            LinkedList<String> msgs = player_messages.get(player);
-            if (msgs == null) {
-                msgs = new LinkedList<String>();
-                player_messages.put(player, msgs);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                @SuppressWarnings("deprecation")
+                final OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+                if (p == null || !p.isOnline()) {
+                    LinkedList<String> msgs = player_messages.get(player);
+                    if (msgs == null) {
+                        msgs = new LinkedList<String>();
+                        player_messages.put(player, msgs);
+                    }
+                    msgs.add(message);
+                    final String q = "INSERT INTO messages (owner, message, time) VALUES (?, ?, ?)";
+                    plugin.getDB().execute(q, player.toString(), message, System.currentTimeMillis());
+                } else {
+                    p.getPlayer().sendMessage(message);
+                }
             }
-            msgs.add(message);
-            final String q = "INSERT INTO messages (owner, message, time) VALUES (?, ?, ?)";
-            plugin.getDB().execute(q, player.toString(), message, System.currentTimeMillis());
-        } else {
-            p.getPlayer().sendMessage(message);
-        }
+        });
     }
 
     public static void sendItemMessage(final Player p, final ItemStack is, final String msg) {
@@ -181,8 +186,9 @@ public class MsgUtil {
                 p.sendMessage("");
                 p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
                 p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.shop-information"));
-                p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.owner",
-                        Bukkit.getOfflinePlayer(shop.getOwner()).getName() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : Bukkit.getOfflinePlayer(shop.getOwner()).getName()));
+                p.sendMessage(ChatColor.DARK_PURPLE
+                        + "| "
+                        + MsgUtil.p("menu.owner", Bukkit.getOfflinePlayer(shop.getOwner()).getName() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : Bukkit.getOfflinePlayer(shop.getOwner()).getName()));
                 final String msg = ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.item", shop.getDataName());
                 sendItemMessage(p, shop.getItem(), msg);
                 if (Util.isTool(item.getType())) {

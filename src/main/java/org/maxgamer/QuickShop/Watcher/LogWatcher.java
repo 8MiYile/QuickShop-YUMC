@@ -12,36 +12,26 @@ import org.maxgamer.QuickShop.QuickShop;
 
 public class LogWatcher implements Runnable {
     private PrintStream ps;
-    private ArrayList<String> logs = new ArrayList<String>(5);
+    private final ArrayList<String> logs = new ArrayList<String>(5);
     public BukkitTask task;
 
-    public LogWatcher(QuickShop plugin, File log) {
+    public LogWatcher(final QuickShop plugin, final File log) {
         try {
             if (!log.exists()) {
                 log.createNewFile();
             }
-            FileOutputStream fos = new FileOutputStream(log, true);
-            this.ps = new PrintStream(fos);
-        } catch (FileNotFoundException e) {
+            final FileOutputStream fos = new FileOutputStream(log, true);
+            this.ps = new PrintStream(fos, true, "UTF-8");
+        } catch (final FileNotFoundException e) {
             e.printStackTrace();
             plugin.getLogger().severe("日志文件未找到!");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             plugin.getLogger().severe("无法创建日志文件!");
         }
     }
 
-    @Override
-    public void run() {
-        synchronized (logs) {
-            for (String s : logs) {
-                ps.println(s);
-            }
-            logs.clear();
-        }
-    }
-
-    public void add(String s) {
+    public void add(final String s) {
         synchronized (logs) {
             logs.add(s);
         }
@@ -49,5 +39,15 @@ public class LogWatcher implements Runnable {
 
     public void close() {
         this.ps.close();
+    }
+
+    @Override
+    public void run() {
+        synchronized (logs) {
+            for (final String s : logs) {
+                ps.println(s);
+            }
+            logs.clear();
+        }
     }
 }

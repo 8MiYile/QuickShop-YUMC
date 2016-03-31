@@ -39,7 +39,7 @@ public class PlayerListener implements Listener {
      * Handles players left clicking a chest. Left click a NORMAL chest with
      * item : Send creation menu Left click a SHOP chest : Send purchase menu
      */
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onClick(final PlayerInteractEvent e) {
         final Block b = e.getClickedBlock();
         final Player p = e.getPlayer();
@@ -154,7 +154,7 @@ public class PlayerListener implements Listener {
         plugin.getShopManager().getActions().remove(e.getPlayer().getName());
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSuperItemClick(final PlayerInteractEvent e) {
         final Player p = e.getPlayer();
         if (p.getGameMode() != GameMode.SURVIVAL || e.getMaterial() != plugin.getConfigManager().getSuperItem()) {
