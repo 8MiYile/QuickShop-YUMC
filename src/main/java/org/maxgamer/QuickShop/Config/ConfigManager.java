@@ -1,7 +1,9 @@
 package org.maxgamer.QuickShop.Config;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -51,7 +53,7 @@ public class ConfigManager {
      * A set of players who have been warned
      * ("Your shop isn't automatically locked")
      */
-    private final HashSet<String> warnings = new HashSet<>();
+    private Set<String> warnings = new HashSet<>();
 
     public ConfigManager(final QuickShop plugin) {
         final FileConfig config = (FileConfig) plugin.getConfig();
@@ -82,6 +84,7 @@ public class ConfigManager {
         this.feeForPriceChange = config.getDouble("shop.fee-for-price-change");
         this.preventhopper = config.getBoolean("preventhopper");
         this.guiTitle = config.getMessage("guititle", guiTitle);
+        this.warnings = Collections.emptySet();
         if (config.getBoolean("fakeitem", true)) {
             try {
                 plugin.getLogger().info("启用虚拟悬浮物 尝试启动中...");
@@ -144,7 +147,7 @@ public class ConfigManager {
         return taxAccount;
     }
 
-    public HashSet<String> getWarnings() {
+    public Set<String> getWarnings() {
         return warnings;
     }
 

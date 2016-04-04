@@ -1,9 +1,9 @@
 package org.maxgamer.QuickShop.Shop;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,6 +23,8 @@ import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Database.Database;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
+
+import cn.citycraft.PluginHelper.kit.PluginKit;
 
 public class ShopManager {
     private final HashMap<String, Info> actions = new HashMap<String, Info>();
@@ -282,34 +284,39 @@ public class ShopManager {
                 if (!plugin.getConfig().getBoolean("shop.lock")) {
                     // Warn them if they haven't been warned since
                     // reboot
-                    final HashSet<String> warings = plugin.getConfigManager().getWarnings();
+                    final Set<String> warings = plugin.getConfigManager().getWarnings();
                     if (!warings.contains(p.getName())) {
                         p.sendMessage(MsgUtil.p("shops-arent-locked"));
                         warings.add(p.getName());
                     }
                 }
-                // Figures out which way we should put the sign on and
-                // sets its text.
-                if (info.getSignBlock() != null && info.getSignBlock().getType() == Material.AIR && plugin.getConfig().getBoolean("shop.auto-sign")) {
-                    final BlockState bs = info.getSignBlock().getState();
-                    final BlockFace bf = info.getLocation().getBlock().getFace(info.getSignBlock());
-                    bs.setType(Material.WALL_SIGN);
-                    final Sign sign = (Sign) bs.getData();
-                    sign.setFacingDirection(bf);
-                    bs.update(true);
-                    shop.setSignText();
-                }
-                if (shop instanceof ContainerShop) {
-                    final ContainerShop cs = (ContainerShop) shop;
-                    if (cs.isDoubleShop()) {
-                        final Shop nextTo = cs.getAttachedShop();
-                        if (nextTo.getPrice() > shop.getPrice()) {
-                            // The one next to it must always be a
-                            // buying shop.
-                            p.sendMessage(MsgUtil.p("buying-more-than-selling"));
+                PluginKit.scheduleTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Figures out which way we should put the sign on and
+                        // sets its text.
+                        if (info.getSignBlock() != null && info.getSignBlock().getType() == Material.AIR && plugin.getConfig().getBoolean("shop.auto-sign")) {
+                            final BlockState bs = info.getSignBlock().getState();
+                            final BlockFace bf = info.getLocation().getBlock().getFace(info.getSignBlock());
+                            bs.setType(Material.WALL_SIGN);
+                            final Sign sign = (Sign) bs.getData();
+                            sign.setFacingDirection(bf);
+                            bs.update(true);
+                            shop.setSignText();
+                        }
+                        if (shop instanceof ContainerShop) {
+                            final ContainerShop cs = (ContainerShop) shop;
+                            if (cs.isDoubleShop()) {
+                                final Shop nextTo = cs.getAttachedShop();
+                                if (nextTo.getPrice() > shop.getPrice()) {
+                                    // The one next to it must always be a
+                                    // buying shop.
+                                    p.sendMessage(MsgUtil.p("buying-more-than-selling"));
+                                }
+                            }
                         }
                     }
-                }
+                });
             }
             /* They didn't enter a number. */
             catch (final NumberFormatException ex) {
