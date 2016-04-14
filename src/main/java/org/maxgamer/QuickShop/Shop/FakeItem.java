@@ -1,6 +1,5 @@
 package org.maxgamer.QuickShop.Shop;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,42 +62,43 @@ public class FakeItem implements DisplayItem {
         final PacketAdapter chunkPacketListener = new PacketAdapter(plugin, PacketType.Play.Server.MAP_CHUNK) {
             @Override
             public void onPacketSending(final PacketEvent event) {
-                final PacketContainer packet = event.getPacket();
-                final Player p = event.getPlayer();
-                final int chunkX = packet.getIntegers().read(0);
-                final int chunkZ = packet.getIntegers().read(1);
-                final List<FakeItem> fakesInChunk = fakes.get(getChunkIdentifyString(p.getWorld().getChunkAt(chunkX, chunkZ)));
-                if (fakesInChunk != null) {
-                    try {
+                try {
+                    final PacketContainer packet = event.getPacket();
+                    final Player p = event.getPlayer();
+                    final int chunkX = packet.getIntegers().read(0);
+                    final int chunkZ = packet.getIntegers().read(1);
+                    final List<FakeItem> fakesInChunk = fakes.get(getChunkIdentifyString(p.getWorld().getChunkAt(chunkX, chunkZ)));
+                    if (fakesInChunk != null) {
                         for (final FakeItem fake : fakesInChunk) {
                             ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getSpawnPacket());
                             ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getVelocityPacket());
                             ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getMetadataPacket());
                         }
-                    } catch (final InvocationTargetException e) {
                     }
+                } catch (final Exception e) {
                 }
             }
         };
         final PacketAdapter chunkBulkPacketListener = new PacketAdapter(plugin, PacketType.Play.Server.MAP_CHUNK_BULK) {
             @Override
             public void onPacketSending(final PacketEvent event) {
-                final PacketContainer packet = event.getPacket();
-                final Player p = event.getPlayer();
-                final int[] chunksX = packet.getIntegerArrays().read(0);
-                final int[] chunksZ = packet.getIntegerArrays().read(1);
-                for (int i = 0; i < chunksX.length; i++) {
-                    final List<FakeItem> fakesInChunk = fakes.get(getChunkIdentifyString(p.getWorld().getChunkAt(chunksX[i], chunksZ[i])));
-                    if (fakesInChunk != null) {
-                        try {
+                try {
+                    final PacketContainer packet = event.getPacket();
+                    final Player p = event.getPlayer();
+                    final int[] chunksX = packet.getIntegerArrays().read(0);
+                    final int[] chunksZ = packet.getIntegerArrays().read(1);
+                    for (int i = 0; i < chunksX.length; i++) {
+                        final List<FakeItem> fakesInChunk = fakes.get(getChunkIdentifyString(p.getWorld().getChunkAt(chunksX[i], chunksZ[i])));
+                        if (fakesInChunk != null) {
                             for (final FakeItem fake : fakesInChunk) {
                                 ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getSpawnPacket());
                                 ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getVelocityPacket());
                                 ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getMetadataPacket());
                             }
-                        } catch (final InvocationTargetException e) {
+
                         }
                     }
+                } catch (final Exception e) {
                 }
             }
         };
