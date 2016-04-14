@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.8.8</version>
+	<version>1.8.9</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -60,11 +60,11 @@
 		<env.GIT_COMMIT>DEBUG</env.GIT_COMMIT>
 		<update.description>&amp;a全新版本 &amp;c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比)&amp;e7老板修复逗比BUG...</update.description>
 		<update.changes>
+			&amp;b1.8.9 - &amp;c修复虚拟物品产生的异常...;
 			&amp;b1.8.8 - &amp;c修复异步处理购买事件导致的状态错误...;
 			            - &amp;c修复配置文件部分字段不存在导致的报错...;
 			&amp;b1.8.7 - &amp;e异步处理getOfflinePlayer 只能保证不卡服 连不上MOJANG-API还是一样...;
 			            - &amp;c修复部分情况下可以跳过AuthMe和Residence的事件拦截...;
-			&amp;b1.8.6 - &amp;c修复getOfflinePlayer导致的服务器卡顿(连不上MOJANG...);
 		</update.changes>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -95,6 +95,17 @@
 			<version>1.5.6</version>
 		</dependency>
 		<dependency>
+			<groupId>cn.citycraft</groupId>
+			<artifactId>PluginHelper</artifactId>
+			<type>jar</type>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.Cnly.WowSuchCleaner</groupId>
+			<artifactId>WowSuchCleaner</artifactId>
+			<version>1.6.5</version>
+		</dependency>
+		<dependency>
 			<groupId>com.sk89q</groupId>
 			<artifactId>WorldEdit</artifactId>
 			<version>5.4.5</version>
@@ -107,17 +118,6 @@
 			<version>3.6.5-SNAPSHOT</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/ProtocolLib-3.6.5-SNAPSHOT.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>cn.citycraft</groupId>
-			<artifactId>PluginHelper</artifactId>
-			<type>jar</type>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>io.github.Cnly.WowSuchCleaner</groupId>
-			<artifactId>WowSuchCleaner</artifactId>
-			<version>1.6.5</version>
 		</dependency>
 	</dependencies>
 </project>
