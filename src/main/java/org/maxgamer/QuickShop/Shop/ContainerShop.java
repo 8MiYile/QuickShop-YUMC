@@ -22,6 +22,8 @@ import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
+import cn.citycraft.PluginHelper.kit.PluginKit;
+
 public class ContainerShop implements Shop {
     private DisplayItem displayItem;
     private final ItemStack item;
@@ -602,19 +604,26 @@ public class ContainerShop implements Shop {
         if (Util.isLoaded(this.getLocation()) == false) {
             return;
         }
-        final String[] lines = new String[4];
-        lines[0] = ChatColor.RED + "[QuickShop]";
-        if (this.isBuying()) {
-            final int remsp = this.getRemainingSpace();
-            lines[1] = MsgUtil.p("signs.buying", "" + (remsp == 10000 ? "无限" : remsp));
-        }
-        if (this.isSelling()) {
-            final int remst = this.getRemainingStock();
-            lines[1] = MsgUtil.p("signs.selling", "" + (remst == 10000 ? "无限" : remst));
-        }
-        lines[2] = Util.getNameForSign(this.item);
-        lines[3] = MsgUtil.p("signs.price", "" + this.getPrice());
-        this.setSignText(lines);
+        final ContainerShop shop = this;
+        // 1.9不能异步修改木牌
+        PluginKit.runTask(new Runnable() {
+            @Override
+            public void run() {
+                final String[] lines = new String[4];
+                lines[0] = ChatColor.RED + "[QuickShop]";
+                if (shop.isBuying()) {
+                    final int remsp = shop.getRemainingSpace();
+                    lines[1] = MsgUtil.p("signs.buying", "" + (remsp == 10000 ? "无限" : remsp));
+                }
+                if (shop.isSelling()) {
+                    final int remst = shop.getRemainingStock();
+                    lines[1] = MsgUtil.p("signs.selling", "" + (remst == 10000 ? "无限" : remst));
+                }
+                lines[2] = Util.getNameForSign(shop.item);
+                lines[3] = MsgUtil.p("signs.price", "" + shop.getPrice());
+                shop.setSignText(lines);
+            }
+        });
     }
 
     /**
@@ -628,12 +637,19 @@ public class ContainerShop implements Shop {
         if (Util.isLoaded(this.getLocation()) == false) {
             return;
         }
-        for (final Sign sign : this.getSigns()) {
-            for (int i = 0; i < lines.length; i++) {
-                sign.setLine(i, lines[i]);
+        final List<Sign> signs = this.getSigns();
+        // 1.9不能异步修改木牌
+        PluginKit.runTask(new Runnable() {
+            @Override
+            public void run() {
+                for (final Sign sign : signs) {
+                    for (int i = 0; i < lines.length; i++) {
+                        sign.setLine(i, lines[i]);
+                    }
+                    sign.update();
+                }
             }
-            sign.update();
-        }
+        });
     }
 
     @Override

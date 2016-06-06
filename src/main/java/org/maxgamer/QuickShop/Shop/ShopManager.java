@@ -24,8 +24,6 @@ import org.maxgamer.QuickShop.Database.Database;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
-import cn.citycraft.PluginHelper.kit.PluginKit;
-
 public class ShopManager {
     private final HashMap<String, Info> actions = new HashMap<String, Info>();
 
@@ -290,33 +288,28 @@ public class ShopManager {
                         warings.add(p.getName());
                     }
                 }
-                PluginKit.scheduleTask(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Figures out which way we should put the sign on and
-                        // sets its text.
-                        if (info.getSignBlock() != null && info.getSignBlock().getType() == Material.AIR && plugin.getConfig().getBoolean("shop.auto-sign")) {
-                            final BlockState bs = info.getSignBlock().getState();
-                            final BlockFace bf = info.getLocation().getBlock().getFace(info.getSignBlock());
-                            bs.setType(Material.WALL_SIGN);
-                            final Sign sign = (Sign) bs.getData();
-                            sign.setFacingDirection(bf);
-                            bs.update(true);
-                            shop.setSignText();
-                        }
-                        if (shop instanceof ContainerShop) {
-                            final ContainerShop cs = (ContainerShop) shop;
-                            if (cs.isDoubleShop()) {
-                                final Shop nextTo = cs.getAttachedShop();
-                                if (nextTo.getPrice() > shop.getPrice()) {
-                                    // The one next to it must always be a
-                                    // buying shop.
-                                    p.sendMessage(MsgUtil.p("buying-more-than-selling"));
-                                }
-                            }
+                // Figures out which way we should put the sign on and
+                // sets its text.
+                if (info.getSignBlock() != null && info.getSignBlock().getType() == Material.AIR && plugin.getConfig().getBoolean("shop.auto-sign")) {
+                    final BlockState bs = info.getSignBlock().getState();
+                    final BlockFace bf = info.getLocation().getBlock().getFace(info.getSignBlock());
+                    bs.setType(Material.WALL_SIGN);
+                    final Sign sign = (Sign) bs.getData();
+                    sign.setFacingDirection(bf);
+                    bs.update(true);
+                    shop.setSignText();
+                }
+                if (shop instanceof ContainerShop) {
+                    final ContainerShop cs = (ContainerShop) shop;
+                    if (cs.isDoubleShop()) {
+                        final Shop nextTo = cs.getAttachedShop();
+                        if (nextTo.getPrice() > shop.getPrice()) {
+                            // The one next to it must always be a
+                            // buying shop.
+                            p.sendMessage(MsgUtil.p("buying-more-than-selling"));
                         }
                     }
-                });
+                }
             }
             /* They didn't enter a number. */
             catch (final NumberFormatException ex) {
@@ -325,7 +318,9 @@ public class ShopManager {
             }
         }
         /* Purchase Handling */
-        else if (info.getAction() == ShopAction.BUY) {
+        else if (info.getAction() == ShopAction.BUY)
+
+        {
             int amount = 0;
             try {
                 amount = Integer.parseInt(message);
@@ -473,9 +468,12 @@ public class ShopManager {
             shop.setSignText(); // Update the signs count
         }
         /* If it was already cancelled (from destroyed) */
-        else {
+        else
+
+        {
             return; // It was cancelled, go away.
         }
+
     }
 
     /**
