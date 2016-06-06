@@ -24,6 +24,8 @@ import org.maxgamer.QuickShop.Database.Database;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
+import cn.citycraft.PluginHelper.kit.PluginKit;
+
 public class ShopManager {
     private final HashMap<String, Info> actions = new HashMap<String, Info>();
 
@@ -296,7 +298,12 @@ public class ShopManager {
                     bs.setType(Material.WALL_SIGN);
                     final Sign sign = (Sign) bs.getData();
                     sign.setFacingDirection(bf);
-                    bs.update(true);
+                    PluginKit.runTask(new Runnable() {
+                        @Override
+                        public void run() {
+                            bs.update(true);
+                        }
+                    });
                     shop.setSignText();
                 }
                 if (shop instanceof ContainerShop) {
