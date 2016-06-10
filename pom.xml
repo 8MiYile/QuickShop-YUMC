@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.9.0</version>
+	<version>1.9.1</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -60,10 +60,9 @@
 		<env.GIT_COMMIT>DEBUG</env.GIT_COMMIT>
 		<update.description>&amp;a全新版本 &amp;c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比)&amp;e7老板修复逗比BUG...</update.description>
 		<update.changes>
+			&amp;b1.9.1 - &amp;c修复同一个玩家的商店直接漏洞不能传递的问题...;
 			&amp;b1.9.0 - &amp;c修复1.9开始以后不允许异步更新木牌的问题...;
 			&amp;b1.8.9 - &amp;c修复虚拟物品产生的异常...;
-			&amp;b1.8.8 - &amp;c修复异步处理购买事件导致的状态错误...;
-			            - &amp;c修复配置文件部分字段不存在导致的报错...;
 		</update.changes>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

@@ -62,7 +62,7 @@ public class ProtectListener implements Listener {
         final Shop meshop = getShop(me);
         final Shop desshop = getShop(des);
         if ((srcshop != null && meshop == null) || (meshop != null && desshop == null)
-                || (srcshop != null && desshop != null && srcshop.getOwner() != null && srcshop.getOwner().equalsIgnoreCase(desshop.getOwner()))) {
+                || (srcshop != null && desshop != null && srcshop.getOwner() != null && !srcshop.getOwner().equalsIgnoreCase(desshop.getOwner()))) {
             e.setCancelled(true);
         }
     }
