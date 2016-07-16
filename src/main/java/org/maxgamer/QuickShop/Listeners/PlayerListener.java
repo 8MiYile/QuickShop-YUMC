@@ -43,7 +43,7 @@ public class PlayerListener implements Listener {
     public void onClick(final PlayerInteractEvent e) {
         final Block b = e.getClickedBlock();
         final Player p = e.getPlayer();
-        if (e.getAction() != Action.LEFT_CLICK_BLOCK || (e.getMaterial() == plugin.getConfigManager().getSuperItem() && b.getType() == Material.WALL_SIGN)) {
+        if (e.getAction() != Action.LEFT_CLICK_BLOCK || (e.getMaterial() == plugin.getConfigManager().getSuperItem() && (b.getType() == Material.WALL_SIGN || p.getGameMode() == GameMode.CREATIVE))) {
             return;
         }
         final Location loc = b.getLocation();
@@ -74,12 +74,7 @@ public class PlayerListener implements Listener {
             return;
         }
         // Handles creating shops
-        else if (shop == null
-                && item != null
-                && item.getType() != Material.AIR
-                && p.hasPermission("quickshop.create.sell")
-                && Util.canBeShop(b)
-                && p.getGameMode() != GameMode.CREATIVE
+        else if (shop == null && item != null && item.getType() != Material.AIR && p.hasPermission("quickshop.create.sell") && Util.canBeShop(b) && p.getGameMode() != GameMode.CREATIVE
                 && (plugin.getConfigManager().isSneakCreate() == p.isSneaking())) {
             if (!plugin.getShopManager().canBuildShop(p, b, e.getBlockFace())) {
                 // As of the new checking system, most plugins will tell the
@@ -169,6 +164,7 @@ public class PlayerListener implements Listener {
             final Block attached = Util.getAttached(b);
             final Shop shop = attached == null ? null : plugin.getShopManager().getShop(attached.getLocation());
             if (shop != null) {
+                e.setCancelled(true);
                 final Location loc = shop.getLocation();
                 String shopmode = "";
                 if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
