@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,14 +20,16 @@ import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
+import cn.citycraft.PluginHelper.kit.PKit;
 import cn.citycraft.PluginHelper.kit.PluginKit;
 
 public class ContainerShop implements Shop {
+    private final QuickShop plugin = (QuickShop) PKit.i();
+    private final String signTitle = plugin.getConfigManager().getGuiTitle();
     private DisplayItem displayItem;
     private final ItemStack item;
     private final Location loc;
     private String owner;
-    private final QuickShop plugin;
     private double price;
     private ShopType shopType;
     private boolean unlimited;
@@ -52,7 +52,6 @@ public class ContainerShop implements Shop {
         this.price = price;
         this.owner = owner;
         this.item = item.clone();
-        this.plugin = (QuickShop) Bukkit.getPluginManager().getPlugin("QuickShop");
         this.item.setAmount(1);
         if (plugin.getConfigManager().isDisplay()) {
             if (plugin.getConfigManager().isFakeItem()) {
@@ -69,7 +68,6 @@ public class ContainerShop implements Shop {
         this.shopType = s.shopType;
         this.item = s.item;
         this.loc = s.loc;
-        this.plugin = s.plugin;
         this.unlimited = s.unlimited;
         this.owner = s.owner;
         this.price = s.price;
@@ -379,7 +377,7 @@ public class ContainerShop implements Shop {
                 continue;
             }
             final Sign sign = (Sign) b.getState();
-            if (sign.getLine(0).contains("[QuickShop]")) {
+            if (sign.getLine(0).contains("[QuickShop]") || sign.getLine(0).contains(signTitle)) {
                 signs.add(sign);
             } else {
                 boolean text = false;
@@ -610,7 +608,7 @@ public class ContainerShop implements Shop {
             @Override
             public void run() {
                 final String[] lines = new String[4];
-                lines[0] = ChatColor.RED + "[QuickShop]";
+                lines[0] = signTitle;
                 if (shop.isBuying()) {
                     final int remsp = shop.getRemainingSpace();
                     lines[1] = MsgUtil.p("signs.buying", "" + (remsp == 10000 ? "无限" : remsp));
@@ -659,8 +657,7 @@ public class ContainerShop implements Shop {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("商店 " + (loc.getWorld() == null ? "世界尚未载入" : "坐标: " + loc.getWorld().getName()) + "(" + loc.getBlockX() + ", " + loc.getBlockY() + ", "
-                + loc.getBlockZ() + ")");
+        final StringBuilder sb = new StringBuilder("商店 " + (loc.getWorld() == null ? "世界尚未载入" : "坐标: " + loc.getWorld().getName()) + "(" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ")");
         sb.append(" 所有者: " + getOwner());
         if (isUnlimited()) {
             sb.append(" 无限模式: true");
