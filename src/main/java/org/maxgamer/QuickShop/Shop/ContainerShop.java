@@ -20,11 +20,11 @@ import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
-import cn.citycraft.PluginHelper.kit.PKit;
+import cn.citycraft.PluginHelper.bukkit.P;
 import cn.citycraft.PluginHelper.kit.PluginKit;
 
 public class ContainerShop implements Shop {
-    private final QuickShop plugin = (QuickShop) PKit.i();
+    private final QuickShop plugin = (QuickShop) P.instance;
     private final String signTitle = plugin.getConfigManager().getGuiTitle();
     private DisplayItem displayItem;
     private final ItemStack item;
@@ -377,7 +377,7 @@ public class ContainerShop implements Shop {
                 continue;
             }
             final Sign sign = (Sign) b.getState();
-            if (sign.getLine(0).contains("[QuickShop]") || sign.getLine(0).contains(signTitle)) {
+            if (sign.getLine(0).contains("[QuickShop]") || signTitle.startsWith(sign.getLine(0))) {
                 signs.add(sign);
             } else {
                 boolean text = false;
