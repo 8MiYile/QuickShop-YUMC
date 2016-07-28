@@ -20,7 +20,7 @@ import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
-import cn.citycraft.PluginHelper.bukkit.P;
+import cn.citycraft.PluginHelper.kit.P;
 import cn.citycraft.PluginHelper.kit.PluginKit;
 
 public class ContainerShop implements Shop {
