@@ -19,8 +19,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Item.DisplayItem;
-import org.maxgamer.QuickShop.Shop.Item.FakeItem_17;
-import org.maxgamer.QuickShop.Shop.Item.NormalItem;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
@@ -701,11 +699,7 @@ public class ContainerShop implements Shop {
         }
         final boolean trans = Util.isTransparent(getLocation().clone().add(0.5, 1.2, 0.5).getBlock().getType());
         if (trans && this.getDisplayItem() == null) {
-            if (plugin.getConfigManager().isFakeItem()) {
-                this.displayItem = new FakeItem_17(this, this.getItem());
-            } else {
-                this.displayItem = new NormalItem(this, this.getItem());
-            }
+            this.displayItem = DisplayItem.create(this);
             this.getDisplayItem().spawn();
             return;
         }
