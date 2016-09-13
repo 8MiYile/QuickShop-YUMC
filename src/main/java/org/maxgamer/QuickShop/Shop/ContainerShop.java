@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -17,11 +18,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
+import org.maxgamer.QuickShop.Shop.Item.DisplayItem;
+import org.maxgamer.QuickShop.Shop.Item.FakeItem_17;
+import org.maxgamer.QuickShop.Shop.Item.NormalItem;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
-import cn.citycraft.PluginHelper.kit.P;
-import cn.citycraft.PluginHelper.kit.PluginKit;
+import pw.yumc.YumCore.bukkit.P;
 
 public class ContainerShop implements Shop {
     private final QuickShop plugin = (QuickShop) P.instance;
@@ -53,13 +56,7 @@ public class ContainerShop implements Shop {
         this.owner = owner;
         this.item = item.clone();
         this.item.setAmount(1);
-        if (plugin.getConfigManager().isDisplay()) {
-            if (plugin.getConfigManager().isFakeItem()) {
-                this.displayItem = new FakeItem(this, this.getItem());
-            } else {
-                this.displayItem = new NormalItem(this, this.getItem());
-            }
-        }
+        this.displayItem = DisplayItem.create(this);
         this.shopType = ShopType.SELLING;
     }
 
@@ -360,7 +357,7 @@ public class ContainerShop implements Shop {
      */
     @Override
     public List<Sign> getSigns() {
-        final ArrayList<Sign> signs = new ArrayList<Sign>(1);
+        final ArrayList<Sign> signs = new ArrayList<>(1);
         if (this.getLocation().getWorld() == null) {
             return signs;
         }
@@ -518,7 +515,7 @@ public class ContainerShop implements Shop {
             this.buy(p, -amount);
         }
         // Items to drop on floor
-        final ArrayList<ItemStack> floor = new ArrayList<ItemStack>(5);
+        final ArrayList<ItemStack> floor = new ArrayList<>(5);
         final Inventory pInv = p.getInventory();
         if (this.isUnlimited()) {
             final ItemStack item = this.item.clone();
@@ -604,7 +601,7 @@ public class ContainerShop implements Shop {
         }
         final ContainerShop shop = this;
         // 1.9不能异步修改木牌
-        PluginKit.runTask(new Runnable() {
+        Bukkit.getScheduler().runTask(plugin, new Runnable() {
             @Override
             public void run() {
                 final String[] lines = new String[4];
@@ -637,7 +634,7 @@ public class ContainerShop implements Shop {
         }
         final List<Sign> signs = this.getSigns();
         // 1.9不能异步修改木牌
-        PluginKit.runTask(new Runnable() {
+        Bukkit.getScheduler().runTask(plugin, new Runnable() {
             @Override
             public void run() {
                 for (final Sign sign : signs) {
@@ -657,7 +654,15 @@ public class ContainerShop implements Shop {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("商店 " + (loc.getWorld() == null ? "世界尚未载入" : "坐标: " + loc.getWorld().getName()) + "(" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ")");
+        final StringBuilder sb = new StringBuilder("商店 "
+                + (loc.getWorld() == null ? "世界尚未载入" : "坐标: " + loc.getWorld().getName())
+                + "("
+                + loc.getBlockX()
+                + ", "
+                + loc.getBlockY()
+                + ", "
+                + loc.getBlockZ()
+                + ")");
         sb.append(" 所有者: " + getOwner());
         if (isUnlimited()) {
             sb.append(" 无限模式: true");
@@ -697,7 +702,7 @@ public class ContainerShop implements Shop {
         final boolean trans = Util.isTransparent(getLocation().clone().add(0.5, 1.2, 0.5).getBlock().getType());
         if (trans && this.getDisplayItem() == null) {
             if (plugin.getConfigManager().isFakeItem()) {
-                this.displayItem = new FakeItem(this, this.getItem());
+                this.displayItem = new FakeItem_17(this, this.getItem());
             } else {
                 this.displayItem = new NormalItem(this, this.getItem());
             }

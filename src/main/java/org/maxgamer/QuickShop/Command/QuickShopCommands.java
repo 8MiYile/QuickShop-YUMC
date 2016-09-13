@@ -24,30 +24,32 @@ import org.maxgamer.QuickShop.Shop.ShopChunk;
 import org.maxgamer.QuickShop.Shop.ShopType;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 
-import cn.citycraft.PluginHelper.commands.HandlerCommand;
-import cn.citycraft.PluginHelper.commands.HandlerCommands;
-import cn.citycraft.PluginHelper.commands.HandlerDescription;
-import cn.citycraft.PluginHelper.commands.InvokeCommandEvent;
-import cn.citycraft.PluginHelper.commands.InvokeSubCommand;
-import cn.citycraft.PluginHelper.utils.StringUtil;
+import pw.yumc.YumCore.bukkit.P;
+import pw.yumc.YumCore.commands.CommandArgument;
+import pw.yumc.YumCore.commands.CommandExecutor;
+import pw.yumc.YumCore.commands.CommandHelpParse;
+import pw.yumc.YumCore.commands.CommandManager;
+import pw.yumc.YumCore.commands.annotation.Cmd;
+import pw.yumc.YumCore.commands.annotation.Cmd.Executor;
+import pw.yumc.YumCore.commands.annotation.Help;
+import pw.yumc.YumCore.kit.StrKit;
 
-public class QuickShopCommands implements HandlerCommands, HandlerDescription {
-    QuickShop plugin;
+public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
+    QuickShop plugin = P.getPlugin();
 
-    public QuickShopCommands(final QuickShop plugin) {
-        this.plugin = plugin;
-        final InvokeSubCommand ics = new InvokeSubCommand(plugin, "qs");
-        ics.registerCommands(this);
-        ics.setHandlerDescription(this);
+    public QuickShopCommands() {
+        new CommandManager("qs", this).setHelpParse(this);
     }
 
-    @HandlerCommand(name = "buy", aliases = { "b" }, permission = "quickshop.create.buy", onlyPlayerExecutable = true, description = "command.description.buy")
-    public void buy(final InvokeCommandEvent e) {
+    @Cmd(aliases = "b", permission = "quickshop.create.buy", executor = Executor.PLAYER)
+    @Help("command.description.buy")
+    public void buy(final CommandArgument e) {
         changeShopType(e.getSender(), ShopType.BUYING);
     }
 
-    @HandlerCommand(name = "clean", aliases = "c", permission = "quickshop.clean", description = "command.description.clean")
-    public void clean(final InvokeCommandEvent e) {
+    @Cmd(aliases = "c", permission = "quickshop.clean")
+    @Help("command.description.clean")
+    public void clean(final CommandArgument e) {
         final CommandSender sender = e.getSender();
         sender.sendMessage(MsgUtil.p("command.cleaning"));
         final Iterator<Shop> shIt = plugin.getShopManager().getShopIterator();
@@ -71,8 +73,9 @@ public class QuickShopCommands implements HandlerCommands, HandlerDescription {
         sender.sendMessage(MsgUtil.p("command.cleaned", "" + i));
     }
 
-    @HandlerCommand(name = "empty", aliases = "e", permission = "quickshop.empty", description = "command.description.empty")
-    public void empty(final InvokeCommandEvent e) {
+    @Cmd(aliases = "e", permission = "quickshop.empty")
+    @Help("command.description.empty")
+    public void empty(final CommandArgument e) {
         final CommandSender sender = e.getSender();
         final BlockIterator bIt = new BlockIterator((Player) sender, 10);
         while (bIt.hasNext()) {
@@ -93,8 +96,9 @@ public class QuickShopCommands implements HandlerCommands, HandlerDescription {
         return;
     }
 
-    @HandlerCommand(name = "export", minimumArguments = 1, possibleArguments = "[mysql|sqlite]", permission = "quickshop.export", description = "command.description.export")
-    public void export(final InvokeCommandEvent e) {
+    @Cmd(minimumArguments = 1, permission = "quickshop.export")
+    @Help(value = "command.description.export", possibleArguments = "[mysql|sqlite]")
+    public void export(final CommandArgument e) {
         final CommandSender sender = e.getSender();
         final String type = e.getArgs()[0].toLowerCase();
         if (type.startsWith("mysql")) {
@@ -144,10 +148,11 @@ public class QuickShopCommands implements HandlerCommands, HandlerDescription {
         }
     }
 
-    @HandlerCommand(name = "find", aliases = "f", minimumArguments = 2, onlyPlayerExecutable = true, permission = "quickshop.find", description = "command.description.find")
-    public void find(final InvokeCommandEvent e) {
+    @Cmd(aliases = "f", minimumArguments = 2, permission = "quickshop.find", executor = Executor.PLAYER)
+    @Help("command.description.find")
+    public void find(final CommandArgument e) {
         final CommandSender sender = e.getSender();
-        String lookFor = StringUtil.consolidateStrings(e.getArgs(), 0);
+        String lookFor = StrKit.consolidateStrings(e.getArgs(), 0);
         lookFor = lookFor.toLowerCase();
         final Player p = (Player) sender;
         final Location loc = p.getEyeLocation().clone();
@@ -182,13 +187,9 @@ public class QuickShopCommands implements HandlerCommands, HandlerDescription {
         return;
     }
 
-    @Override
-    public String handler(final String arg0) {
-        return MsgUtil.p(arg0);
-    }
-
-    @HandlerCommand(name = "info", aliases = "i", permission = "quickshop.info", description = "command.description.info")
-    public void info(final InvokeCommandEvent e) {
+    @Cmd(aliases = "i", permission = "quickshop.info")
+    @Help("command.description.info")
+    public void info(final CommandArgument e) {
         final CommandSender sender = e.getSender();
         int buying, selling, doubles, chunks, worlds, unlimited;
         buying = selling = doubles = chunks = worlds = unlimited = 0;
@@ -223,8 +224,14 @@ public class QuickShopCommands implements HandlerCommands, HandlerDescription {
         sender.sendMessage(MsgUtil.p("info.canclean", nostock));
     }
 
-    @HandlerCommand(name = "price", aliases = "p", minimumArguments = 1, onlyPlayerExecutable = true, possibleArguments = "<价格>", permission = "quickshop.create.changeprice", description = "command.description.price")
-    public void price(final InvokeCommandEvent e) {
+    @Override
+    public String parse(final String str) {
+        return MsgUtil.p(str);
+    }
+
+    @Cmd(aliases = "p", minimumArguments = 1, permission = "quickshop.create.changeprice")
+    @Help(value = "command.description.price", possibleArguments = "<价格>")
+    public void price(final CommandArgument e) {
         final CommandSender sender = e.getSender();
         final Player p = (Player) sender;
         double price;
@@ -294,8 +301,9 @@ public class QuickShopCommands implements HandlerCommands, HandlerDescription {
         return;
     }
 
-    @HandlerCommand(name = "refill", minimumArguments = 1, possibleArguments = "<数量>", permission = "quickshop.refill", description = "command.description.refill")
-    public void refill(final InvokeCommandEvent e) {
+    @Cmd(minimumArguments = 1, permission = "quickshop.refill", executor = Executor.PLAYER)
+    @Help(value = "command.description.refill", possibleArguments = "<数量>")
+    public void refill(final CommandArgument e) {
         final CommandSender sender = e.getSender();
         int add;
         try {
@@ -318,18 +326,19 @@ public class QuickShopCommands implements HandlerCommands, HandlerDescription {
         return;
     }
 
-    @HandlerCommand(name = "reload", permission = "quickshop.reload", description = "command.description.reload")
-    public void reload(final InvokeCommandEvent e) {
+    @Cmd(permission = "quickshop.reload")
+    @Help("command.description.reload")
+    public void reload(final CommandArgument e) {
         final CommandSender sender = e.getSender();
         sender.sendMessage(MsgUtil.p("command.reloading"));
         plugin.reloadConfig();
         Bukkit.getPluginManager().disablePlugin(plugin);
         Bukkit.getPluginManager().enablePlugin(plugin);
-        return;
     }
 
-    @HandlerCommand(name = "remove", aliases = "r", onlyPlayerExecutable = true, permission = "quickshop.delete", description = "command.description.remove")
-    public void remove(final InvokeCommandEvent e) {
+    @Cmd(aliases = "r", permission = "quickshop.delete", executor = Executor.PLAYER)
+    @Help("command.description.remove")
+    public void remove(final CommandArgument e) {
         final Player p = (Player) e.getSender();
         final BlockIterator bIt = new BlockIterator(p, 10);
         while (bIt.hasNext()) {
@@ -348,13 +357,15 @@ public class QuickShopCommands implements HandlerCommands, HandlerDescription {
         p.sendMessage(ChatColor.RED + "未找到商店!");
     }
 
-    @HandlerCommand(name = "sell", aliases = { "s" }, permission = "quickshop.create.sell", onlyPlayerExecutable = true, description = "command.description.sell")
-    public void sell(final InvokeCommandEvent e) {
+    @Cmd(aliases = "s", permission = "quickshop.create.sell")
+    @Help("command.description.sell")
+    public void sell(final CommandArgument e) {
         changeShopType(e.getSender(), ShopType.SELLING);
     }
 
-    @HandlerCommand(name = "setowner", aliases = "so", onlyPlayerExecutable = true, minimumArguments = 1, permission = "quickshop.setowner", description = "command.description.setowner")
-    public void setowner(final InvokeCommandEvent e) {
+    @Cmd(aliases = "so", minimumArguments = 1, permission = "quickshop.setowner", executor = Executor.PLAYER)
+    @Help("command.description.setowner")
+    public void setowner(final CommandArgument e) {
         final CommandSender sender = e.getSender();
         final String owner = e.getArgs()[0];
         final BlockIterator bIt = new BlockIterator((Player) sender, 10);
@@ -369,11 +380,11 @@ public class QuickShopCommands implements HandlerCommands, HandlerDescription {
             }
         }
         sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
-        return;
     }
 
-    @HandlerCommand(name = "unlimited", onlyPlayerExecutable = true, permission = "quickshop.unlimited", description = "command.description.unlimited")
-    public void unlimited(final InvokeCommandEvent e) {
+    @Cmd(permission = "quickshop.unlimited", executor = Executor.PLAYER)
+    @Help("command.description.unlimited")
+    public void unlimited(final CommandArgument e) {
         final CommandSender sender = e.getSender();
         final BlockIterator bIt = new BlockIterator((Player) sender, 10);
         while (bIt.hasNext()) {
@@ -387,7 +398,6 @@ public class QuickShopCommands implements HandlerCommands, HandlerDescription {
             }
         }
         sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
-        return;
     }
 
     private void changeShopType(final CommandSender sender, final ShopType shopType) {

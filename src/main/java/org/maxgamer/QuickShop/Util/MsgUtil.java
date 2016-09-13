@@ -13,12 +13,12 @@ import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 
-import cn.citycraft.PluginHelper.config.FileConfig;
-import cn.citycraft.PluginHelper.tellraw.FancyMessage;
+import pw.yumc.YumCore.config.FileConfig;
+import pw.yumc.YumCore.tellraw.Tellraw;
 
 public class MsgUtil {
     private static FileConfig messages;
-    private static HashMap<String, LinkedList<String>> player_messages = new HashMap<String, LinkedList<String>>();
+    private static HashMap<String, LinkedList<String>> player_messages = new HashMap<>();
     private static QuickShop plugin;
 
     /**
@@ -58,7 +58,7 @@ public class MsgUtil {
     public static void init(final QuickShop plugin) {
         MsgUtil.plugin = plugin;
         // Load messages.yml
-        messages = new FileConfig(plugin, "messages.yml");
+        messages = new FileConfig("messages.yml");
         // Parse colour codes
         Util.parseColours(messages);
     }
@@ -75,7 +75,7 @@ public class MsgUtil {
                 final String message = rs.getString("message");
                 LinkedList<String> msgs = player_messages.get(owner);
                 if (msgs == null) {
-                    msgs = new LinkedList<String>();
+                    msgs = new LinkedList<>();
                     player_messages.put(owner, msgs);
                 }
                 msgs.add(message);
@@ -122,7 +122,7 @@ public class MsgUtil {
                 if (p == null || !p.isOnline()) {
                     LinkedList<String> msgs = player_messages.get(player);
                     if (msgs == null) {
-                        msgs = new LinkedList<String>();
+                        msgs = new LinkedList<>();
                         player_messages.put(player, msgs);
                     }
                     msgs.add(message);
@@ -137,8 +137,8 @@ public class MsgUtil {
 
     public static void sendItemMessage(final Player p, final ItemStack is, final String msg) {
         try {
-            final FancyMessage fm = FancyMessage.newFM();
-            fm.text(msg).itemTooltip(is).send(p);
+            final Tellraw fm = Tellraw.create();
+            fm.text(msg).item(is).send(p);
         } catch (Exception | NoClassDefFoundError | NoSuchMethodError e) {
             plugin.getConfigManager().setEnableMagicLib(false);
             p.sendMessage(msg);
@@ -188,7 +188,8 @@ public class MsgUtil {
                 p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.shop-information"));
                 p.sendMessage(ChatColor.DARK_PURPLE
                         + "| "
-                        + MsgUtil.p("menu.owner", Bukkit.getOfflinePlayer(shop.getOwner()).getName() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : Bukkit.getOfflinePlayer(shop.getOwner()).getName()));
+                        + MsgUtil.p("menu.owner",
+                                Bukkit.getOfflinePlayer(shop.getOwner()).getName() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : Bukkit.getOfflinePlayer(shop.getOwner()).getName()));
                 final String msg = ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.item", shop.getDataName());
                 sendItemMessage(p, shop.getItem(), msg);
                 if (Util.isTool(item.getType())) {

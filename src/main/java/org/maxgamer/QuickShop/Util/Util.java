@@ -23,16 +23,16 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sign;
 import org.maxgamer.QuickShop.QuickShop;
 
-import cn.citycraft.PluginHelper.utils.LocalUtil;
+import pw.yumc.YumCore.misc.L10N;
 
 @SuppressWarnings("deprecation")
 public class Util {
-    private static HashSet<Material> blacklist = new HashSet<Material>();
+    private static HashSet<Material> blacklist = new HashSet<>();
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
     private static QuickShop plugin;
-    private static HashSet<Material> shoppables = new HashSet<Material>();
-    private static HashSet<Material> tools = new HashSet<Material>();
-    private static HashSet<Material> transparent = new HashSet<Material>();
+    private static HashSet<Material> shoppables = new HashSet<>();
+    private static HashSet<Material> tools = new HashSet<>();
+    private static HashSet<Material> transparent = new HashSet<>();
 
     public static void addTransparentBlock(final Material m) {
         if (transparent.add(m) == false) {
@@ -162,7 +162,7 @@ public class Util {
      * @return The human readable item name.
      */
     public static String getName(final ItemStack i) {
-        final String vanillaName = LocalUtil.getItemFullName(i);
+        final String vanillaName = L10N.getItemFullName(i);
         return vanillaName;
     }
 

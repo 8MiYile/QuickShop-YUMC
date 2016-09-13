@@ -8,12 +8,12 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -51,9 +51,9 @@ import org.maxgamer.QuickShop.Util.Util;
 import org.maxgamer.QuickShop.Watcher.ItemWatcher;
 import org.maxgamer.QuickShop.Watcher.LogWatcher;
 
-import cn.citycraft.PluginHelper.config.FileConfig;
-import cn.citycraft.PluginHelper.utils.LocalUtil;
-import cn.citycraft.PluginHelper.utils.VersionChecker;
+import pw.yumc.YumCore.config.FileConfig;
+import pw.yumc.YumCore.misc.L10N;
+import pw.yumc.YumCore.update.SubscribeTask;
 
 public class QuickShop extends JavaPlugin {
     /** 初始化 QuickShop 的接口 */
@@ -151,33 +151,6 @@ public class QuickShop extends JavaPlugin {
     }
 
     public void loadShop() {
-        if (!LocalUtil.isInit()) {
-            this.getLogger().warning("本地化工具尚未初始化完成 商店汉化信息将在稍后刷新...");
-            this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
-                @Override
-                public void run() {
-                    int error = 0;
-                    try {
-                        while (!LocalUtil.isInit()) {
-                            try {
-                                Thread.sleep(500);
-                            } catch (final InterruptedException e) {
-                            }
-                        }
-                        getLogger().info("本地化工具载入完成 刷新汉化信息...");
-                        final Iterator<Shop> shops = shopManager.getShopIterator();
-                        while (shops.hasNext()) {
-                            shops.next().onClick();
-                        }
-                    } catch (final Exception e) {
-                        error++;
-                    }
-                    if (error != 0) {
-                        getLogger().info("信息刷新完成 期间发生 " + error + " 个错误 已忽略(不是BUG 无需反馈)...");
-                    }
-                }
-            });
-        }
         /* 从数据库载入商店信息到内存 */
         int count = 0; // 商店个数
         int unload = 0;
@@ -289,7 +262,6 @@ public class QuickShop extends JavaPlugin {
             return;
         }
         configManager = new ConfigManager(this);
-        LocalUtil.init(this);
         // Initialize Util
         Util.initialize();
         // Create the shop manager.
@@ -359,26 +331,27 @@ public class QuickShop extends JavaPlugin {
         }
 
         // Command handlers
-        new QuickShopCommands(this);
+        new QuickShopCommands();
 
         if (configManager.getFindDistance() > 100) {
             getLogger().warning("商店查找半径过大 可能导致服务器Lag! 推荐使用低于 100 的配置!");
         }
         this.getLogger().info("载入完成! 版本: " + this.getDescription().getVersion() + " 重制 by 喵♂呜");
-        new VersionChecker(this);
+        new SubscribeTask();
     }
 
     @Override
     public void onLoad() {
         instance = this;
-        config = new FileConfig(this);
+        config = new FileConfig();
         MsgUtil.init(this);
+        L10N.getItemName(new ItemStack(Material.AIR));
     }
 
     /** Reloads QuickShops config */
     @Override
     public void reloadConfig() {
         config.reload();
-        LocalUtil.reload(this);
+        L10N.reload();
     }
 }

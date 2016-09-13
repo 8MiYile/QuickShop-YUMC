@@ -1,4 +1,4 @@
-package org.maxgamer.QuickShop.Shop;
+package org.maxgamer.QuickShop.Shop.Item;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -6,13 +6,14 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Util.NMS;
 
 /**
  * @author Netherfoam A display item, that spawns a block above the chest and
  *         cannot be interacted with.
  */
-public class NormalItem implements DisplayItem {
+public class NormalItem extends DisplayItem {
     private final ItemStack iStack;
     private Item item;
     private final Shop shop;

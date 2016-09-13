@@ -9,10 +9,12 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
-import org.maxgamer.QuickShop.Shop.FakeItem;
+import org.maxgamer.QuickShop.Shop.Item.FakeItem_17;
+import org.maxgamer.QuickShop.Shop.Item.FakeItem_18_110;
 
-import cn.citycraft.PluginHelper.config.FileConfig;
-import cn.citycraft.PluginHelper.tellraw.FancyMessage;
+import pw.yumc.YumCore.bukkit.Log;
+import pw.yumc.YumCore.config.FileConfig;
+import pw.yumc.YumCore.tellraw.Tellraw;
 
 public class ConfigManager {
     private boolean enableMagicLib = false;
@@ -88,23 +90,31 @@ public class ConfigManager {
         if (config.getBoolean("fakeitem", true)) {
             try {
                 plugin.getLogger().info("启用虚拟悬浮物 尝试启动中...");
-                FakeItem.register(plugin);
-                plugin.getLogger().info("虚拟悬浮物功能测试正常...");
+                FakeItem_18_110.register(plugin);
+                plugin.getLogger().info("虚拟悬浮物功能测试正常(1.8-1.10.2)...");
                 fakeItem = true;
-            } catch (final Error | Exception e) {
-                plugin.getLogger().warning("+=========================================");
-                plugin.getLogger().warning("| 警告: 启动虚拟物品失败 使用原版悬浮物品...");
-                plugin.getLogger().warning("+=========================================");
+            } catch (final Throwable e) {
+                Log.debug(e);
+                try {
+                    FakeItem_17.register(plugin);
+                    plugin.getLogger().info("虚拟悬浮物功能测试正常(1.7)...");
+                    fakeItem = true;
+                } catch (final Throwable e2) {
+                    plugin.getLogger().warning("+=========================================");
+                    plugin.getLogger().warning("| 警告: 启动虚拟物品失败 使用原版悬浮物品...");
+                    plugin.getLogger().warning("+=========================================");
+                    Log.debug(e2);
+                }
             }
         }
         if (config.getBoolean("usemagiclib", true)) {
             try {
                 plugin.getLogger().info("启用魔改库 尝试启动中...");
-                final FancyMessage fm = FancyMessage.newFM("test");
-                fm.then("item").itemTooltip(new ItemStack(Material.DIAMOND_SWORD));
-                fm.then("link").link("ci.citycraft.cn");
+                final Tellraw fm = Tellraw.create("test");
+                fm.then("item").item(new ItemStack(Material.DIAMOND_SWORD));
+                fm.then("link").link("yumc.pw");
                 fm.then("suggest").suggest("qs help");
-                fm.toJSONString();
+                fm.toJsonString();
                 plugin.getLogger().info("魔改库功能测试正常...");
                 this.enableMagicLib = true;
             } catch (final Error | Exception e) {

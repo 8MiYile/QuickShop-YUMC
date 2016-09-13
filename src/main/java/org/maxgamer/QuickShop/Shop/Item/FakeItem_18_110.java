@@ -1,9 +1,10 @@
-package org.maxgamer.QuickShop.Shop;
+package org.maxgamer.QuickShop.Shop.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -13,31 +14,43 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.maxgamer.QuickShop.Shop.ContainerShop;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.WrappedWatchableObject;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher.Serializer;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject;
+import com.google.common.base.Optional;
 
 /**
  * Minecraft 虚拟悬浮物品工具类
- * 需要depend ProtocolLib
+ * 需要depend ProtocolLib 4.x
  *
  * @author 橙子(chengzi)
- * @version 1.0.1
+ * @version 1.1.0
  */
-public class FakeItem implements DisplayItem {
+public class FakeItem_18_110 extends DisplayItem {
 
-    private static Map<String, List<FakeItem>> fakes = new HashMap<String, List<FakeItem>>();
+    private static Map<String, List<FakeItem_18_110>> fakes = new HashMap<>();
     private static boolean registered = false;
     private static int lastId = Integer.MAX_VALUE;
 
     private final ItemStack itemStack;
     private final Location location;
     private final int eid;
+    private final UUID uuid;
     private boolean created = false;
+
+    public FakeItem_18_110(final ContainerShop containerShop, final ItemStack item) {
+        this.itemStack = item;
+        this.location = containerShop.getLocation().clone().add(0.5, 1, 0.5);
+        this.eid = getFakeEntityId();
+        this.uuid = UUID.randomUUID();
+    }
 
     public static boolean isRegistered() {
         return registered;
@@ -67,11 +80,10 @@ public class FakeItem implements DisplayItem {
                     final Player p = event.getPlayer();
                     final int chunkX = packet.getIntegers().read(0);
                     final int chunkZ = packet.getIntegers().read(1);
-                    final List<FakeItem> fakesInChunk = fakes.get(getChunkIdentifyString(p.getWorld().getChunkAt(chunkX, chunkZ)));
+                    final List<FakeItem_18_110> fakesInChunk = fakes.get(getChunkIdentifyString(p.getWorld().getChunkAt(chunkX, chunkZ)));
                     if (fakesInChunk != null) {
-                        for (final FakeItem fake : fakesInChunk) {
+                        for (final FakeItem_18_110 fake : fakesInChunk) {
                             ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getSpawnPacket());
-                            ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getVelocityPacket());
                             ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getMetadataPacket());
                         }
                     }
@@ -79,7 +91,7 @@ public class FakeItem implements DisplayItem {
                 }
             }
         };
-        final PacketAdapter chunkBulkPacketListener = new PacketAdapter(plugin, PacketType.Play.Server.MAP_CHUNK_BULK) {
+        final PacketAdapter chunkBulkPacketListener = new PacketAdapter(plugin, PacketType.Play.Server.MAP_CHUNK) {
             @Override
             public void onPacketSending(final PacketEvent event) {
                 try {
@@ -88,11 +100,10 @@ public class FakeItem implements DisplayItem {
                     final int[] chunksX = packet.getIntegerArrays().read(0);
                     final int[] chunksZ = packet.getIntegerArrays().read(1);
                     for (int i = 0; i < chunksX.length; i++) {
-                        final List<FakeItem> fakesInChunk = fakes.get(getChunkIdentifyString(p.getWorld().getChunkAt(chunksX[i], chunksZ[i])));
+                        final List<FakeItem_18_110> fakesInChunk = fakes.get(getChunkIdentifyString(p.getWorld().getChunkAt(chunksX[i], chunksZ[i])));
                         if (fakesInChunk != null) {
-                            for (final FakeItem fake : fakesInChunk) {
+                            for (final FakeItem_18_110 fake : fakesInChunk) {
                                 ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getSpawnPacket());
-                                ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getVelocityPacket());
                                 ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getMetadataPacket());
                             }
 
@@ -113,16 +124,6 @@ public class FakeItem implements DisplayItem {
 
     private static int getFakeEntityId() {
         return lastId--;
-    }
-
-    private static int getNormalizedDistance(final double value) {
-        return (int) Math.floor(value * 32.0D);
-    }
-
-    public FakeItem(final ContainerShop containerShop, final ItemStack item) {
-        this.itemStack = item;
-        this.location = containerShop.getLocation().clone().add(0.5, 1, 0.5);
-        this.eid = getFakeEntityId();
     }
 
     @Override
@@ -149,7 +150,6 @@ public class FakeItem implements DisplayItem {
     public void respawn() {
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(getDestoryPacket());
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(getSpawnPacket());
-        ProtocolLibrary.getProtocolManager().broadcastServerPacket(getVelocityPacket());
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(getMetadataPacket());
     }
 
@@ -166,13 +166,12 @@ public class FakeItem implements DisplayItem {
             return;
         }
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(getSpawnPacket());
-        ProtocolLibrary.getProtocolManager().broadcastServerPacket(getVelocityPacket());
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(getMetadataPacket());
 
         final String chunkId = getChunkIdentifyString(location.getChunk());
-        List<FakeItem> fakesInChunk = fakes.get(chunkId);
+        List<FakeItem_18_110> fakesInChunk = fakes.get(chunkId);
         if (fakesInChunk == null) {
-            fakesInChunk = new ArrayList<FakeItem>();
+            fakesInChunk = new ArrayList<>();
         }
         fakesInChunk.add(this);
         fakes.put(chunkId, fakesInChunk);
@@ -186,7 +185,7 @@ public class FakeItem implements DisplayItem {
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(getDestoryPacket());
 
         final String chunkId = getChunkIdentifyString(location.getChunk());
-        final List<FakeItem> fakesInChunk = fakes.get(chunkId);
+        final List<FakeItem_18_110> fakesInChunk = fakes.get(chunkId);
         if (fakesInChunk == null) {
             // NOTE: This is what should not happens if everything is correct.
             created = false;
@@ -206,27 +205,22 @@ public class FakeItem implements DisplayItem {
     private PacketContainer getMetadataPacket() {
         final PacketContainer fakePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
         fakePacket.getIntegers().write(0, eid);
-        final WrappedWatchableObject itemMeta = new WrappedWatchableObject(10, itemStack);
-        final List<WrappedWatchableObject> entityMetaList = new ArrayList<WrappedWatchableObject>(1);
-        entityMetaList.add(itemMeta);
-        fakePacket.getWatchableCollectionModifier().write(0, entityMetaList);
+        final WrappedDataWatcher wr = new WrappedDataWatcher();
+        final Serializer serializer = WrappedDataWatcher.Registry.getItemStackSerializer(true);
+        final WrappedDataWatcherObject object = new WrappedDataWatcher.WrappedDataWatcherObject(6, serializer);
+        wr.setObject(object, Optional.of(itemStack));
+        fakePacket.getWatchableCollectionModifier().write(0, wr.getWatchableObjects());
         return fakePacket;
     }
 
     private PacketContainer getSpawnPacket() {
         final PacketContainer fakePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY);
         fakePacket.getIntegers().write(0, eid);
-        fakePacket.getIntegers().write(1, getNormalizedDistance(location.getX()));
-        fakePacket.getIntegers().write(2, getNormalizedDistance(location.getY()));
-        fakePacket.getIntegers().write(3, getNormalizedDistance(location.getZ()));
-        fakePacket.getIntegers().write(9, 2);
+        fakePacket.getModifier().write(1, uuid);
+        fakePacket.getDoubles().write(0, location.getX());
+        fakePacket.getDoubles().write(1, location.getY());
+        fakePacket.getDoubles().write(2, location.getZ());
+        fakePacket.getIntegers().write(6, 2);
         return fakePacket;
     }
-
-    private PacketContainer getVelocityPacket() {
-        final PacketContainer fakePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_VELOCITY);
-        fakePacket.getIntegers().write(0, eid);
-        return fakePacket;
-    }
-
 }
