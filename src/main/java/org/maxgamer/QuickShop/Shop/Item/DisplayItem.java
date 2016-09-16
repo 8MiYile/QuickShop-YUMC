@@ -19,17 +19,17 @@ public abstract class DisplayItem {
         if (plugin.getConfigManager().isDisplay()) {
             if (plugin.getConfigManager().isFakeItem()) {
                 try {
-                    return new FakeItem_18_110(shop, shop.getItem());
+                    return new FakeItem_19_110(shop, shop.getItem());
                 } catch (final Throwable e) {
                     Log.debug(e);
                     try {
-                        return new FakeItem_17(shop, shop.getItem());
+                        return new FakeItem_17_18(shop, shop.getItem());
                     } catch (final Throwable e2) {
                         Log.debug(e2);
-                        return new NormalItem(shop, shop.getItem());
                     }
                 }
             }
+            return new NormalItem(shop, shop.getItem());
         }
         return null;
     }

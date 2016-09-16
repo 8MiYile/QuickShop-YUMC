@@ -9,8 +9,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
-import org.maxgamer.QuickShop.Shop.Item.FakeItem_17;
-import org.maxgamer.QuickShop.Shop.Item.FakeItem_18_110;
+import org.maxgamer.QuickShop.Shop.Item.FakeItem_17_18;
+import org.maxgamer.QuickShop.Shop.Item.FakeItem_19_110;
 
 import pw.yumc.YumCore.bukkit.Log;
 import pw.yumc.YumCore.config.FileConfig;
@@ -90,13 +90,13 @@ public class ConfigManager {
         if (config.getBoolean("fakeitem", true)) {
             try {
                 plugin.getLogger().info("启用虚拟悬浮物 尝试启动中...");
-                FakeItem_18_110.register(plugin);
+                FakeItem_19_110.register(plugin);
                 plugin.getLogger().info("虚拟悬浮物功能测试正常(1.8-1.10.2)...");
                 fakeItem = true;
             } catch (final Throwable e) {
                 Log.debug(e);
                 try {
-                    FakeItem_17.register(plugin);
+                    FakeItem_17_18.register(plugin);
                     plugin.getLogger().info("虚拟悬浮物功能测试正常(1.7)...");
                     fakeItem = true;
                 } catch (final Throwable e2) {
