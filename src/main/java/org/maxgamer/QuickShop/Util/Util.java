@@ -162,7 +162,7 @@ public class Util {
      * @return The human readable item name.
      */
     public static String getName(final ItemStack i) {
-        final String vanillaName = L10N.getItemFullName(i);
+        final String vanillaName = L10N.getItemName(i);
         return vanillaName;
     }
 
