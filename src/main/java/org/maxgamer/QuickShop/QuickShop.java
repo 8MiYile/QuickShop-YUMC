@@ -52,7 +52,7 @@ import org.maxgamer.QuickShop.Watcher.ItemWatcher;
 import org.maxgamer.QuickShop.Watcher.LogWatcher;
 
 import pw.yumc.YumCore.config.FileConfig;
-import pw.yumc.YumCore.misc.L10N;
+import pw.yumc.YumCore.global.L10N;
 import pw.yumc.YumCore.update.SubscribeTask;
 
 public class QuickShop extends JavaPlugin {

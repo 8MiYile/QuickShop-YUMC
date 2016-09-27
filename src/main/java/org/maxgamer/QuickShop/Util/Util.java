@@ -23,7 +23,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sign;
 import org.maxgamer.QuickShop.QuickShop;
 
-import pw.yumc.YumCore.misc.L10N;
+import pw.yumc.YumCore.global.L10N;
 
 @SuppressWarnings("deprecation")
 public class Util {
