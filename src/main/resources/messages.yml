@@ -1,4 +1,4 @@
-Version: 1.5
+Version: 1.6
 
 not-looking-at-shop: '&c没找到快捷商店. 你必须看着那个商店.'
 no-permission: '&4你没有此命令的权限.'
@@ -39,6 +39,7 @@ buying-more-than-selling: '&4警告: 你购买的物品超出了商店的库存!
 not-enough-space: '&c你没有足够的空间装 {0} !'
 refill-success: '&a库存补充成功!'
 empty-success: '&a商店清理成功!'
+prevent-create: '&c当前世界禁止使用商店插件!'
 
 menu:
   successful-purchase: '&a商品购买成功:'

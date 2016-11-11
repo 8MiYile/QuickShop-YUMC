@@ -1,16 +1,6 @@
 package org.maxgamer.QuickShop.Shop;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -19,10 +9,15 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Sign;
-import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Database.Database;
+import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class ShopManager {
     private final HashMap<String, Info> actions = new HashMap<>();
@@ -45,6 +40,10 @@ public class ShopManager {
      * @return True if they're allowed to place a shop there.
      */
     public boolean canBuildShop(final Player p, final Block b, final BlockFace bf) {
+        if (plugin.getConfigManager().getPrevent().contains(b.getWorld().getName().toLowerCase())) {
+            p.sendMessage(MsgUtil.p("prevent-create"));
+            return false;
+        }
         if (plugin.getConfigManager().isLimit()) {
             int owned = 0;
             final Iterator<Shop> it = getShopIterator();
@@ -64,17 +63,12 @@ public class ShopManager {
             final PlayerInteractEvent pie = new PlayerInteractEvent(p, Action.RIGHT_CLICK_BLOCK, new ItemStack(Material.AIR), b, bf); // PIE = PlayerInteractEvent - What else?
             Bukkit.getPluginManager().callEvent(pie);
             pie.getPlayer().closeInventory(); // If the player has chat open, this will close their chat.
-            if (pie.isCancelled()) {
-                return false;
-            }
-        } catch (final Exception e) {
+            if (pie.isCancelled()) { return false; }
+        } catch (final Exception ignored) {
         }
         final ShopPreCreateEvent spce = new ShopPreCreateEvent(p, b.getLocation());
         Bukkit.getPluginManager().callEvent(spce);
-        if (spce.isCancelled()) {
-            return false;
-        }
-        return true;
+        return !spce.isCancelled();
     }
 
     /**
@@ -106,7 +100,7 @@ public class ShopManager {
             // Write it to the database
             final String q = "INSERT INTO shops (owner, price, itemConfig, x, y, z, world, unlimited, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             plugin.getDB().execute(q,
-                    shop.getOwner().toString(),
+                    shop.getOwner(),
                     shop.getPrice(),
                     Util.serialize(item),
                     loc.getBlockX(),
@@ -149,9 +143,7 @@ public class ShopManager {
      */
     public Shop getShop(final Location loc) {
         final HashMap<Location, Shop> inChunk = getShops(loc.getChunk());
-        if (inChunk == null) {
-            return null;
-        }
+        if (inChunk == null) { return null; }
         // We can do this because WorldListener updates the world reference so
         // the world in loc is the same as world in inChunk.get(loc)
         return inChunk.get(loc);
@@ -186,11 +178,10 @@ public class ShopManager {
      */
     public HashMap<Location, Shop> getShops(final Chunk c) {
         // long start = System.nanoTime();
-        final HashMap<Location, Shop> shops = getShops(c.getWorld().getName(), c.getX(), c.getZ());
         // long end = System.nanoTime();
         // System.out.println("Chunk lookup in " + ((end - start)/1000000.0) +
         // "ms.");
-        return shops;
+        return getShops(c.getWorld().getName(), c.getX(), c.getZ());
     }
 
     /**
@@ -207,9 +198,7 @@ public class ShopManager {
 
     public HashMap<Location, Shop> getShops(final String world, final int chunkX, final int chunkZ) {
         final HashMap<ShopChunk, HashMap<Location, Shop>> inWorld = this.getShops(world);
-        if (inWorld == null) {
-            return null;
-        }
+        if (inWorld == null) { return null; }
         final ShopChunk shopChunk = new ShopChunk(world, chunkX, chunkZ);
         return inWorld.get(shopChunk);
     }
@@ -219,14 +208,13 @@ public class ShopManager {
         final HashMap<String, Info> actions = getActions();
         // They wanted to do something.
         final Info info = actions.remove(p.getName());
-        if (info == null) {
-            return; // multithreaded means this can happen
+        if (info == null) { return; // multithreaded means this can happen
         }
         /* Creation handling */
         if (info.getAction() == ShopAction.CREATE) {
             create(p, info, message);
         } else if (/* Purchase Handling */info.getAction() == ShopAction.BUY) {
-            int amount = 0;
+            int amount;
             try {
                 amount = Integer.parseInt(message);
             } catch (final NumberFormatException e) {
@@ -236,7 +224,7 @@ public class ShopManager {
             // Get the shop they interacted with
             final Shop shop = plugin.getShopManager().getShop(info.getLocation());
             // It's not valid anymore
-            if (shop == null || Util.canBeShop(info.getLocation().getBlock()) == false) {
+            if (shop == null || !Util.canBeShop(info.getLocation().getBlock())) {
                 p.sendMessage(MsgUtil.p("chest-was-removed"));
                 return;
             }
@@ -250,9 +238,6 @@ public class ShopManager {
                 buy(p, shop, amount);
             }
             shop.setSignText(); // Update the signs count
-        } else {
-            /* If it was already cancelled (from destroyed) */
-            return; // It was cancelled, go away.
         }
     }
 
@@ -333,15 +318,7 @@ public class ShopManager {
             p.sendMessage(MsgUtil.p("you-dont-have-that-many-items", "" + count, shop.getDataName()));
             return;
         }
-        if (amount == 0) {
-            // Dumb.
-            MsgUtil.sendPurchaseSuccess(p, shop, amount);
-            return;
-        } else if (amount < 0) {
-            // & Dumber
-            p.sendMessage(MsgUtil.p("negative-amount"));
-            return;
-        }
+        if (!checkAmount(p, shop, amount)) { return; }
         // Money handling
         if (!p.getName().equals(shop.getOwner())) {
             // Don't tax them if they're purchasing from
@@ -390,7 +367,7 @@ public class ShopManager {
                 p.sendMessage(MsgUtil.p("no-double-chests"));
                 return;
             }
-            if (Util.canBeShop(info.getLocation().getBlock()) == false) {
+            if (!Util.canBeShop(info.getLocation().getBlock())) {
                 p.sendMessage(MsgUtil.p("chest-was-removed"));
                 return;
             }
@@ -426,9 +403,7 @@ public class ShopManager {
             }
             final ShopCreateEvent e = new ShopCreateEvent(shop, p);
             Bukkit.getPluginManager().callEvent(e);
-            if (e.isCancelled()) {
-                return;
-            }
+            if (e.isCancelled()) { return; }
             shop.onLoad();
             /* The shop has hereforth been successfully created */
             createShop(shop);
@@ -460,22 +435,19 @@ public class ShopManager {
                 });
                 shop.setSignText();
             }
-            if (shop instanceof ContainerShop) {
-                final ContainerShop cs = (ContainerShop) shop;
-                if (cs.isDoubleShop()) {
-                    final Shop nextTo = cs.getAttachedShop();
-                    if (nextTo.getPrice() > shop.getPrice()) {
-                        // The one next to it must always be a
-                        // buying shop.
-                        p.sendMessage(MsgUtil.p("buying-more-than-selling"));
-                    }
+            final ContainerShop cs = (ContainerShop) shop;
+            if (cs.isDoubleShop()) {
+                final Shop nextTo = cs.getAttachedShop();
+                if (nextTo.getPrice() > shop.getPrice()) {
+                    // The one next to it must always be a
+                    // buying shop.
+                    p.sendMessage(MsgUtil.p("buying-more-than-selling"));
                 }
             }
         }
         /* They didn't enter a number. */
         catch (final NumberFormatException ex) {
             p.sendMessage(MsgUtil.p("shop-creation-cancelled"));
-            return;
         }
     }
 
@@ -485,15 +457,7 @@ public class ShopManager {
             p.sendMessage(MsgUtil.p("shop-stock-too-low", "" + shop.getRemainingStock(), shop.getDataName()));
             return;
         }
-        if (amount == 0) {
-            // Dumb.
-            MsgUtil.sendPurchaseSuccess(p, shop, amount);
-            return;
-        } else if (amount < 0) {
-            // & Dumber
-            p.sendMessage(MsgUtil.p("negative-amount"));
-            return;
-        }
+        if (!checkAmount(p, shop, amount)) { return; }
         final int pSpace = Util.countSpace(p.getInventory(), shop.getItem());
         if (amount > pSpace) {
             p.sendMessage(MsgUtil.p("not-enough-space", "" + pSpace));
@@ -501,8 +465,7 @@ public class ShopManager {
         }
         final ShopPurchaseEvent e = new ShopPurchaseEvent(shop, p, amount);
         Bukkit.getPluginManager().callEvent(e);
-        if (e.isCancelled()) {
-            return; // Cancelled
+        if (e.isCancelled()) { return; // Cancelled
         }
         // Money handling
         if (!p.getName().equals(shop.getOwner())) {
@@ -548,6 +511,19 @@ public class ShopManager {
         plugin.log(String.format("玩家: %s 从 %s 购买了 %s 件商品 花费 %s", p.getName(), shop.toString(), amount, shop.getPrice() * amount));
     }
 
+    private boolean checkAmount(Player p, Shop shop, int amount) {
+        if (amount == 0) {
+            // Dumb.
+            MsgUtil.sendPurchaseSuccess(p, shop, amount);
+            return false;
+        } else if (amount < 0) {
+            // & Dumber
+            p.sendMessage(MsgUtil.p("negative-amount"));
+            return false;
+        }
+        return true;
+    }
+
     public class ShopIterator implements Iterator<Shop> {
         private Iterator<HashMap<Location, Shop>> chunks;
         private Shop current;
@@ -565,9 +541,7 @@ public class ShopManager {
         public boolean hasNext() {
             if (shops == null || !shops.hasNext()) {
                 if (chunks == null || !chunks.hasNext()) {
-                    if (!worlds.hasNext()) {
-                        return false;
-                    }
+                    if (!worlds.hasNext()) { return false; }
                     chunks = worlds.next().values().iterator();
                     return hasNext();
                 }
@@ -585,15 +559,12 @@ public class ShopManager {
         public Shop next() {
             if (shops == null || !shops.hasNext()) {
                 if (chunks == null || !chunks.hasNext()) {
-                    if (!worlds.hasNext()) {
-                        throw new NoSuchElementException("No more shops to iterate over!");
-                    }
+                    if (!worlds.hasNext()) { throw new NoSuchElementException("No more shops to iterate over!"); }
                     chunks = worlds.next().values().iterator();
                 }
                 shops = chunks.next().values().iterator();
             }
-            if (!shops.hasNext()) {
-                return this.next(); // Skip to the next one (Empty iterator?)
+            if (!shops.hasNext()) { return this.next(); // Skip to the next one (Empty iterator?)
             }
             current = shops.next();
             return current;

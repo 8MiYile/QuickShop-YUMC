@@ -1,9 +1,5 @@
 package org.maxgamer.QuickShop.Command;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -14,25 +10,26 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.BlockIterator;
-import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Database.Database;
 import org.maxgamer.QuickShop.Database.MySQLCore;
 import org.maxgamer.QuickShop.Database.SQLiteCore;
+import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.ContainerShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopChunk;
 import org.maxgamer.QuickShop.Shop.ShopType;
 import org.maxgamer.QuickShop.Util.MsgUtil;
-
 import pw.yumc.YumCore.bukkit.P;
-import pw.yumc.YumCore.commands.CommandArgument;
-import pw.yumc.YumCore.commands.CommandExecutor;
-import pw.yumc.YumCore.commands.CommandHelpParse;
 import pw.yumc.YumCore.commands.CommandManager;
 import pw.yumc.YumCore.commands.annotation.Cmd;
 import pw.yumc.YumCore.commands.annotation.Cmd.Executor;
 import pw.yumc.YumCore.commands.annotation.Help;
-import pw.yumc.YumCore.kit.StrKit;
+import pw.yumc.YumCore.commands.interfaces.CommandExecutor;
+import pw.yumc.YumCore.commands.interfaces.CommandHelpParse;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
     QuickShop plugin = P.getPlugin();
@@ -43,14 +40,13 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
 
     @Cmd(aliases = "b", permission = "quickshop.create.buy", executor = Executor.PLAYER)
     @Help("command.description.buy")
-    public void buy(final CommandArgument e) {
-        changeShopType(e.getSender(), ShopType.BUYING);
+    public void buy(Player player) {
+        changeShopType(player, ShopType.BUYING);
     }
 
     @Cmd(aliases = "c", permission = "quickshop.clean")
     @Help("command.description.clean")
-    public void clean(final CommandArgument e) {
-        final CommandSender sender = e.getSender();
+    public void clean(CommandSender sender) {
         sender.sendMessage(MsgUtil.p("command.cleaning"));
         final Iterator<Shop> shIt = plugin.getShopManager().getShopIterator();
         int i = 0;
@@ -73,11 +69,10 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         sender.sendMessage(MsgUtil.p("command.cleaned", "" + i));
     }
 
-    @Cmd(aliases = "e", permission = "quickshop.empty")
+    @Cmd(aliases = "e", permission = "quickshop.empty", executor = Executor.PLAYER)
     @Help("command.description.empty")
-    public void empty(final CommandArgument e) {
-        final CommandSender sender = e.getSender();
-        final BlockIterator bIt = new BlockIterator((Player) sender, 10);
+    public void empty(Player player) {
+        final BlockIterator bIt = new BlockIterator(player, 10);
         while (bIt.hasNext()) {
             final Block b = bIt.next();
             final Shop shop = plugin.getShopManager().getShop(b.getLocation());
@@ -85,22 +80,19 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
                 if (shop instanceof ContainerShop) {
                     final ContainerShop cs = (ContainerShop) shop;
                     cs.getInventory().clear();
-                    sender.sendMessage(MsgUtil.p("empty-success"));
+                    player.sendMessage(MsgUtil.p("empty-success"));
                 } else {
-                    sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
+                    player.sendMessage(MsgUtil.p("not-looking-at-shop"));
                 }
                 return;
             }
         }
-        sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
-        return;
+        player.sendMessage(MsgUtil.p("not-looking-at-shop"));
     }
 
     @Cmd(minimumArguments = 1, permission = "quickshop.export")
     @Help(value = "command.description.export", possibleArguments = "[mysql|sqlite]")
-    public void export(final CommandArgument e) {
-        final CommandSender sender = e.getSender();
-        final String type = e.getArgs()[0].toLowerCase();
+    public void export(CommandSender sender, String type) {
         if (type.startsWith("mysql")) {
             if (plugin.getDB().getCore() instanceof MySQLCore) {
                 sender.sendMessage(ChatColor.RED + "数据已保存在 MySQL 无需转换!");
@@ -130,10 +122,8 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
                 return;
             }
             final File file = new File(plugin.getDataFolder(), "shops.db");
-            if (file.exists()) {
-                if (file.delete() == false) {
-                    sender.sendMessage(ChatColor.RED + "警告: 删除旧的数据文件 shops.db 失败. 可能会导致部分信息错误.");
-                }
+            if (file.exists() && !file.delete()) {
+                sender.sendMessage(ChatColor.RED + "警告: 删除旧的数据文件 shops.db 失败. 可能会导致部分信息错误.");
             }
             final SQLiteCore core = new SQLiteCore(file);
             try {
@@ -144,17 +134,13 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
                 ex.printStackTrace();
                 sender.sendMessage(ChatColor.RED + "导出数据到 SQLite: " + file.toString() + " 失败 由于: " + ex.getMessage());
             }
-            return;
         }
     }
 
     @Cmd(aliases = "f", minimumArguments = 2, permission = "quickshop.find", executor = Executor.PLAYER)
     @Help("command.description.find")
-    public void find(final CommandArgument e) {
-        final CommandSender sender = e.getSender();
-        String lookFor = StrKit.consolidateStrings(e.getArgs(), 0);
+    public void find(Player p, String lookFor) {
         lookFor = lookFor.toLowerCase();
-        final Player p = (Player) sender;
         final Location loc = p.getEyeLocation().clone();
         final double minDistance = plugin.getConfig().getInt("shop.find-distance");
         double minDistanceSquared = minDistance * minDistance;
@@ -177,20 +163,18 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
             }
         }
         if (closest == null) {
-            sender.sendMessage(MsgUtil.p("no-nearby-shop", e.getArgs()[0]));
+            p.sendMessage(MsgUtil.p("no-nearby-shop", lookFor));
             return;
         }
         final Location lookat = closest.getLocation().clone().add(0.5, 0.5, 0.5);
         // Hack fix to make /qs find not used by /back
         p.teleport(this.lookAt(loc, lookat).add(0, -1.62, 0), TeleportCause.PLUGIN);
         p.sendMessage(MsgUtil.p("nearby-shop-this-way", "" + (int) Math.floor(Math.sqrt(minDistanceSquared))));
-        return;
     }
 
     @Cmd(aliases = "i", permission = "quickshop.info")
     @Help("command.description.info")
-    public void info(final CommandArgument e) {
-        final CommandSender sender = e.getSender();
+    public void info(CommandSender sender) {
         int buying, selling, doubles, chunks, worlds, unlimited;
         buying = selling = doubles = chunks = worlds = unlimited = 0;
         int nostock = 0;
@@ -229,18 +213,9 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         return MsgUtil.p(str);
     }
 
-    @Cmd(aliases = "p", minimumArguments = 1, permission = "quickshop.create.changeprice")
+    @Cmd(aliases = "p", minimumArguments = 1, permission = "quickshop.create.changeprice", executor = Executor.PLAYER)
     @Help(value = "command.description.price", possibleArguments = "<价格>")
-    public void price(final CommandArgument e) {
-        final CommandSender sender = e.getSender();
-        final Player p = (Player) sender;
-        double price;
-        try {
-            price = Double.parseDouble(e.getArgs()[0]);
-        } catch (final NumberFormatException ex) {
-            sender.sendMessage(MsgUtil.p("thats-not-a-number"));
-            return;
-        }
+    public void price(Player sender, Double price) {
         if (price < 0.01) {
             sender.sendMessage(MsgUtil.p("price-too-cheap"));
             return;
@@ -248,24 +223,24 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         double fee = 0;
         if (plugin.getConfigManager().isPriceChangeRequiresFee()) {
             fee = plugin.getConfigManager().getFeeForPriceChange();
-            if (fee > 0 && plugin.getEcon().getBalance(p.getName()) < fee) {
+            if (fee > 0 && plugin.getEcon().getBalance(sender.getName()) < fee) {
                 sender.sendMessage(MsgUtil.p("you-cant-afford-to-change-price", plugin.getEcon().format(fee)));
                 return;
             }
         }
-        final BlockIterator bIt = new BlockIterator(p, 10);
+        final BlockIterator bIt = new BlockIterator(sender, 10);
         // Loop through every block they're looking at upto 10 blocks away
         while (bIt.hasNext()) {
             final Block b = bIt.next();
             final Shop shop = plugin.getShopManager().getShop(b.getLocation());
-            if (shop != null && (shop.getOwner().equals(p.getName()) || sender.hasPermission("quickshop.other.price"))) {
+            if (shop != null && (shop.getOwner().equals(sender.getName()) || sender.hasPermission("quickshop.other.price"))) {
                 if (shop.getPrice() == price) {
                     // Stop here if there isn't a price change
                     sender.sendMessage(MsgUtil.p("no-price-change"));
                     return;
                 }
                 if (fee > 0) {
-                    if (!plugin.getEcon().withdraw(p.getName(), fee)) {
+                    if (!plugin.getEcon().withdraw(sender.getName(), fee)) {
                         sender.sendMessage(MsgUtil.p("you-cant-afford-to-change-price", plugin.getEcon().format(fee)));
                         return;
                     }
@@ -298,21 +273,12 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
             }
         }
         sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
-        return;
     }
 
     @Cmd(minimumArguments = 1, permission = "quickshop.refill", executor = Executor.PLAYER)
     @Help(value = "command.description.refill", possibleArguments = "<数量>")
-    public void refill(final CommandArgument e) {
-        final CommandSender sender = e.getSender();
-        int add;
-        try {
-            add = Integer.parseInt(e.getArgs()[0]);
-        } catch (final NumberFormatException ex) {
-            sender.sendMessage(MsgUtil.p("thats-not-a-number"));
-            return;
-        }
-        final BlockIterator bIt = new BlockIterator((Player) sender, 10);
+    public void refill(Player sender, Integer add) {
+        final BlockIterator bIt = new BlockIterator(sender, 10);
         while (bIt.hasNext()) {
             final Block b = bIt.next();
             final Shop shop = plugin.getShopManager().getShop(b.getLocation());
@@ -323,13 +289,11 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
             }
         }
         sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
-        return;
     }
 
     @Cmd(permission = "quickshop.reload")
     @Help("command.description.reload")
-    public void reload(final CommandArgument e) {
-        final CommandSender sender = e.getSender();
+    public void reload(CommandSender sender) {
         sender.sendMessage(MsgUtil.p("command.reloading"));
         plugin.reloadConfig();
         Bukkit.getPluginManager().disablePlugin(plugin);
@@ -338,8 +302,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
 
     @Cmd(aliases = "r", permission = "quickshop.delete", executor = Executor.PLAYER)
     @Help("command.description.remove")
-    public void remove(final CommandArgument e) {
-        final Player p = (Player) e.getSender();
+    public void remove(Player p) {
         final BlockIterator bIt = new BlockIterator(p, 10);
         while (bIt.hasNext()) {
             final Block b = bIt.next();
@@ -357,17 +320,15 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         p.sendMessage(ChatColor.RED + "未找到商店!");
     }
 
-    @Cmd(aliases = "s", permission = "quickshop.create.sell")
+    @Cmd(aliases = "s", permission = "quickshop.create.sell", executor = Executor.PLAYER)
     @Help("command.description.sell")
-    public void sell(final CommandArgument e) {
-        changeShopType(e.getSender(), ShopType.SELLING);
+    public void sell(Player player) {
+        changeShopType(player, ShopType.SELLING);
     }
 
     @Cmd(aliases = "so", minimumArguments = 1, permission = "quickshop.setowner", executor = Executor.PLAYER)
     @Help("command.description.setowner")
-    public void setowner(final CommandArgument e) {
-        final CommandSender sender = e.getSender();
-        final String owner = e.getArgs()[0];
+    public void setowner(CommandSender sender, String owner) {
         final BlockIterator bIt = new BlockIterator((Player) sender, 10);
         while (bIt.hasNext()) {
             final Block b = bIt.next();
@@ -384,9 +345,8 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
 
     @Cmd(permission = "quickshop.unlimited", executor = Executor.PLAYER)
     @Help("command.description.unlimited")
-    public void unlimited(final CommandArgument e) {
-        final CommandSender sender = e.getSender();
-        final BlockIterator bIt = new BlockIterator((Player) sender, 10);
+    public void unlimited(Player sender) {
+        final BlockIterator bIt = new BlockIterator(sender, 10);
         while (bIt.hasNext()) {
             final Block b = bIt.next();
             final Shop shop = plugin.getShopManager().getShop(b.getLocation());
@@ -400,12 +360,12 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
     }
 
-    private void changeShopType(final CommandSender sender, final ShopType shopType) {
-        final BlockIterator bIt = new BlockIterator((Player) sender, 10);
+    private void changeShopType(final Player sender, final ShopType shopType) {
+        final BlockIterator bIt = new BlockIterator(sender, 10);
         while (bIt.hasNext()) {
             final Block b = bIt.next();
             final Shop shop = plugin.getShopManager().getShop(b.getLocation());
-            if (shop != null && shop.getOwner().equals(((Player) sender).getName())) {
+            if (shop != null && shop.getOwner().equals(sender.getName())) {
                 shop.setShopType(shopType);
                 shop.setSignText();
                 shop.update();

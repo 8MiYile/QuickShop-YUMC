@@ -1,4 +1,4 @@
-Version: 1.7
+Version: 1.8
 
 #超级工具(OP可以用该工具在创造模式打破所有商店)
 superitem: GOLD_AXE
@@ -10,6 +10,9 @@ guititle: '&6[&b快捷商店&6]&r'
 usemagiclib: true
 #启用虚拟悬浮物
 fakeitem: true
+#禁止使用商店的世界(请全部小写)
+prevent:
+- 'preventworld'
 
 #税收数量 (decimal) - 例如 税收是0.05 玩家1 在玩家2的商店 购买了 50元的东西,那么,玩家1 减少 50, 玩家2 账户增加(1-0.05)*50, 并且 玩家2税收账户增加 (0.05)*50.
 tax: 0.00

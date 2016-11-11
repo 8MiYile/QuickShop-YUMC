@@ -1,20 +1,16 @@
 package org.maxgamer.QuickShop.Config;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Item.FakeItem_17_18;
 import org.maxgamer.QuickShop.Shop.Item.FakeItem_19_110;
-
 import pw.yumc.YumCore.bukkit.Log;
 import pw.yumc.YumCore.config.FileConfig;
 import pw.yumc.YumCore.tellraw.Tellraw;
+
+import java.util.*;
 
 public class ConfigManager {
     private boolean enableMagicLib = false;
@@ -50,7 +46,7 @@ public class ConfigManager {
     private double tax = 0;
     private final String taxAccount;
     private boolean fakeItem = false;
-
+    private List<String> prevent;
     /**
      * A set of players who have been warned
      * ("Your shop isn't automatically locked")
@@ -70,7 +66,7 @@ public class ConfigManager {
         }
         try {
             this.superItem = Material.valueOf(config.getString("superitem"));
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
         }
         this.tax = config.getDouble("tax");
         this.showTax = config.getBoolean("show-tax");
@@ -87,6 +83,7 @@ public class ConfigManager {
         this.preventhopper = config.getBoolean("preventhopper");
         this.guiTitle = config.getMessage("guititle", guiTitle);
         this.warnings = Collections.emptySet();
+        this.prevent = config.getStringList("prevent");
         if (config.getBoolean("fakeitem", true)) {
             try {
                 plugin.getLogger().info("启用虚拟悬浮物 尝试启动中...");
@@ -221,4 +218,11 @@ public class ConfigManager {
         this.fakeItem = fakeItem;
     }
 
+    public List<String> getPrevent() {
+        return prevent;
+    }
+
+    public void setPrevent(List<String> prevent) {
+        this.prevent = prevent;
+    }
 }
