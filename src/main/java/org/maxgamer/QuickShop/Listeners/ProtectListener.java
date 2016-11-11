@@ -61,8 +61,7 @@ public class ProtectListener implements Listener {
         final Shop srcshop = getShop(src);
         final Shop meshop = getShop(me);
         final Shop desshop = getShop(des);
-        if ((srcshop != null && meshop == null) || (meshop != null && desshop == null)
-                || (srcshop != null && desshop != null && srcshop.getOwner() != null && !srcshop.getOwner().equalsIgnoreCase(desshop.getOwner()))) {
+        if (srcshop != null && meshop == null || meshop != null && desshop == null || srcshop != null && srcshop.getOwner() != null && !srcshop.getOwner().equalsIgnoreCase(desshop.getOwner())) {
             e.setCancelled(true);
         }
     }
@@ -97,7 +96,7 @@ public class ProtectListener implements Listener {
                 sendWarning(p, ci, "§d§l获取");
                 p.closeInventory();
             }
-        } catch (final Exception ex) {
+        } catch (final Exception ignored) {
         }
     }
 

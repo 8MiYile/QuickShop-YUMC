@@ -1,11 +1,5 @@
 package org.maxgamer.QuickShop.Util;
 
-import java.text.DecimalFormat;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,8 +16,13 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sign;
 import org.maxgamer.QuickShop.QuickShop;
-
 import pw.yumc.YumCore.global.L10N;
+
+import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings("deprecation")
 public class Util {
@@ -35,7 +34,7 @@ public class Util {
     private static HashSet<Material> transparent = new HashSet<>();
 
     public static void addTransparentBlock(final Material m) {
-        if (transparent.add(m) == false) {
+        if (!transparent.add(m)) {
             System.out.println("已添加透明方块: " + m.toString());
         }
         if (!m.isBlock()) {
@@ -53,10 +52,7 @@ public class Util {
     public static boolean canBeShop(final Block b) {
         try {
             final BlockState bs = b.getState();
-            if (bs instanceof InventoryHolder == false) {
-                return false;
-            }
-            return shoppables.contains(bs.getType());
+            return bs instanceof InventoryHolder && shoppables.contains(bs.getType());
         } catch (final Exception e) {
             return false;
         }
@@ -110,14 +106,11 @@ public class Util {
     public static ItemStack deserialize(final String config) throws InvalidConfigurationException {
         final YamlConfiguration cfg = new YamlConfiguration();
         cfg.loadFromString(config);
-        final ItemStack stack = cfg.getItemStack("item");
-        return stack;
+        return cfg.getItemStack("item");
     }
 
     public static String firstUppercase(final String string) {
-        if (string.length() > 1) {
-            return Character.toUpperCase(string.charAt(0)) + string.substring(1).toLowerCase();
-        }
+        if (string.length() > 1) { return Character.toUpperCase(string.charAt(0)) + string.substring(1).toLowerCase(); }
         return string.toUpperCase();
     }
 
@@ -138,7 +131,7 @@ public class Util {
     /**
      * Fetches the block which the given sign is attached to
      *
-     * @param sign
+     * @param b
      *            The sign which is attached
      * @return The block the sign is attached to
      */
@@ -162,8 +155,7 @@ public class Util {
      * @return The human readable item name.
      */
     public static String getName(final ItemStack i) {
-        final String vanillaName = L10N.getItemName(i);
-        return vanillaName;
+        return L10N.getItemName(i);
     }
 
     // Let's make very long names shorter for our sign
@@ -184,18 +176,14 @@ public class Util {
      * @return the block which is also a chest and connected to b.
      */
     public static Block getSecondHalf(final Block b) {
-        if (b.getType().toString().contains("CHEST") == false) {
-            return null;
-        }
+        if (!b.getType().toString().contains("CHEST")) { return null; }
         final Block[] blocks = new Block[4];
         blocks[0] = b.getRelative(1, 0, 0);
         blocks[1] = b.getRelative(-1, 0, 0);
         blocks[2] = b.getRelative(0, 0, 1);
         blocks[3] = b.getRelative(0, 0, -1);
         for (final Block c : blocks) {
-            if (c.getType() == b.getType()) {
-                return c;
-            }
+            if (c.getType() == b.getType()) { return c; }
         }
         return null;
     }
@@ -224,7 +212,7 @@ public class Util {
             if (mat == null) {
                 try {
                     mat = Material.getMaterial(Integer.parseInt(s));
-                } catch (final NumberFormatException e) {
+                } catch (final NumberFormatException ignored) {
                 }
             }
             if (mat == null) {
@@ -424,8 +412,7 @@ public class Util {
     }
 
     public static boolean isTransparent(final Material m) {
-        final boolean trans = transparent.contains(m);
-        return trans;
+        return transparent.contains(m);
     }
 
     /**
@@ -470,25 +457,19 @@ public class Util {
      * @return true if the itemstacks match. (Material, durability, enchants, name)
      */
     public static boolean matches(final ItemStack stack1, final ItemStack stack2) {
-        if (stack1 == stack2) {
-            return true; // Referring to the same thing, or both are null.
+        if (stack1 == stack2) { return true; // Referring to the same thing, or both are null.
         }
-        if (stack1 == null || stack2 == null) {
-            return false; // One of them is null (Can't be both, see above)
+        if (stack1 == null || stack2 == null) { return false; // One of them is null (Can't be both, see above)
         }
-        if (stack1.getType() != stack2.getType()) {
-            return false; // Not the same material
+        if (stack1.getType() != stack2.getType()) { return false; // Not the same material
         }
-        if (stack1.getDurability() != stack2.getDurability()) {
-            return false; // Not the same durability
+        if (stack1.getDurability() != stack2.getDurability()) { return false; // Not the same durability
         }
-        if (!stack1.getEnchantments().equals(stack2.getEnchantments())) {
-            return false; // They have the same enchants
+        if (!stack1.getEnchantments().equals(stack2.getEnchantments())) { return false; // They have the same enchants
         }
         if (stack1.getItemMeta().hasDisplayName() || stack2.getItemMeta().hasDisplayName()) {
             if (stack1.getItemMeta().hasDisplayName() && stack2.getItemMeta().hasDisplayName()) {
-                if (!stack1.getItemMeta().getDisplayName().equals(stack2.getItemMeta().getDisplayName())) {
-                    return false; // items have different display name
+                if (!stack1.getItemMeta().getDisplayName().equals(stack2.getItemMeta().getDisplayName())) { return false; // items have different display name
                 }
             } else {
                 return false; // one of the item stacks have a display name
@@ -498,16 +479,14 @@ public class Util {
             Class.forName("org.bukkit.inventory.meta.EnchantmentStorageMeta");
             final boolean book1 = stack1.getItemMeta() instanceof EnchantmentStorageMeta;
             final boolean book2 = stack2.getItemMeta() instanceof EnchantmentStorageMeta;
-            if (book1 != book2) {
-                return false;// One has enchantment meta, the other does not.
+            if (book1 != book2) { return false;// One has enchantment meta, the other does not.
             }
-            if (book1 == true) { // They are the same here (both true or both
-                                 // false). So if one is true, the other is
+            if (book1) { // They are the same here (both true or both
+                             // false). So if one is true, the other is
                                  // true.
                 final Map<Enchantment, Integer> ench1 = ((EnchantmentStorageMeta) stack1.getItemMeta()).getStoredEnchants();
                 final Map<Enchantment, Integer> ench2 = ((EnchantmentStorageMeta) stack2.getItemMeta()).getStoredEnchants();
-                if (!ench1.equals(ench2)) {
-                    return false; // Enchants aren't the same.
+                if (!ench1.equals(ench2)) { return false; // Enchants aren't the same.
                 }
             }
         } catch (final ClassNotFoundException e) {

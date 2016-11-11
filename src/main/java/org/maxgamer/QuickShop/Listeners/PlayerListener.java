@@ -1,7 +1,5 @@
 package org.maxgamer.QuickShop.Listeners;
 
-import java.util.HashMap;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -27,6 +25,8 @@ import org.maxgamer.QuickShop.Shop.ShopType;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
+import java.util.HashMap;
+
 public class PlayerListener implements Listener {
     private final QuickShop plugin;
 
@@ -34,11 +34,12 @@ public class PlayerListener implements Listener {
         this.plugin = plugin;
     }
 
-    @SuppressWarnings("deprecation")
+
     /**
      * Handles players left clicking a chest. Left click a NORMAL chest with
      * item : Send creation menu Left click a SHOP chest : Send purchase menu
      */
+    @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onClick(final PlayerInteractEvent e) {
         final Block b = e.getClickedBlock();
@@ -71,7 +72,6 @@ public class PlayerListener implements Listener {
             final HashMap<String, Info> actions = plugin.getShopManager().getActions();
             final Info info = new Info(shop.getLocation(), ShopAction.BUY, null, null, shop);
             actions.put(p.getName(), info);
-            return;
         }
         // Handles creating shops
         else if (shop == null && item != null && item.getType() != Material.AIR && p.hasPermission("quickshop.create.sell") && Util.canBeShop(b) && p.getGameMode() != GameMode.CREATIVE
@@ -138,7 +138,6 @@ public class PlayerListener implements Listener {
                     p.sendMessage(MsgUtil.p("shop-purchase-cancelled"));
                 }
                 plugin.getShopManager().getActions().remove(p.getName());
-                return;
             }
         }
     }

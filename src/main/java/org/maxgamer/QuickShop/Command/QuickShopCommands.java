@@ -24,6 +24,7 @@ import pw.yumc.YumCore.commands.CommandManager;
 import pw.yumc.YumCore.commands.annotation.Cmd;
 import pw.yumc.YumCore.commands.annotation.Cmd.Executor;
 import pw.yumc.YumCore.commands.annotation.Help;
+import pw.yumc.YumCore.commands.annotation.Sort;
 import pw.yumc.YumCore.commands.interfaces.CommandExecutor;
 import pw.yumc.YumCore.commands.interfaces.CommandHelpParse;
 
@@ -38,12 +39,14 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         new CommandManager("qs", this).setHelpParse(this);
     }
 
+    @Sort(1)
     @Cmd(aliases = "b", permission = "quickshop.create.buy", executor = Executor.PLAYER)
     @Help("command.description.buy")
     public void buy(Player player) {
         changeShopType(player, ShopType.BUYING);
     }
 
+    @Sort(7)
     @Cmd(aliases = "c", permission = "quickshop.clean")
     @Help("command.description.clean")
     public void clean(CommandSender sender) {
@@ -69,6 +72,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         sender.sendMessage(MsgUtil.p("command.cleaned", "" + i));
     }
 
+    @Sort(5)
     @Cmd(aliases = "e", permission = "quickshop.empty", executor = Executor.PLAYER)
     @Help("command.description.empty")
     public void empty(Player player) {
@@ -137,7 +141,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         }
     }
 
-    @Cmd(aliases = "f", minimumArguments = 2, permission = "quickshop.find", executor = Executor.PLAYER)
+    @Cmd(aliases = "f", minimumArguments = 1, permission = "quickshop.find", executor = Executor.PLAYER)
     @Help("command.description.find")
     public void find(Player p, String lookFor) {
         lookFor = lookFor.toLowerCase();
@@ -213,6 +217,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         return MsgUtil.p(str);
     }
 
+    @Sort(4)
     @Cmd(aliases = "p", minimumArguments = 1, permission = "quickshop.create.changeprice", executor = Executor.PLAYER)
     @Help(value = "command.description.price", possibleArguments = "<价格>")
     public void price(Player sender, Double price) {
@@ -275,6 +280,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
     }
 
+    @Sort(6)
     @Cmd(minimumArguments = 1, permission = "quickshop.refill", executor = Executor.PLAYER)
     @Help(value = "command.description.refill", possibleArguments = "<数量>")
     public void refill(Player sender, Integer add) {
@@ -300,6 +306,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         Bukkit.getPluginManager().enablePlugin(plugin);
     }
 
+    @Sort(6)
     @Cmd(aliases = "r", permission = "quickshop.delete", executor = Executor.PLAYER)
     @Help("command.description.remove")
     public void remove(Player p) {
@@ -320,12 +327,14 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         p.sendMessage(ChatColor.RED + "未找到商店!");
     }
 
+    @Sort(2)
     @Cmd(aliases = "s", permission = "quickshop.create.sell", executor = Executor.PLAYER)
     @Help("command.description.sell")
     public void sell(Player player) {
         changeShopType(player, ShopType.SELLING);
     }
 
+    @Sort(3)
     @Cmd(aliases = "so", minimumArguments = 1, permission = "quickshop.setowner", executor = Executor.PLAYER)
     @Help("command.description.setowner")
     public void setowner(CommandSender sender, String owner) {
@@ -343,6 +352,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         sender.sendMessage(MsgUtil.p("not-looking-at-shop"));
     }
 
+    @Sort(0)
     @Cmd(permission = "quickshop.unlimited", executor = Executor.PLAYER)
     @Help("command.description.unlimited")
     public void unlimited(Player sender) {

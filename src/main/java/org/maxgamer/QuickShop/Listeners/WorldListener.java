@@ -1,8 +1,5 @@
 package org.maxgamer.QuickShop.Listeners;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,6 +10,9 @@ import org.bukkit.event.world.WorldUnloadEvent;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopChunk;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class WorldListener implements Listener {
     QuickShop plugin;
@@ -32,16 +32,14 @@ public class WorldListener implements Listener {
          */
         final World world = e.getWorld();
         // New world data
-        final HashMap<ShopChunk, HashMap<Location, Shop>> inWorld = new HashMap<ShopChunk, HashMap<Location, Shop>>(1);
+        final HashMap<ShopChunk, HashMap<Location, Shop>> inWorld = new HashMap<>(1);
         // Old world data
         final HashMap<ShopChunk, HashMap<Location, Shop>> oldInWorld = plugin.getShopManager().getShops(world.getName());
         // Nothing in the old world, therefore we don't care. No locations to
         // update.
-        if (oldInWorld == null) {
-            return;
-        }
+        if (oldInWorld == null) { return; }
         for (final Entry<ShopChunk, HashMap<Location, Shop>> oldInChunk : oldInWorld.entrySet()) {
-            final HashMap<Location, Shop> inChunk = new HashMap<Location, Shop>(1);
+            final HashMap<Location, Shop> inChunk = new HashMap<>(1);
             // Put the new chunk were the old chunk was
             inWorld.put(oldInChunk.getKey(), inChunk);
             for (final Entry<Location, Shop> entry : oldInChunk.getValue().entrySet()) {

@@ -1,21 +1,20 @@
 package org.maxgamer.QuickShop.Listeners;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.github.Cnly.WowSuchCleaner.WowSuchCleaner.ItemPreCleanEvent;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.Util.MarkUtil;
 
-import io.github.Cnly.WowSuchCleaner.WowSuchCleaner.ItemPreCleanEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WowSuchCleanerListener implements Listener {
     @EventHandler
     public void onWSCClear(final ItemPreCleanEvent e) {
-        final List<Item> clearList = new ArrayList<Item>();
-        final List<ItemStack> aucList = new ArrayList<ItemStack>();
+        final List<Item> clearList = new ArrayList<>();
+        final List<ItemStack> aucList = new ArrayList<>();
         final List<Item> cleanList = e.getItemsToClean();
         final List<ItemStack> acList = e.getItemsToAuction();
         if (cleanList != null) {
