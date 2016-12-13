@@ -19,20 +19,20 @@ public class DatabaseHelper {
      * Verifies that all required columns exist.
      */
     public static void checkColumns(Database db) {
-        PreparedStatement ps = null;
+        PreparedStatement ps;
         try {
             // V3.4.2
             ps = db.getConnection().prepareStatement("ALTER TABLE shops MODIFY COLUMN price double(32,2) NOT NULL AFTER owner");
             ps.execute();
             ps.close();
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
         }
         try {
             // V3.4.3
             ps = db.getConnection().prepareStatement("ALTER TABLE messages MODIFY COLUMN time BIGINT(32) NOT NULL AFTER message");
             ps.execute();
             ps.close();
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
         }
     }
 

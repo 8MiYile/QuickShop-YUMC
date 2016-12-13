@@ -5,7 +5,7 @@ public enum ShopType {
     BUYING(1);
     private int id;
 
-    private ShopType(int id) {
+    ShopType(int id) {
         this.id = id;
     }
 

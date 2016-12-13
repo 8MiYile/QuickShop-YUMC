@@ -36,7 +36,7 @@ public class Economy_Vault implements EconomyCore {
     public String format(final double balance) {
         try {
             return this.vault.format(balance);
-        } catch (final NumberFormatException e) {
+        } catch (final NumberFormatException ignored) {
         }
         return "" + balance;
     }
@@ -109,7 +109,7 @@ public class Economy_Vault implements EconomyCore {
             if (economyProvider != null) {
                 vault = (economyProvider.getProvider());
             }
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
         }
         return vault != null;
     }

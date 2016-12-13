@@ -79,9 +79,7 @@ public class ContainerShop implements Shop {
      */
     @Override
     public void add(final ItemStack item, final int amount) {
-        if (this.unlimited) {
-            return;
-        }
+        if (this.unlimited) { return; }
         final Inventory inv = this.getInventory();
         int remains = amount;
         while (remains > 0) {
@@ -98,8 +96,6 @@ public class ContainerShop implements Shop {
      *
      * @param p
      *            The player to buy from
-     * @param item
-     *            The itemStack to buy
      * @param amount
      *            The amount to buy
      */
@@ -217,13 +213,9 @@ public class ContainerShop implements Shop {
      *         null if this shop is not attached to another.
      */
     public ContainerShop getAttachedShop() {
-        if (this.getLocation() != null) {
-            return null;
-        }
+        if (this.getLocation() != null) { return null; }
         final Block c = Util.getSecondHalf(this.getLocation().getBlock());
-        if (c == null) {
-            return null;
-        }
+        if (c == null) { return null; }
         final Shop shop = plugin.getShopManager().getShop(c.getLocation());
         return shop == null ? null : (ContainerShop) shop;
     }
@@ -316,15 +308,11 @@ public class ContainerShop implements Shop {
 
     /**
      * Returns the number of free spots in the chest for the particular item.
-     *
-     * @param stackSize
      * @return
      */
     @Override
     public int getRemainingSpace() {
-        if (this.unlimited) {
-            return 10000;
-        }
+        if (this.unlimited) { return 10000; }
         return Util.countSpace(this.getInventory(), item);
     }
 
@@ -335,9 +323,7 @@ public class ContainerShop implements Shop {
      */
     @Override
     public int getRemainingStock() {
-        if (this.unlimited) {
-            return 10000;
-        }
+        if (this.unlimited) { return 10000; }
         return Util.countItems(this.getInventory(), this.getItem());
     }
 
@@ -356,9 +342,7 @@ public class ContainerShop implements Shop {
     @Override
     public List<Sign> getSigns() {
         final ArrayList<Sign> signs = new ArrayList<>(1);
-        if (this.getLocation().getWorld() == null) {
-            return signs;
-        }
+        if (this.getLocation().getWorld() == null) { return signs; }
         final Block[] blocks = new Block[4];
         blocks[0] = loc.getBlock().getRelative(1, 0, 0);
         blocks[1] = loc.getBlock().getRelative(-1, 0, 0);
@@ -412,9 +396,7 @@ public class ContainerShop implements Shop {
      */
     public boolean isDoubleShop() {
         final ContainerShop nextTo = this.getAttachedShop();
-        if (nextTo == null) {
-            return false;
-        }
+        if (nextTo == null) { return false; }
         if (nextTo.matches(this.getItem())) {
             // They're both trading the same item
             if (this.getShopType() == nextTo.getShopType()) {
@@ -485,9 +467,7 @@ public class ContainerShop implements Shop {
      */
     @Override
     public void remove(final ItemStack item, final int amount) {
-        if (this.unlimited) {
-            return;
-        }
+        if (this.unlimited) { return; }
         final Inventory inv = this.getInventory();
         int remains = amount;
         while (remains > 0) {
@@ -548,8 +528,8 @@ public class ContainerShop implements Shop {
             // We now have to update the chests inventory manually.
             this.getInventory().setContents(chestContents);
         }
-        for (int i = 0; i < floor.size(); i++) {
-            p.getWorld().dropItem(p.getLocation(), floor.get(i));
+        for (ItemStack aFloor : floor) {
+            p.getWorld().dropItem(p.getLocation(), aFloor);
         }
     }
 
@@ -594,9 +574,7 @@ public class ContainerShop implements Shop {
      */
     @Override
     public void setSignText() {
-        if (Util.isLoaded(this.getLocation()) == false) {
-            return;
-        }
+        if (!Util.isLoaded(this.getLocation())) { return; }
         final ContainerShop shop = this;
         // 1.9不能异步修改木牌
         Bukkit.getScheduler().runTask(plugin, new Runnable() {
@@ -627,9 +605,7 @@ public class ContainerShop implements Shop {
      */
     @Override
     public void setSignText(final String[] lines) {
-        if (Util.isLoaded(this.getLocation()) == false) {
-            return;
-        }
+        if (!Util.isLoaded(this.getLocation())) { return; }
         final List<Sign> signs = this.getSigns();
         // 1.9不能异步修改木牌
         Bukkit.getScheduler().runTask(plugin, new Runnable() {
@@ -652,21 +628,14 @@ public class ContainerShop implements Shop {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("商店 "
-                + (loc.getWorld() == null ? "世界尚未载入" : "坐标: " + loc.getWorld().getName())
-                + "("
-                + loc.getBlockX()
-                + ", "
-                + loc.getBlockY()
-                + ", "
-                + loc.getBlockZ()
-                + ")");
-        sb.append(" 所有者: " + getOwner());
+        final StringBuilder sb = new StringBuilder("商店 " + (loc.getWorld() == null ? "世界尚未载入" : "坐标: " + loc.getWorld().getName()) + "(" + loc.getBlockX() + ", " + loc.getBlockY() + ", "
+                + loc.getBlockZ() + ")");
+        sb.append(" 所有者: ").append(getOwner());
         if (isUnlimited()) {
             sb.append(" 无限模式: true");
         }
-        sb.append(" 价格: " + getPrice());
-        sb.append(" 物品: " + getItem().toString());
+        sb.append(" 价格: ").append(getPrice());
+        sb.append(" 物品: ").append(getItem().toString());
         return sb.toString();
     }
 
@@ -691,11 +660,8 @@ public class ContainerShop implements Shop {
     }
 
     private void checkDisplay() {
-        if (plugin.getConfigManager().isDisplay() == false) {
-            return;
-        }
-        if (getLocation().getWorld() == null) {
-            return; // not loaded
+        if (!plugin.getConfigManager().isDisplay()) { return; }
+        if (getLocation().getWorld() == null) { return; // not loaded
         }
         final boolean trans = Util.isTransparent(getLocation().clone().add(0.5, 1.2, 0.5).getBlock().getType());
         if (trans && this.getDisplayItem() == null) {
@@ -709,14 +675,11 @@ public class ContainerShop implements Shop {
                 this.displayItem = null;
                 return;
             }
-            if (this.getLocation().getWorld() == null) {
-                return;// Ignore if world not loaded...
+            if (this.getLocation().getWorld() == null) { return;// Ignore if world not loaded...
             }
             final DisplayItem disItem = this.getDisplayItem();
             final Location dispLoc = disItem.getDisplayLocation();
-            if (dispLoc.getWorld() == null) {
-                return;
-            }
+            if (dispLoc.getWorld() == null) { return; }
             if (dispLoc.getBlock() != null && dispLoc.getBlock().getType() == Material.WATER) { // Flowing
                 // water.Stationery water does not move items.
                 disItem.remove();

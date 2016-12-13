@@ -88,12 +88,8 @@ public class MsgUtil {
 
     public static String p(final String loc, final Object... args) {
         String raw = messages.getString(loc);
-        if (raw == null || raw.isEmpty()) {
-            return ChatColor.RED + "语言文件词条丢失: " + loc;
-        }
-        if (args == null) {
-            return raw;
-        }
+        if (raw == null || raw.isEmpty()) { return ChatColor.RED + "语言文件词条丢失: " + loc; }
+        if (args == null) { return raw; }
         for (int i = 0; i < args.length; i++) {
             raw = raw.replace("{" + i + "}", args[i] == null ? "null" : args[i].toString());
         }
@@ -127,7 +123,7 @@ public class MsgUtil {
                     }
                     msgs.add(message);
                     final String q = "INSERT INTO messages (owner, message, time) VALUES (?, ?, ?)";
-                    plugin.getDB().execute(q, player.toString(), message, System.currentTimeMillis());
+                    plugin.getDB().execute(q, player, message, System.currentTimeMillis());
                 } else {
                     p.getPlayer().sendMessage(message);
                 }
@@ -186,10 +182,8 @@ public class MsgUtil {
                 p.sendMessage("");
                 p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
                 p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.shop-information"));
-                p.sendMessage(ChatColor.DARK_PURPLE
-                        + "| "
-                        + MsgUtil.p("menu.owner",
-                                Bukkit.getOfflinePlayer(shop.getOwner()).getName() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : Bukkit.getOfflinePlayer(shop.getOwner()).getName()));
+                p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.owner",
+                        Bukkit.getOfflinePlayer(shop.getOwner()).getName() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : Bukkit.getOfflinePlayer(shop.getOwner()).getName()));
                 final String msg = ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.item", shop.getDataName());
                 sendItemMessage(p, shop.getItem(), msg);
                 if (Util.isTool(item.getType())) {

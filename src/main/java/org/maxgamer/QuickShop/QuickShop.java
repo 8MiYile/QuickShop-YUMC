@@ -1,20 +1,12 @@
 package org.maxgamer.QuickShop;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -26,22 +18,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.maxgamer.QuickShop.Command.QuickShopCommands;
 import org.maxgamer.QuickShop.Config.ConfigManager;
-import org.maxgamer.QuickShop.Database.Database;
-import org.maxgamer.QuickShop.Database.DatabaseCore;
-import org.maxgamer.QuickShop.Database.DatabaseHelper;
-import org.maxgamer.QuickShop.Database.MySQLCore;
-import org.maxgamer.QuickShop.Database.SQLiteCore;
+import org.maxgamer.QuickShop.Database.*;
 import org.maxgamer.QuickShop.Economy.Economy;
 import org.maxgamer.QuickShop.Economy.EconomyCore;
 import org.maxgamer.QuickShop.Economy.Economy_Vault;
-import org.maxgamer.QuickShop.Listeners.BlockListener;
-import org.maxgamer.QuickShop.Listeners.ChatListener;
-import org.maxgamer.QuickShop.Listeners.ChunkListener;
-import org.maxgamer.QuickShop.Listeners.LockListener;
-import org.maxgamer.QuickShop.Listeners.PlayerListener;
-import org.maxgamer.QuickShop.Listeners.ProtectListener;
-import org.maxgamer.QuickShop.Listeners.WorldListener;
-import org.maxgamer.QuickShop.Listeners.WowSuchCleanerListener;
+import org.maxgamer.QuickShop.Listeners.*;
 import org.maxgamer.QuickShop.Shop.ContainerShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopManager;
@@ -177,7 +158,7 @@ public class QuickShop extends JavaPlugin {
                     final double price = rs.getDouble("price");
                     final Location loc = new Location(world, x, y, z);
                     /* Skip invalid shops, if we know of any */
-                    if (world != null && loc.getChunk().isLoaded() && (loc.getBlock().getState() instanceof InventoryHolder) == false) {
+                    if (world != null && loc.getChunk().isLoaded() && !(loc.getBlock().getState() instanceof InventoryHolder)) {
                         getLogger().info("商店不是一个可存储的方块 坐标 " + rs.getString("world") + ", " + x + ", " + y + ", " + z + ". 删除...");
                         database.execute("DELETE FROM shops WHERE x = ? AND y = ? and z = ? and world = ?", x, y, z, worldName);
                         continue;
@@ -248,7 +229,7 @@ public class QuickShop extends JavaPlugin {
             database.close();
             try {
                 database.getConnection().close();
-            } catch (final SQLException e) {
+            } catch (final SQLException ignored) {
             }
         }
         if (configManager != null) {
@@ -258,7 +239,7 @@ public class QuickShop extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (loadEcon() == false) {
+        if (!loadEcon()) {
             return;
         }
         configManager = new ConfigManager(this);

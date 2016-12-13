@@ -112,8 +112,7 @@ public class Database {
             PreparedStatement ps = this.getConnection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                rs.getString(column); // Throws an exception if it can't find
-                                      // that column
+                rs.getString(column); // Throws an exception if it can't find that column
                 return true;
             }
         } catch (SQLException e) {
@@ -149,7 +148,7 @@ public class Database {
      */
     public void copyTo(Database db) throws SQLException {
         ResultSet rs = getConnection().getMetaData().getTables(null, null, "%", null);
-        List<String> tables = new LinkedList<String>();
+        List<String> tables = new LinkedList<>();
         while (rs.next()) {
             tables.add(rs.getString("TABLE_NAME"));
         }

@@ -55,9 +55,7 @@ public class NormalItem extends DisplayItem {
      */
     @Override
     public void remove() {
-        if (this.item == null) {
-            return;
-        }
+        if (this.item == null) { return; }
         this.item.remove();
     }
 
@@ -67,9 +65,7 @@ public class NormalItem extends DisplayItem {
      */
     @Override
     public boolean removeDupe() {
-        if (shop.getLocation().getWorld() == null) {
-            return false;
-        }
+        if (shop.getLocation().getWorld() == null) { return false; }
         final Location displayLoc = shop.getLocation().getBlock().getRelative(0, 1, 0).getLocation();
         boolean removed = false;
         final Chunk c = displayLoc.getChunk();
@@ -103,15 +99,13 @@ public class NormalItem extends DisplayItem {
      */
     @Override
     public void spawn() {
-        if (shop.getLocation().getWorld() == null) {
-            return;
-        }
+        if (shop.getLocation().getWorld() == null) { return; }
         final Location dispLoc = this.getDisplayLocation();
         try {
             this.item = shop.getLocation().getWorld().dropItem(dispLoc, this.iStack);
             this.item.setVelocity(new Vector(0, 0.1, 0));
             NMS.safeGuard(this.item);
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
         }
     }
 }

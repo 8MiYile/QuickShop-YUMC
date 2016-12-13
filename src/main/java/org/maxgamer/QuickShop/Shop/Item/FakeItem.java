@@ -1,10 +1,7 @@
 package org.maxgamer.QuickShop.Shop.Item;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -76,14 +73,8 @@ public abstract class FakeItem extends DisplayItem {
                     final int chunkX = packet.getIntegers().read(0);
                     final int chunkZ = packet.getIntegers().read(1);
                     final List<FakeItem> fakesInChunk = fakes.get(getChunkIdentifyString(p.getWorld().getChunkAt(chunkX, chunkZ)));
-                    if (fakesInChunk != null) {
-                        for (final FakeItem fake : fakesInChunk) {
-                            ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getSpawnPacket());
-                            ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getVelocityPacket());
-                            ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getMetadataPacket());
-                        }
-                    }
-                } catch (final Exception e) {
+                    sendChunkPacket(p, fakesInChunk);
+                } catch (final Exception ignored) {
                 }
             }
         };
@@ -97,22 +88,26 @@ public abstract class FakeItem extends DisplayItem {
                     final int[] chunksZ = packet.getIntegerArrays().read(1);
                     for (int i = 0; i < chunksX.length; i++) {
                         final List<FakeItem> fakesInChunk = fakes.get(getChunkIdentifyString(p.getWorld().getChunkAt(chunksX[i], chunksZ[i])));
-                        if (fakesInChunk != null) {
-                            for (final FakeItem fake : fakesInChunk) {
-                                ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getSpawnPacket());
-                                ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getVelocityPacket());
-                                ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getMetadataPacket());
-                            }
-
-                        }
+                        sendChunkPacket(p, fakesInChunk);
                     }
-                } catch (final Exception e) {
+                } catch (final Exception ignored) {
                 }
             }
         };
         ProtocolLibrary.getProtocolManager().addPacketListener(chunkPacketListener);
         ProtocolLibrary.getProtocolManager().addPacketListener(chunkBulkPacketListener);
         registered = true;
+    }
+
+    private static void sendChunkPacket(Player p, List<FakeItem> fakesInChunk) throws InvocationTargetException {
+        if (fakesInChunk != null) {
+            for (final FakeItem fake : fakesInChunk) {
+                ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getSpawnPacket());
+                ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getVelocityPacket());
+                ProtocolLibrary.getProtocolManager().sendServerPacket(p, fake.getMetadataPacket());
+            }
+
+        }
     }
 
     private static String getChunkIdentifyString(final Chunk chunk) {

@@ -8,70 +8,70 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public abstract interface Shop {
-    public abstract void add(ItemStack paramItemStack, int paramInt);
+public interface Shop {
+    void add(ItemStack paramItemStack, int paramInt);
 
-    public abstract void buy(Player paramPlayer, int paramInt);
+    void buy(Player paramPlayer, int paramInt);
 
-    public abstract Shop clone();
+    Shop clone();
 
-    public abstract void delete();
+    void delete();
 
-    public abstract void delete(boolean paramBoolean);
+    void delete(boolean paramBoolean);
 
-    public abstract String getDataName();
+    String getDataName();
 
-    public abstract short getDurability();
+    short getDurability();
 
-    public abstract ItemStack getItem();
+    ItemStack getItem();
 
-    public abstract Location getLocation();
+    Location getLocation();
 
-    public abstract String getOwner();
+    String getOwner();
 
-    public abstract double getPrice();
+    double getPrice();
 
-    public abstract int getRemainingSpace();
+    int getRemainingSpace();
 
-    public abstract int getRemainingStock();
+    int getRemainingStock();
 
-    public abstract ShopType getShopType();
+    ShopType getShopType();
 
-    public abstract List<Sign> getSigns();
+    List<Sign> getSigns();
 
-    public abstract boolean isAttached(Block paramBlock);
+    boolean isAttached(Block paramBlock);
 
-    public abstract boolean isBuying();
+    boolean isBuying();
 
-    public abstract boolean isSelling();
+    boolean isSelling();
 
-    public abstract boolean isUnlimited();
+    boolean isUnlimited();
 
-    public abstract boolean isValid();
+    boolean isValid();
 
-    public abstract boolean matches(ItemStack paramItemStack);
+    boolean matches(ItemStack paramItemStack);
 
-    public abstract void onClick();
+    void onClick();
 
-    public abstract void onLoad();
+    void onLoad();
 
-    public abstract void onUnload();
+    void onUnload();
 
-    public abstract void remove(ItemStack paramItemStack, int paramInt);
+    void remove(ItemStack paramItemStack, int paramInt);
 
-    public abstract void sell(Player paramPlayer, int paramInt);
+    void sell(Player paramPlayer, int paramInt);
 
-    public abstract void setOwner(String paramString);
+    void setOwner(String paramString);
 
-    public abstract void setPrice(double paramDouble);
+    void setPrice(double paramDouble);
 
-    public abstract void setShopType(ShopType paramShopType);
+    void setShopType(ShopType paramShopType);
 
-    public abstract void setSignText();
+    void setSignText();
 
-    public abstract void setSignText(String[] paramArrayOfString);
+    void setSignText(String[] paramArrayOfString);
 
-    public abstract void setUnlimited(boolean paramBoolean);
+    void setUnlimited(boolean paramBoolean);
 
-    public abstract void update();
+    void update();
 }

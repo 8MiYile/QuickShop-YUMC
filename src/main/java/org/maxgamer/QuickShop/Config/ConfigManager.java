@@ -1,16 +1,17 @@
 package org.maxgamer.QuickShop.Config;
 
+import java.util.*;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Item.FakeItem_17_18;
 import org.maxgamer.QuickShop.Shop.Item.FakeItem_19_110;
+
 import pw.yumc.YumCore.bukkit.Log;
 import pw.yumc.YumCore.config.FileConfig;
 import pw.yumc.YumCore.tellraw.Tellraw;
-
-import java.util.*;
 
 public class ConfigManager {
     private boolean enableMagicLib = false;
@@ -91,7 +92,7 @@ public class ConfigManager {
                 plugin.getLogger().info("虚拟悬浮物功能测试正常(1.8-1.10.2)...");
                 fakeItem = true;
             } catch (final Throwable e) {
-                Log.debug(e);
+                Log.d(e);
                 try {
                     FakeItem_17_18.register(plugin);
                     plugin.getLogger().info("虚拟悬浮物功能测试正常(1.7)...");
@@ -100,7 +101,7 @@ public class ConfigManager {
                     plugin.getLogger().warning("+=========================================");
                     plugin.getLogger().warning("| 警告: 启动虚拟物品失败 使用原版悬浮物品...");
                     plugin.getLogger().warning("+=========================================");
-                    Log.debug(e2);
+                    Log.d(e2);
                 }
             }
         }

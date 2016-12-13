@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maxgamer</groupId>
 	<artifactId>QuickShop</artifactId>
-	<version>1.9.5</version>
+	<version>2.0</version>
 	<description>快捷商店重置版本...</description>
 	<build>
 		<finalName>${project.name}</finalName>
@@ -71,6 +71,10 @@
 			<id>yumc-repo</id>
 			<url>http://repo.yumc.pw/content/groups/public/</url>
 		</repository>
+		<repository>
+			<id>dmulloy</id>
+			<url>http://repo.dmulloy2.net/content/groups/public/</url>
+		</repository>
 	</repositories>
 	<distributionManagement>
 		<repository>
@@ -81,22 +85,10 @@
 	</distributionManagement>
 	<dependencies>
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<type>jar</type>
-			<version>1.10.2-R0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.milkbowl.vault</groupId>
-			<artifactId>Vault</artifactId>
-			<type>jar</type>
-			<version>1.5.6</version>
-		</dependency>
-		<dependency>
 			<groupId>pw.yumc</groupId>
 			<artifactId>YumCore</artifactId>
 			<type>jar</type>
-			<version>1.1</version>
+			<version>1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.Cnly.WowSuchCleaner</groupId>
@@ -109,13 +101,6 @@
 			<version>5.4.5</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/WorldEdit.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.comphenix.protocol</groupId>
-			<artifactId>ProtocolLib</artifactId>
-			<version>4.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/ProtocolLib-4.1.jar</systemPath>
 		</dependency>
 	</dependencies>
 </project>

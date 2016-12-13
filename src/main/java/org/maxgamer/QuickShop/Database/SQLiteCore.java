@@ -12,7 +12,7 @@ public class SQLiteCore implements DatabaseCore {
     private Connection connection;
     private final File dbFile;
     private volatile Thread watcher;
-    private volatile LinkedList<BufferStatement> queue = new LinkedList<BufferStatement>();
+    private final LinkedList<BufferStatement> queue = new LinkedList<BufferStatement>();
 
     public SQLiteCore(final File dbFile) {
         this.dbFile = dbFile;
@@ -25,7 +25,7 @@ public class SQLiteCore implements DatabaseCore {
 
     @Override
     public void flush() {
-        while (queue.isEmpty() == false) {
+        while (!queue.isEmpty()) {
             BufferStatement bs;
             synchronized (queue) {
                 bs = queue.removeFirst();
@@ -51,9 +51,7 @@ public class SQLiteCore implements DatabaseCore {
     public Connection getConnection() {
         try {
             // If we have a current connection, fetch it
-            if (this.connection != null && !this.connection.isClosed()) {
-                return this.connection;
-            }
+            if (this.connection != null && !this.connection.isClosed()) { return this.connection; }
         } catch (final SQLException e) {
             e.printStackTrace();
         }
@@ -63,10 +61,7 @@ public class SQLiteCore implements DatabaseCore {
                 Class.forName("org.sqlite.JDBC");
                 this.connection = DriverManager.getConnection("jdbc:sqlite:" + this.dbFile);
                 return this.connection;
-            } catch (final ClassNotFoundException e) {
-                e.printStackTrace();
-                return null;
-            } catch (final SQLException e) {
+            } catch (final ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
                 return null;
             }
@@ -100,7 +95,7 @@ public class SQLiteCore implements DatabaseCore {
             public void run() {
                 try {
                     Thread.sleep(30000);
-                } catch (final InterruptedException e) {
+                } catch (final InterruptedException ignored) {
                 }
                 flush();
             }

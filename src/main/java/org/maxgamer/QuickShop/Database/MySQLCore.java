@@ -12,7 +12,7 @@ public class MySQLCore implements DatabaseCore {
     /** The connection properties... user, pass, autoReconnect.. */
     private Properties info;
     private static final int MAX_CONNECTIONS = 8;
-    private static ArrayList<Connection> pool = new ArrayList<Connection>();
+    private static ArrayList<Connection> pool = new ArrayList<>();
 
     public MySQLCore(String host, String user, String pass, String database, String port) {
         info = new Properties();
@@ -59,7 +59,7 @@ public class MySQLCore implements DatabaseCore {
             while (con == null) {
                 try {
                     Thread.sleep(15);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
                 // Try again
                 this.getConnection();
@@ -69,7 +69,6 @@ public class MySQLCore implements DatabaseCore {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            return;
         }
     }
 

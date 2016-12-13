@@ -1,5 +1,9 @@
 package org.maxgamer.QuickShop.Command;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -10,37 +14,33 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.BlockIterator;
+import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Database.Database;
 import org.maxgamer.QuickShop.Database.MySQLCore;
 import org.maxgamer.QuickShop.Database.SQLiteCore;
-import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.ContainerShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopChunk;
 import org.maxgamer.QuickShop.Shop.ShopType;
 import org.maxgamer.QuickShop.Util.MsgUtil;
+
 import pw.yumc.YumCore.bukkit.P;
-import pw.yumc.YumCore.commands.CommandManager;
+import pw.yumc.YumCore.commands.CommandSub;
 import pw.yumc.YumCore.commands.annotation.Cmd;
-import pw.yumc.YumCore.commands.annotation.Cmd.Executor;
 import pw.yumc.YumCore.commands.annotation.Help;
 import pw.yumc.YumCore.commands.annotation.Sort;
-import pw.yumc.YumCore.commands.interfaces.CommandExecutor;
-import pw.yumc.YumCore.commands.interfaces.CommandHelpParse;
+import pw.yumc.YumCore.commands.interfaces.Executor;
+import pw.yumc.YumCore.commands.interfaces.HelpParse;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
-
-public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
+public class QuickShopCommands implements Executor, HelpParse {
     QuickShop plugin = P.getPlugin();
 
     public QuickShopCommands() {
-        new CommandManager("qs", this).setHelpParse(this);
+        new CommandSub("qs", this).setHelpParse(this);
     }
 
     @Sort(1)
-    @Cmd(aliases = "b", permission = "quickshop.create.buy", executor = Executor.PLAYER)
+    @Cmd(aliases = "b", permission = "quickshop.create.buy", executor = Cmd.Executor.PLAYER)
     @Help("command.description.buy")
     public void buy(Player player) {
         changeShopType(player, ShopType.BUYING);
@@ -73,7 +73,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
     }
 
     @Sort(5)
-    @Cmd(aliases = "e", permission = "quickshop.empty", executor = Executor.PLAYER)
+    @Cmd(aliases = "e", permission = "quickshop.empty", executor = Cmd.Executor.PLAYER)
     @Help("command.description.empty")
     public void empty(Player player) {
         final BlockIterator bIt = new BlockIterator(player, 10);
@@ -141,7 +141,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
         }
     }
 
-    @Cmd(aliases = "f", minimumArguments = 1, permission = "quickshop.find", executor = Executor.PLAYER)
+    @Cmd(aliases = "f", minimumArguments = 1, permission = "quickshop.find", executor = Cmd.Executor.PLAYER)
     @Help("command.description.find")
     public void find(Player p, String lookFor) {
         lookFor = lookFor.toLowerCase();
@@ -218,7 +218,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
     }
 
     @Sort(4)
-    @Cmd(aliases = "p", minimumArguments = 1, permission = "quickshop.create.changeprice", executor = Executor.PLAYER)
+    @Cmd(aliases = "p", minimumArguments = 1, permission = "quickshop.create.changeprice", executor = Cmd.Executor.PLAYER)
     @Help(value = "command.description.price", possibleArguments = "<价格>")
     public void price(Player sender, Double price) {
         if (price < 0.01) {
@@ -281,7 +281,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
     }
 
     @Sort(6)
-    @Cmd(minimumArguments = 1, permission = "quickshop.refill", executor = Executor.PLAYER)
+    @Cmd(minimumArguments = 1, permission = "quickshop.refill", executor = Cmd.Executor.PLAYER)
     @Help(value = "command.description.refill", possibleArguments = "<数量>")
     public void refill(Player sender, Integer add) {
         final BlockIterator bIt = new BlockIterator(sender, 10);
@@ -307,7 +307,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
     }
 
     @Sort(6)
-    @Cmd(aliases = "r", permission = "quickshop.delete", executor = Executor.PLAYER)
+    @Cmd(aliases = "r", permission = "quickshop.delete", executor = Cmd.Executor.PLAYER)
     @Help("command.description.remove")
     public void remove(Player p) {
         final BlockIterator bIt = new BlockIterator(p, 10);
@@ -328,14 +328,14 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
     }
 
     @Sort(2)
-    @Cmd(aliases = "s", permission = "quickshop.create.sell", executor = Executor.PLAYER)
+    @Cmd(aliases = "s", permission = "quickshop.create.sell", executor = Cmd.Executor.PLAYER)
     @Help("command.description.sell")
     public void sell(Player player) {
         changeShopType(player, ShopType.SELLING);
     }
 
     @Sort(3)
-    @Cmd(aliases = "so", minimumArguments = 1, permission = "quickshop.setowner", executor = Executor.PLAYER)
+    @Cmd(aliases = "so", minimumArguments = 1, permission = "quickshop.setowner", executor = Cmd.Executor.PLAYER)
     @Help("command.description.setowner")
     public void setowner(CommandSender sender, String owner) {
         final BlockIterator bIt = new BlockIterator((Player) sender, 10);
@@ -353,7 +353,7 @@ public class QuickShopCommands implements CommandExecutor, CommandHelpParse {
     }
 
     @Sort(0)
-    @Cmd(permission = "quickshop.unlimited", executor = Executor.PLAYER)
+    @Cmd(permission = "quickshop.unlimited", executor = Cmd.Executor.PLAYER)
     @Help("command.description.unlimited")
     public void unlimited(Player sender) {
         final BlockIterator bIt = new BlockIterator(sender, 10);

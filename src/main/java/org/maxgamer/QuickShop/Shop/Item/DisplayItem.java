@@ -21,11 +21,11 @@ public abstract class DisplayItem {
                 try {
                     return new FakeItem_19_110(shop, shop.getItem());
                 } catch (final Throwable e) {
-                    Log.debug(e);
+                    Log.d(e);
                     try {
                         return new FakeItem_17_18(shop, shop.getItem());
                     } catch (final Throwable e2) {
-                        Log.debug(e2);
+                        Log.d(e2);
                     }
                 }
             }
