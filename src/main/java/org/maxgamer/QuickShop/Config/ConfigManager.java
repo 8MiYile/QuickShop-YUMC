@@ -2,6 +2,7 @@ package org.maxgamer.QuickShop.Config;
 
 import java.util.*;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -104,6 +105,9 @@ public class ConfigManager {
                     Log.d(e2);
                 }
             }
+        }
+        if (Bukkit.getVersion().contains("Paper") || Bukkit.getVersion().contains("Torch")) {
+            Log.d("辣鸡 Paper 毁我异步命令!");
         }
         if (config.getBoolean("usemagiclib", true)) {
             try {
