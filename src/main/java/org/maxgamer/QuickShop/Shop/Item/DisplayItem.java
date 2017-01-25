@@ -7,6 +7,7 @@ import org.maxgamer.QuickShop.Shop.ContainerShop;
 
 import pw.yumc.YumCore.bukkit.Log;
 import pw.yumc.YumCore.bukkit.P;
+import pw.yumc.YumCore.bukkit.compatible.C;
 
 /**
  * @author Netherfoam A display item, that spawns a block above the chest and
@@ -16,17 +17,17 @@ public abstract class DisplayItem {
     public static QuickShop plugin = P.getPlugin();
 
     public static DisplayItem create(final ContainerShop shop) {
+        String ver = C.getNMSVersion();
         if (plugin.getConfigManager().isDisplay()) {
             if (plugin.getConfigManager().isFakeItem()) {
                 try {
-                    return new FakeItem_19_110(shop, shop.getItem());
+                    if (Integer.parseInt(ver.split("_")[1]) > 8) {
+                        return new FakeItem_19_110(shop, shop.getItem());
+                    } else {
+                        return new FakeItem_17_18(shop, shop.getItem());
+                    }
                 } catch (final Throwable e) {
                     Log.d(e);
-                    try {
-                        return new FakeItem_17_18(shop, shop.getItem());
-                    } catch (final Throwable e2) {
-                        Log.d(e2);
-                    }
                 }
             }
             return new NormalItem(shop, shop.getItem());

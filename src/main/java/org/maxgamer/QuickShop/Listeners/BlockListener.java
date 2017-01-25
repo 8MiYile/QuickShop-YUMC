@@ -92,9 +92,19 @@ public class BlockListener implements Listener {
         final Block b = e.getBlock();
         final Player p = e.getPlayer();
         final Block chest = Util.getSecondHalf(b);
-        if (chest != null && plugin.getShopManager().getShop(chest.getLocation()) != null && !p.hasPermission("quickshop.create.double")) {
-            e.setCancelled(true);
-            p.sendMessage(MsgUtil.p("no-double-chests"));
+        if (chest != null) {
+            Shop shop = plugin.getShopManager().getShop(chest.getLocation());
+            if (shop != null) {
+                if (!shop.getOwner().equals(p.getName())) {
+                    e.setCancelled(true);
+                    p.sendMessage(MsgUtil.p("no-double-chests"));
+                    return;
+                }
+                if (!p.hasPermission("quickshop.create.double")) {
+                    e.setCancelled(true);
+                    p.sendMessage(MsgUtil.p("no-double-chests"));
+                }
+            }
         }
     }
 
