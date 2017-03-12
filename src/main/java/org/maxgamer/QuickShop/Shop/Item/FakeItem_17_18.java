@@ -3,8 +3,8 @@ package org.maxgamer.QuickShop.Shop.Item;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
-import org.maxgamer.QuickShop.Shop.ContainerShop;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -20,8 +20,8 @@ import com.comphenix.protocol.wrappers.WrappedWatchableObject;
  */
 public class FakeItem_17_18 extends FakeItem {
 
-    public FakeItem_17_18(final ContainerShop containerShop, final ItemStack item) {
-        super(containerShop, item);
+    public FakeItem_17_18(Location loc, final ItemStack item) {
+        super(loc, item);
     }
 
     private static int getNormalizedDistance(final double value) {

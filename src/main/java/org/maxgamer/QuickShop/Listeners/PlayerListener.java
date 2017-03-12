@@ -1,5 +1,7 @@
 package org.maxgamer.QuickShop.Listeners;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -25,8 +27,6 @@ import org.maxgamer.QuickShop.Shop.ShopType;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
-import java.util.HashMap;
-
 public class PlayerListener implements Listener {
     private final QuickShop plugin;
 
@@ -34,19 +34,15 @@ public class PlayerListener implements Listener {
         this.plugin = plugin;
     }
 
-
     /**
      * Handles players left clicking a chest. Left click a NORMAL chest with
      * item : Send creation menu Left click a SHOP chest : Send purchase menu
      */
-    @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onClick(final PlayerInteractEvent e) {
         final Block b = e.getClickedBlock();
         final Player p = e.getPlayer();
-        if (e.getAction() != Action.LEFT_CLICK_BLOCK || (e.getMaterial() == plugin.getConfigManager().getSuperItem() && (b.getType() == Material.WALL_SIGN || p.getGameMode() == GameMode.CREATIVE))) {
-            return;
-        }
+        if (e.getAction() != Action.LEFT_CLICK_BLOCK || p.getGameMode() == GameMode.CREATIVE) { return; }
         final Location loc = b.getLocation();
         final ItemStack item = e.getItem();
         // Get the shop
@@ -151,13 +147,9 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSuperItemClick(final PlayerInteractEvent e) {
         final Player p = e.getPlayer();
-        if (p.getGameMode() != GameMode.SURVIVAL || e.getMaterial() != plugin.getConfigManager().getSuperItem()) {
-            return;
-        }
+        if (p.getGameMode() != GameMode.SURVIVAL || e.getMaterial() != plugin.getConfigManager().getSuperItem()) { return; }
         final Block b = e.getClickedBlock();
-        if (b == null || b.getType() == null) {
-            return;
-        }
+        if (b == null || b.getType() == null) { return; }
         // If that wasn't a shop, search nearby shops
         if (b.getType() == Material.WALL_SIGN) {
             final Block attached = Util.getAttached(b);

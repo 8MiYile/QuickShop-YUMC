@@ -22,9 +22,9 @@ public abstract class DisplayItem {
             if (plugin.getConfigManager().isFakeItem()) {
                 try {
                     if (Integer.parseInt(ver.split("_")[1]) > 8) {
-                        return new FakeItem_19_110(shop, shop.getItem());
+                        return new FakeItem_19_111(shop.getLocation(), shop.getItem());
                     } else {
-                        return new FakeItem_17_18(shop, shop.getItem());
+                        return new FakeItem_17_18(shop.getLocation(), shop.getItem());
                     }
                 } catch (final Throwable e) {
                     Log.d(e);

@@ -1,14 +1,19 @@
 package org.maxgamer.QuickShop.Config;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Item.FakeItem_17_18;
-import org.maxgamer.QuickShop.Shop.Item.FakeItem_19_110;
+import org.maxgamer.QuickShop.Shop.Item.FakeItem_19_111;
 
 import pw.yumc.YumCore.bukkit.Log;
 import pw.yumc.YumCore.config.FileConfig;
@@ -89,14 +94,16 @@ public class ConfigManager {
         if (config.getBoolean("fakeitem", true)) {
             try {
                 plugin.getLogger().info("启用虚拟悬浮物 尝试启动中...");
-                FakeItem_19_110.register(plugin);
-                plugin.getLogger().info("虚拟悬浮物功能测试正常(1.8-1.10.2)...");
+                FakeItem_19_111.register(plugin);
+                new FakeItem_19_111(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), new ItemStack(Material.STONE)).spawn();
+                plugin.getLogger().info("虚拟悬浮物功能测试正常(1.9-1.11.2)...");
                 fakeItem = true;
             } catch (final Throwable e) {
                 Log.d(e);
                 try {
                     FakeItem_17_18.register(plugin);
-                    plugin.getLogger().info("虚拟悬浮物功能测试正常(1.7)...");
+                    new FakeItem_17_18(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), new ItemStack(Material.STONE)).spawn();
+                    plugin.getLogger().info("虚拟悬浮物功能测试正常(1.7-1.8)...");
                     fakeItem = true;
                 } catch (final Throwable e2) {
                     plugin.getLogger().warning("+=========================================");

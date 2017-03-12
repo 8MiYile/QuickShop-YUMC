@@ -1,5 +1,8 @@
 package org.maxgamer.QuickShop.Listeners;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -15,9 +18,6 @@ import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class LockListener implements Listener {
     private final QuickShop plugin;
@@ -63,7 +63,7 @@ public class LockListener implements Listener {
         Shop shop = plugin.getShopManager().getShop(b.getLocation());
         // Make sure they're not using the non-shop half of a double chest.
         if (!hasSecondHalf(shop, b)) { return; }
-        if (!shop.getOwner().equals(p.getName())) {
+        if (shop != null && !shop.getOwner().equals(p.getName())) {
             if (p.hasPermission("quickshop.other.open")) {
                 p.sendMessage(MsgUtil.p("bypassing-lock"));
                 return;

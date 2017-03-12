@@ -429,7 +429,7 @@ public class QuickShopCommands implements Executor, HelpParse {
         final double dxz = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
         final float pitch = (float) -Math.atan(dy / dxz);
         // Set values, convert to degrees
-        // Minecraft yaw (vertical) angles are inverted (negative)
+        // ServerInfo yaw (vertical) angles are inverted (negative)
         loc.setYaw(-loc.getYaw() * 180f / (float) Math.PI + 360);
         // But pitch angles are normal
         loc.setPitch(pitch * 180f / (float) Math.PI);

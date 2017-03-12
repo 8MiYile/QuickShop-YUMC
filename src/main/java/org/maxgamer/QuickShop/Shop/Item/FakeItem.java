@@ -1,7 +1,11 @@
 package org.maxgamer.QuickShop.Shop.Item;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -11,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.maxgamer.QuickShop.Shop.ContainerShop;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -37,13 +40,12 @@ public abstract class FakeItem extends DisplayItem {
     protected final UUID uuid;
     protected boolean created = false;
 
-    public FakeItem(final ContainerShop containerShop, final ItemStack item) {
+    public FakeItem(Location loc, final ItemStack item) {
         this.itemStack = item;
-        this.location = containerShop.getLocation().clone().add(0.5, 1, 0.5);
+        this.location = loc.clone().add(0.5, 1, 0.5);
         this.eid = getFakeEntityId();
         this.uuid = UUID.randomUUID();
     }
-
     public static boolean isRegistered() {
         return registered;
     }
