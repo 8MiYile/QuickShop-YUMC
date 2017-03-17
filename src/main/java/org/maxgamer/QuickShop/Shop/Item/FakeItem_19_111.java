@@ -3,9 +3,8 @@ package org.maxgamer.QuickShop.Shop.Item;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.Serializer;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject;
@@ -25,8 +24,7 @@ public class FakeItem_19_111 extends FakeItem {
     }
 
     @Override
-    protected PacketContainer getMetadataPacket() {
-        final PacketContainer fakePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+    protected PacketContainer setMetadataPacket(PacketContainer fakePacket) {
         fakePacket.getIntegers().write(0, eid);
         final WrappedDataWatcher wr = new WrappedDataWatcher();
         final Serializer serializer = WrappedDataWatcher.Registry.getItemStackSerializer(true);
@@ -37,14 +35,13 @@ public class FakeItem_19_111 extends FakeItem {
     }
 
     @Override
-    protected PacketContainer getSpawnPacket() {
-        final PacketContainer fakePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY);
-        fakePacket.getIntegers().write(0, eid);
-        fakePacket.getModifier().write(1, uuid);
-        fakePacket.getDoubles().write(0, location.getX());
-        fakePacket.getDoubles().write(1, location.getY());
-        fakePacket.getDoubles().write(2, location.getZ());
-        fakePacket.getIntegers().write(6, 2);
+    protected PacketContainer setSpawnPacket(PacketContainer fakePacket) {
+        StructureModifier<Object> mdf = fakePacket.getModifier();
+        mdf.write(0, eid);
+        mdf.write(1, uuid);
+        mdf.write(2, location.getX());
+        mdf.write(3, location.getY());
+        mdf.write(4, location.getZ());
         return fakePacket;
     }
 }

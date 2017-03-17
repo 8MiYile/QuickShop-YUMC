@@ -46,23 +46,20 @@ public abstract class FakeItem extends DisplayItem {
         this.eid = getFakeEntityId();
         this.uuid = UUID.randomUUID();
     }
+
     public static boolean isRegistered() {
         return registered;
     }
 
     public static void register(final Plugin plugin) {
-        if (registered) {
-            return;
-        }
+        if (registered) { return; }
         final PluginManager pm = Bukkit.getPluginManager();
         final Plugin p = pm.getPlugin("ProtocolLib");
         if (p != null) {
             if (!p.isEnabled()) {
                 pm.enablePlugin(p);
             }
-            if (!p.isEnabled()) {
-                throw new IllegalStateException("前置插件ProtocolLib启动失败 请检查版本.");
-            }
+            if (!p.isEnabled()) { throw new IllegalStateException("前置插件ProtocolLib启动失败 请检查版本."); }
         } else {
             throw new IllegalStateException("服务器未找到前置插件ProtocolLib.");
         }
@@ -154,12 +151,8 @@ public abstract class FakeItem extends DisplayItem {
     }
 
     private void create() {
-        if (!registered) {
-            throw new IllegalStateException("You have to call the register method first.");
-        }
-        if (created) {
-            return;
-        }
+        if (!registered) { throw new IllegalStateException("You have to call the register method first."); }
+        if (created) { return; }
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(getSpawnPacket());
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(getVelocityPacket());
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(getMetadataPacket());
@@ -175,9 +168,7 @@ public abstract class FakeItem extends DisplayItem {
     }
 
     private void destory() {
-        if (!created) {
-            return;
-        }
+        if (!created) { return; }
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(getDestoryPacket());
 
         final String chunkId = getChunkIdentifyString(location.getChunk());
@@ -204,8 +195,15 @@ public abstract class FakeItem extends DisplayItem {
         return fakePacket;
     }
 
-    protected abstract PacketContainer getMetadataPacket();
+    protected PacketContainer getMetadataPacket() {
+        return setMetadataPacket(ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA));
+    }
 
-    protected abstract PacketContainer getSpawnPacket();
+    protected abstract PacketContainer setMetadataPacket(PacketContainer fakePacket);
 
+    protected PacketContainer getSpawnPacket() {
+        return setSpawnPacket(ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY));
+    }
+
+    protected abstract PacketContainer setSpawnPacket(PacketContainer fakePacket);
 }

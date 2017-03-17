@@ -6,9 +6,8 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 
 /**
@@ -29,8 +28,7 @@ public class FakeItem_17_18 extends FakeItem {
     }
 
     @Override
-    protected PacketContainer getMetadataPacket() {
-        final PacketContainer fakePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+    protected PacketContainer setMetadataPacket(PacketContainer fakePacket) {
         fakePacket.getIntegers().write(0, eid);
         final WrappedWatchableObject itemMeta = new WrappedWatchableObject(10, itemStack);
         final List<WrappedWatchableObject> entityMetaList = new ArrayList<>(1);
@@ -40,14 +38,12 @@ public class FakeItem_17_18 extends FakeItem {
     }
 
     @Override
-    protected PacketContainer getSpawnPacket() {
-        final PacketContainer fakePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY);
-        fakePacket.getIntegers().write(0, eid);
-        fakePacket.getIntegers().write(1, getNormalizedDistance(location.getX()));
-        fakePacket.getIntegers().write(2, getNormalizedDistance(location.getY()));
-        fakePacket.getIntegers().write(3, getNormalizedDistance(location.getZ()));
-        fakePacket.getIntegers().write(9, 2);
+    protected PacketContainer setSpawnPacket(PacketContainer fakePacket) {
+        StructureModifier<Integer> is = fakePacket.getIntegers();
+        is.write(0, eid);
+        is.write(1, getNormalizedDistance(location.getX()));
+        is.write(2, getNormalizedDistance(location.getY()));
+        is.write(3, getNormalizedDistance(location.getZ()));
         return fakePacket;
     }
-
 }
