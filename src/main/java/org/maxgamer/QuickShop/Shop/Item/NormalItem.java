@@ -16,21 +16,21 @@ import org.maxgamer.QuickShop.Util.NMS;
 public class NormalItem extends DisplayItem {
     private final ItemStack iStack;
     private Item item;
-    private final Shop shop;
+    private final Location location;
 
     // private Location displayLoc;
     /**
      * Creates a new display item.
      *
-     * @param shop
+     * @param location
      *            The shop (See Shop)
      * @param iStack
      *            The item stack to clone properties of the display item from.
      */
-    public NormalItem(final Shop shop, final ItemStack iStack) {
-        this.shop = shop;
+    public NormalItem(final Location location, final ItemStack iStack) {
+        this.location = location;
         this.iStack = iStack.clone();
-        // this.displayLoc = shop.getLocation().clone().add(0.5, 1.2, 0.5);
+        // this.displayLoc = location().clone().add(0.5, 1.2, 0.5);
     }
 
     /**
@@ -39,7 +39,7 @@ public class NormalItem extends DisplayItem {
      */
     @Override
     public Location getDisplayLocation() {
-        return this.shop.getLocation().clone().add(0.5, 1.2, 0.5);
+        return this.location.clone().add(0.5, 1.2, 0.5);
     }
 
     /**
@@ -65,8 +65,8 @@ public class NormalItem extends DisplayItem {
      */
     @Override
     public boolean removeDupe() {
-        if (shop.getLocation().getWorld() == null) { return false; }
-        final Location displayLoc = shop.getLocation().getBlock().getRelative(0, 1, 0).getLocation();
+        if (location.getWorld() == null) { return false; }
+        final Location displayLoc = location.getBlock().getRelative(0, 1, 0).getLocation();
         boolean removed = false;
         final Chunk c = displayLoc.getChunk();
         for (final Entity e : c.getEntities()) {
@@ -77,7 +77,7 @@ public class NormalItem extends DisplayItem {
                 continue;
             }
             final Location eLoc = e.getLocation().getBlock().getLocation();
-            if (eLoc.equals(displayLoc) || eLoc.equals(shop.getLocation())) {
+            if (eLoc.equals(displayLoc) || eLoc.equals(location)) {
                 e.remove();
                 removed = true;
             }
@@ -99,10 +99,10 @@ public class NormalItem extends DisplayItem {
      */
     @Override
     public void spawn() {
-        if (shop.getLocation().getWorld() == null) { return; }
+        if (location.getWorld() == null) { return; }
         final Location dispLoc = this.getDisplayLocation();
         try {
-            this.item = shop.getLocation().getWorld().dropItem(dispLoc, this.iStack);
+            this.item = location.getWorld().dropItem(dispLoc, this.iStack);
             this.item.setVelocity(new Vector(0, 0.1, 0));
             NMS.safeGuard(this.item);
         } catch (final Exception ignored) {

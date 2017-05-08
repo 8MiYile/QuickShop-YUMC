@@ -12,7 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
-import org.maxgamer.QuickShop.Shop.Item.FakeItem_17_18;
+import org.maxgamer.QuickShop.Shop.Item.DisplayItem;
+import org.maxgamer.QuickShop.Shop.Item.FakeItem_18;
 import org.maxgamer.QuickShop.Shop.Item.FakeItem_19_111;
 
 import pw.yumc.YumCore.bukkit.Log;
@@ -92,26 +93,7 @@ public class ConfigManager {
         this.warnings = Collections.emptySet();
         this.prevent = config.getStringList("prevent");
         if (config.getBoolean("fakeitem", true)) {
-            try {
-                plugin.getLogger().info("启用虚拟悬浮物 尝试启动中...");
-                FakeItem_19_111.register(plugin);
-                new FakeItem_19_111(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), new ItemStack(Material.STONE)).spawn();
-                plugin.getLogger().info("虚拟悬浮物功能测试正常(1.9-1.11.2)...");
-                fakeItem = true;
-            } catch (final Throwable e) {
-                Log.d(e);
-                try {
-                    FakeItem_17_18.register(plugin);
-                    new FakeItem_17_18(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), new ItemStack(Material.STONE)).spawn();
-                    plugin.getLogger().info("虚拟悬浮物功能测试正常(1.7-1.8)...");
-                    fakeItem = true;
-                } catch (final Throwable e2) {
-                    plugin.getLogger().warning("+=========================================");
-                    plugin.getLogger().warning("| 警告: 启动虚拟物品失败 使用原版悬浮物品...");
-                    plugin.getLogger().warning("+=========================================");
-                    Log.d(e2);
-                }
-            }
+            DisplayItem.init();
         }
         if (Bukkit.getVersion().contains("Paper") || Bukkit.getVersion().contains("Torch")) {
             Log.d("辣鸡 Paper 毁我异步命令!");

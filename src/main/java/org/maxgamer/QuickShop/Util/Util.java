@@ -16,6 +16,8 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sign;
 import org.maxgamer.QuickShop.QuickShop;
+
+import pw.yumc.YumCore.bukkit.Log;
 import pw.yumc.YumCore.global.L10N;
 
 import java.text.DecimalFormat;
@@ -176,6 +178,7 @@ public class Util {
      * @return the block which is also a chest and connected to b.
      */
     public static Block getSecondHalf(final Block b) {
+        Log.d("%s", b);
         if (!b.getType().toString().contains("CHEST")) { return null; }
         final Block[] blocks = new Block[4];
         blocks[0] = b.getRelative(1, 0, 0);
@@ -483,7 +486,7 @@ public class Util {
             }
             if (book1) { // They are the same here (both true or both
                              // false). So if one is true, the other is
-                                 // true.
+                         // true.
                 final Map<Enchantment, Integer> ench1 = ((EnchantmentStorageMeta) stack1.getItemMeta()).getStoredEnchants();
                 final Map<Enchantment, Integer> ench2 = ((EnchantmentStorageMeta) stack2.getItemMeta()).getStoredEnchants();
                 if (!ench1.equals(ench2)) { return false; // Enchants aren't the same.

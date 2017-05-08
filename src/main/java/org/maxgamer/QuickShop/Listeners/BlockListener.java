@@ -22,6 +22,8 @@ import org.maxgamer.QuickShop.Shop.ShopAction;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
+import pw.yumc.YumCore.bukkit.Log;
+
 public class BlockListener implements Listener {
     private final QuickShop plugin;
 
@@ -88,14 +90,13 @@ public class BlockListener implements Listener {
     public void onPlace(final BlockPlaceEvent e) {
         if (e.isCancelled()) { return; }
         final BlockState bs = e.getBlock().getState();
-        if (!(bs instanceof DoubleChest)) { return; }
         final Block b = e.getBlock();
         final Player p = e.getPlayer();
         final Block chest = Util.getSecondHalf(b);
         if (chest != null) {
             Shop shop = plugin.getShopManager().getShop(chest.getLocation());
             if (shop != null) {
-                if (!shop.getOwner().equals(p.getName())) {
+                if (!p.getName().equals(shop.getOwner())) {
                     e.setCancelled(true);
                     p.sendMessage(MsgUtil.p("no-double-chests"));
                     return;

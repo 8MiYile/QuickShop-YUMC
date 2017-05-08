@@ -63,7 +63,7 @@ public class LockListener implements Listener {
         Shop shop = plugin.getShopManager().getShop(b.getLocation());
         // Make sure they're not using the non-shop half of a double chest.
         if (!hasSecondHalf(shop, b)) { return; }
-        if (shop != null && !shop.getOwner().equals(p.getName())) {
+        if (shop != null && !p.getName().equals(shop.getOwner())) {
             if (p.hasPermission("quickshop.other.open")) {
                 p.sendMessage(MsgUtil.p("bypassing-lock"));
                 return;
