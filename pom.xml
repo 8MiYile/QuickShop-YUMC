@@ -78,7 +78,7 @@
             <groupId>pw.yumc</groupId>
             <artifactId>YumCore</artifactId>
             <type>jar</type>
-            <version>1.8</version>
+            <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>io.github.Cnly.WowSuchCleaner</groupId>

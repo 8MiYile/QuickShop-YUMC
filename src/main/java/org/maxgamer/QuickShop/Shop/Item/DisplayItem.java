@@ -31,15 +31,16 @@ public abstract class DisplayItem {
         List<Class<? extends DisplayItem>> fakeItems = Arrays.asList(FakeItem_19_111.class, FakeItem_18.class, FakeItem_17.class);
         Log.i("启用虚拟悬浮物 尝试启动中...");
         FakeItem.register(plugin);
-        fakeItems.forEach(c -> {
+        for (Class<? extends DisplayItem> c : fakeItems) {
             try {
                 c.getConstructor(Location.class, ItemStack.class).newInstance(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), new ItemStack(Material.STONE)).spawn();
                 displayItemClass = c;
                 Log.i("虚拟悬浮物功能测试正常(%s)...", c.getSimpleName());
+                break;
             } catch (Throwable e) {
                 Log.d(e);
             }
-        });
+        }
         if (displayItemClass == null) {
             displayItemClass = NormalItem.class;
             Log.w("+=========================================");

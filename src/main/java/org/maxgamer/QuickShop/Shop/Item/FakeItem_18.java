@@ -30,7 +30,7 @@ public class FakeItem_18 extends FakeItem {
     @Override
     protected PacketContainer setMetadataPacket(PacketContainer fakePacket) {
         fakePacket.getIntegers().write(0, eid);
-        final WrappedWatchableObject itemMeta = new WrappedWatchableObject(10, itemStack);
+        final WrappedWatchableObject itemMeta = new WrappedWatchableObject(5, itemStack);
         final List<WrappedWatchableObject> entityMetaList = new ArrayList<>(1);
         entityMetaList.add(itemMeta);
         fakePacket.getWatchableCollectionModifier().write(0, entityMetaList);

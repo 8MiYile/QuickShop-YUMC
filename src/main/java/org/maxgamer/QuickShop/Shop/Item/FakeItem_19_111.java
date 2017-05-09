@@ -1,5 +1,7 @@
 package org.maxgamer.QuickShop.Shop.Item;
 
+import java.util.Optional;
+
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
@@ -8,7 +10,6 @@ import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.Serializer;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject;
-import com.google.common.base.Optional;
 
 /**
  * Minecraft 虚拟悬浮物品工具类
@@ -28,7 +29,7 @@ public class FakeItem_19_111 extends FakeItem {
         fakePacket.getIntegers().write(0, eid);
         final WrappedDataWatcher wr = new WrappedDataWatcher();
         final Serializer serializer = WrappedDataWatcher.Registry.getItemStackSerializer(true);
-        final WrappedDataWatcherObject object = new WrappedDataWatcher.WrappedDataWatcherObject(6, serializer);
+        final WrappedDataWatcherObject object = new WrappedDataWatcherObject(6, serializer);
         wr.setObject(object, Optional.of(itemStack));
         fakePacket.getWatchableCollectionModifier().write(0, wr.getWatchableObjects());
         return fakePacket;
