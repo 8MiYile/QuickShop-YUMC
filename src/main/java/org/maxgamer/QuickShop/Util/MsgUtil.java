@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 
+import pw.yumc.YumCore.bukkit.Log;
 import pw.yumc.YumCore.config.FileConfig;
 import pw.yumc.YumCore.tellraw.Tellraw;
 
@@ -39,7 +40,7 @@ public class MsgUtil {
      *            The player to message
      * @return true if success, false if the player is offline or null
      */
-    public static boolean flush(final OfflinePlayer p) {
+    public static void flush(final OfflinePlayer p) {
         if (p != null && p.isOnline()) {
             final String pName = p.getName();
             final LinkedList<String> msgs = player_messages.get(pName);
@@ -50,9 +51,7 @@ public class MsgUtil {
                 plugin.getDB().execute("DELETE FROM messages WHERE owner = ?", pName);
                 msgs.clear();
             }
-            return true;
         }
-        return false;
     }
 
     public static void init(final QuickShop plugin) {
@@ -73,16 +72,12 @@ public class MsgUtil {
             while (rs.next()) {
                 final String owner = rs.getString("owner");
                 final String message = rs.getString("message");
-                LinkedList<String> msgs = player_messages.get(owner);
-                if (msgs == null) {
-                    msgs = new LinkedList<>();
-                    player_messages.put(owner, msgs);
-                }
+                LinkedList<String> msgs = player_messages.computeIfAbsent(owner, k -> new LinkedList<>());
                 msgs.add(message);
             }
         } catch (final SQLException e) {
             e.printStackTrace();
-            plugin.getLogger().warning("无法从数据库获得玩家的交易记录 跳过...");
+            Log.d("无法从数据库获得玩家的交易记录 跳过...");
         }
     }
 
@@ -110,23 +105,15 @@ public class MsgUtil {
      *            them in the database.
      */
     public static void send(final String player, final String message) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                @SuppressWarnings("deprecation")
-                final OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-                if (p == null || !p.isOnline()) {
-                    LinkedList<String> msgs = player_messages.get(player);
-                    if (msgs == null) {
-                        msgs = new LinkedList<>();
-                        player_messages.put(player, msgs);
-                    }
-                    msgs.add(message);
-                    final String q = "INSERT INTO messages (owner, message, time) VALUES (?, ?, ?)";
-                    plugin.getDB().execute(q, player, message, System.currentTimeMillis());
-                } else {
-                    p.getPlayer().sendMessage(message);
-                }
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            final OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+            if (p == null || !p.isOnline()) {
+                LinkedList<String> msgs = player_messages.computeIfAbsent(player, k -> new LinkedList<>());
+                msgs.add(message);
+                final String q = "INSERT INTO messages (owner, message, time) VALUES (?, ?, ?)";
+                plugin.getDB().execute(q, player, message, System.currentTimeMillis());
+            } else {
+                p.getPlayer().sendMessage(message);
             }
         });
     }
@@ -171,43 +158,39 @@ public class MsgUtil {
         sendShopInfo(p, shop, shop.getRemainingStock());
     }
 
-    @SuppressWarnings("deprecation")
     public static void sendShopInfo(final Player p, final Shop shop, final int stock) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                // Potentially faster with an array?
-                final ItemStack item = shop.getItem();
-                p.sendMessage("");
-                p.sendMessage("");
-                p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
-                p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.shop-information"));
-                p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.owner",
-                        Bukkit.getOfflinePlayer(shop.getOwner()).getName() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : Bukkit.getOfflinePlayer(shop.getOwner()).getName()));
-                final String msg = ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.item", shop.getDataName());
-                sendItemMessage(p, shop.getItem(), msg);
-                if (Util.isTool(item.getType())) {
-                    p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.damage-percent-remaining", Util.getToolPercentage(item)));
-                }
-                if (shop.isSelling()) {
-                    p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.stock", "" + (stock == 10000 ? "无限" : stock)));
-                } else {
-                    final int space = shop.getRemainingSpace();
-                    p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.space", "" + (space == 10000 ? "无限" : space)));
-                }
-                p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.price-per", shop.getDataName(), Util.format(shop.getPrice())));
-                if (shop.isBuying()) {
-                    p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.this-shop-is-buying"));
-                } else {
-                    p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.this-shop-is-selling"));
-                }
-                p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
-                if (shop.isSelling()) {
-                    p.sendMessage(MsgUtil.p("how-many-buy"));
-                } else {
-                    final int items = Util.countItems(p.getInventory(), shop.getItem());
-                    p.sendMessage(MsgUtil.p("how-many-sell", items));
-                }
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            // Potentially faster with an array?
+            final ItemStack item = shop.getItem();
+            p.sendMessage("");
+            p.sendMessage("");
+            p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
+            p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.shop-information"));
+            p.sendMessage(ChatColor.DARK_PURPLE + "| "
+                    + MsgUtil.p("menu.owner", Bukkit.getOfflinePlayer(shop.getOwner()).getName() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : Bukkit.getOfflinePlayer(shop.getOwner()).getName()));
+            final String msg = ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.item", shop.getDataName());
+            sendItemMessage(p, shop.getItem(), msg);
+            if (Util.isTool(item.getType())) {
+                p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.damage-percent-remaining", Util.getToolPercentage(item)));
+            }
+            if (shop.isSelling()) {
+                p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.stock", "" + (stock == 10000 ? "无限" : stock)));
+            } else {
+                final int space = shop.getRemainingSpace();
+                p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.space", "" + (space == 10000 ? "无限" : space)));
+            }
+            p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.price-per", shop.getDataName(), Util.format(shop.getPrice())));
+            if (shop.isBuying()) {
+                p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.this-shop-is-buying"));
+            } else {
+                p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.this-shop-is-selling"));
+            }
+            p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
+            if (shop.isSelling()) {
+                p.sendMessage(MsgUtil.p("how-many-buy"));
+            } else {
+                final int items = Util.countItems(p.getInventory(), shop.getItem());
+                p.sendMessage(MsgUtil.p("how-many-sell", items));
             }
         });
     }

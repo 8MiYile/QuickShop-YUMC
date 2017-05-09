@@ -7,7 +7,7 @@ public class NMS {
 
     public static void safeGuard(final Item item) throws ClassNotFoundException {
         rename(item.getItemStack());
-        item.setPickupDelay(2147483647);
+        item.setPickupDelay(Integer.MAX_VALUE);
     }
 
     private static void rename(final ItemStack iStack) {

@@ -1,12 +1,20 @@
 package org.maxgamer.QuickShop;
 
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map.Entry;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -18,18 +26,27 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.maxgamer.QuickShop.Command.QuickShopCommands;
 import org.maxgamer.QuickShop.Config.ConfigManager;
-import org.maxgamer.QuickShop.Database.*;
+import org.maxgamer.QuickShop.Database.Database;
+import org.maxgamer.QuickShop.Database.DatabaseCore;
+import org.maxgamer.QuickShop.Database.DatabaseHelper;
+import org.maxgamer.QuickShop.Database.MySQLCore;
+import org.maxgamer.QuickShop.Database.SQLiteCore;
 import org.maxgamer.QuickShop.Economy.Economy;
 import org.maxgamer.QuickShop.Economy.EconomyCore;
 import org.maxgamer.QuickShop.Economy.Economy_Vault;
-import org.maxgamer.QuickShop.Listeners.*;
+import org.maxgamer.QuickShop.Listeners.BlockListener;
+import org.maxgamer.QuickShop.Listeners.ChatListener;
+import org.maxgamer.QuickShop.Listeners.LockListener;
+import org.maxgamer.QuickShop.Listeners.PlayerListener;
+import org.maxgamer.QuickShop.Listeners.ProtectListener;
+import org.maxgamer.QuickShop.Listeners.WorldListener;
+import org.maxgamer.QuickShop.Listeners.WowSuchCleanerListener;
 import org.maxgamer.QuickShop.Shop.ContainerShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopManager;
 import org.maxgamer.QuickShop.Shop.ShopType;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
-import org.maxgamer.QuickShop.Watcher.ItemWatcher;
 import org.maxgamer.QuickShop.Watcher.LogWatcher;
 
 import pw.yumc.YumCore.config.FileConfig;
@@ -49,7 +66,7 @@ public class QuickShop extends JavaPlugin {
     private Database database;
     /** The economy we hook into for transactions */
     private Economy economy;
-    private BukkitTask itemWatcherTask;
+    public BukkitTask itemWatcherTask;
     private LogWatcher logWatcher;
     /** The Shop Manager used to store shops */
     private ShopManager shopManager;
@@ -61,9 +78,7 @@ public class QuickShop extends JavaPlugin {
      *            The string to print.
      */
     public void debug(final String s) {
-        if (!configManager.isDebug()) {
-            return;
-        }
+        if (!configManager.isDebug()) { return; }
         this.getLogger().info(ChatColor.YELLOW + "[Debug] " + s);
     }
 
@@ -203,9 +218,7 @@ public class QuickShop extends JavaPlugin {
      *            The string to log. It will be prefixed with the date and time.
      */
     public void log(final String s) {
-        if (this.logWatcher == null) {
-            return;
-        }
+        if (this.logWatcher == null) { return; }
         final Date date = Calendar.getInstance().getTime();
         final Timestamp time = new Timestamp(date.getTime());
         this.logWatcher.add("[" + time.toString() + "] " + s);
@@ -239,9 +252,7 @@ public class QuickShop extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (!loadEcon()) {
-            return;
-        }
+        if (!loadEcon()) { return; }
         configManager = new ConfigManager(this);
         // Initialize Util
         Util.initialize();
@@ -303,14 +314,6 @@ public class QuickShop extends JavaPlugin {
         pm.registerEvents(new WorldListener(this), this);
         pm.registerEvents(new ProtectListener(this), this);
         pm.registerEvents(new ChatListener(this), this);
-        if (configManager.isDisplay()) {
-            Bukkit.getServer().getPluginManager().registerEvents(new ChunkListener(this), this);
-            // Display item handler thread
-            getLogger().info("开启商店检查以及悬浮物刷新线程...");
-            final ItemWatcher itemWatcher = new ItemWatcher(this);
-            itemWatcherTask = Bukkit.getScheduler().runTaskTimer(this, itemWatcher, 20, 1800);
-        }
-
         // Command handlers
         new QuickShopCommands();
 

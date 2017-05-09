@@ -1,5 +1,11 @@
 package org.maxgamer.QuickShop.Util;
 
+import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,14 +23,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sign;
 import org.maxgamer.QuickShop.QuickShop;
 
-import pw.yumc.YumCore.bukkit.Log;
 import pw.yumc.YumCore.global.L10N;
-
-import java.text.DecimalFormat;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @SuppressWarnings("deprecation")
 public class Util {
@@ -178,7 +177,6 @@ public class Util {
      * @return the block which is also a chest and connected to b.
      */
     public static Block getSecondHalf(final Block b) {
-        Log.d("%s", b);
         if (!b.getType().toString().contains("CHEST")) { return null; }
         final Block[] blocks = new Block[4];
         blocks[0] = b.getRelative(1, 0, 0);

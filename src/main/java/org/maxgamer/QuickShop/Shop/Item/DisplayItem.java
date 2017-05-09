@@ -11,7 +11,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
+import org.maxgamer.QuickShop.Listeners.ChunkListener;
 import org.maxgamer.QuickShop.Shop.ContainerShop;
+import org.maxgamer.QuickShop.Watcher.ItemWatcher;
 
 import pw.yumc.YumCore.bukkit.Log;
 import pw.yumc.YumCore.bukkit.P;
@@ -43,6 +45,13 @@ public abstract class DisplayItem {
         }
         if (displayItemClass == null) {
             displayItemClass = NormalItem.class;
+            if (plugin.getConfigManager().isDisplay()) {
+                Bukkit.getServer().getPluginManager().registerEvents(new ChunkListener(plugin), plugin);
+                // Display item handler thread
+                Log.i("开启商店检查以及悬浮物刷新线程...");
+                final ItemWatcher itemWatcher = new ItemWatcher(plugin);
+                plugin.itemWatcherTask = Bukkit.getScheduler().runTaskTimer(plugin, itemWatcher, 20, 1800);
+            }
             Log.w("+=========================================");
             Log.w("| 警告: 启动虚拟物品失败 使用原版悬浮物品...");
             Log.w("+=========================================");

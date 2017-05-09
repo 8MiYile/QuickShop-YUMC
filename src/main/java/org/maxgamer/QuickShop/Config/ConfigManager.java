@@ -7,14 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Item.DisplayItem;
-import org.maxgamer.QuickShop.Shop.Item.FakeItem_18;
-import org.maxgamer.QuickShop.Shop.Item.FakeItem_19_111;
 
 import pw.yumc.YumCore.bukkit.Log;
 import pw.yumc.YumCore.config.FileConfig;
@@ -109,9 +106,9 @@ public class ConfigManager {
                 plugin.getLogger().info("魔改库功能测试正常...");
                 this.enableMagicLib = true;
             } catch (final Error | Exception e) {
-                plugin.getLogger().warning("+=========================================");
-                plugin.getLogger().warning("| 警告: 启动魔改库失败 将使用GUI商店界面...");
-                plugin.getLogger().warning("+=========================================");
+                Log.d("+=========================================");
+                Log.d("| 警告: 启动魔改库失败 将使用GUI商店界面...");
+                Log.d("+=========================================");
             }
         }
     }
