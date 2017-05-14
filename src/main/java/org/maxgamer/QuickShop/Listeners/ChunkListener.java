@@ -12,21 +12,17 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 
-public class ChunkListener implements Listener {
-    private QuickShop plugin;
+import pw.yumc.YumCore.bukkit.P;
 
-    public ChunkListener(QuickShop plugin) {
-        this.plugin = plugin;
-    }
+public class ChunkListener implements Listener {
+    private QuickShop plugin = P.getPlugin();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChunkLoad(ChunkLoadEvent e) {
         Chunk c = e.getChunk();
-        if (plugin.getShopManager().getShops() == null)
-            return;
+        if (plugin.getShopManager().getShops() == null) return;
         HashMap<Location, Shop> inChunk = plugin.getShopManager().getShops(c);
-        if (inChunk == null)
-            return;
+        if (inChunk == null) return;
         for (Shop shop : inChunk.values()) {
             shop.onLoad();
         }
@@ -36,8 +32,7 @@ public class ChunkListener implements Listener {
     public void onChunkUnload(ChunkUnloadEvent e) {
         Chunk c = e.getChunk();
         HashMap<Location, Shop> inChunk = plugin.getShopManager().getShops(c);
-        if (inChunk == null)
-            return;
+        if (inChunk == null) return;
         for (Shop shop : inChunk.values()) {
             shop.onUnload();
         }

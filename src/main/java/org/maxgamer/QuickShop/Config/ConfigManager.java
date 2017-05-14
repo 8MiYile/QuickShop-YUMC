@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.maxgamer.QuickShop.Listeners.ChunkListener;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Item.DisplayItem;
 
@@ -89,11 +90,9 @@ public class ConfigManager {
         this.guiTitle = config.getMessage("guititle", guiTitle);
         this.warnings = Collections.emptySet();
         this.prevent = config.getStringList("prevent");
-        if (config.getBoolean("fakeitem", true)) {
-            DisplayItem.init();
-        }
-        if (Bukkit.getVersion().contains("Paper") || Bukkit.getVersion().contains("Torch")) {
-            Log.d("辣鸡 Paper 毁我异步命令!");
+        if (display) {
+            Bukkit.getServer().getPluginManager().registerEvents(new ChunkListener(), plugin);
+            DisplayItem.init(config.getBoolean("fakeitem", true));
         }
         if (config.getBoolean("usemagiclib", true)) {
             try {

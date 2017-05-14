@@ -44,6 +44,17 @@ public class FakeItem_17 extends FakeItem {
         is.write(1, getNormalizedDistance(location.getX()));
         is.write(2, getNormalizedDistance(location.getY()));
         is.write(3, getNormalizedDistance(location.getZ()));
+        is.write(9, 2);
         return fakePacket;
+    }
+
+    @Override
+    protected PacketContainer getVelocityPacket() {
+        PacketContainer packet = super.getVelocityPacket();
+        StructureModifier<Integer> pint = packet.getIntegers();
+        pint.write(1, 0);
+        pint.write(2, 0);
+        pint.write(3, 0);
+        return packet;
     }
 }

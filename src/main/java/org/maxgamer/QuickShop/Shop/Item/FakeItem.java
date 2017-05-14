@@ -37,14 +37,12 @@ public abstract class FakeItem extends DisplayItem {
     protected final ItemStack itemStack;
     protected final Location location;
     protected final int eid;
-    protected final UUID uuid;
     protected boolean created = false;
 
     public FakeItem(Location loc, final ItemStack item) {
         this.itemStack = item;
         this.location = loc.clone().add(0.5, 1, 0.5);
         this.eid = getFakeEntityId();
-        this.uuid = UUID.randomUUID();
     }
 
     public static boolean isRegistered() {
@@ -183,13 +181,13 @@ public abstract class FakeItem extends DisplayItem {
         created = false;
     }
 
-    private PacketContainer getDestoryPacket() {
+    protected PacketContainer getDestoryPacket() {
         final PacketContainer fakePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY, true);
         fakePacket.getIntegerArrays().write(0, new int[] { eid });
         return fakePacket;
     }
 
-    private PacketContainer getVelocityPacket() {
+    protected PacketContainer getVelocityPacket() {
         final PacketContainer fakePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_VELOCITY);
         fakePacket.getIntegers().write(0, eid);
         return fakePacket;

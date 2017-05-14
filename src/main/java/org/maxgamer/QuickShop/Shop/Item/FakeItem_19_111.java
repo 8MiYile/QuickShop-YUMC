@@ -1,6 +1,6 @@
 package org.maxgamer.QuickShop.Shop.Item;
 
-import java.util.Optional;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +10,7 @@ import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.Serializer;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject;
+import com.google.common.base.Optional;
 
 /**
  * Minecraft 虚拟悬浮物品工具类
@@ -19,9 +20,11 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObje
  * @version 1.1.0
  */
 public class FakeItem_19_111 extends FakeItem {
+    protected final UUID uuid;
 
     public FakeItem_19_111(Location loc, final ItemStack item) {
         super(loc, item);
+        uuid = UUID.randomUUID();
     }
 
     @Override

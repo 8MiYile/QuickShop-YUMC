@@ -36,6 +36,7 @@ import org.maxgamer.QuickShop.Economy.EconomyCore;
 import org.maxgamer.QuickShop.Economy.Economy_Vault;
 import org.maxgamer.QuickShop.Listeners.BlockListener;
 import org.maxgamer.QuickShop.Listeners.ChatListener;
+import org.maxgamer.QuickShop.Listeners.ChunkListener;
 import org.maxgamer.QuickShop.Listeners.LockListener;
 import org.maxgamer.QuickShop.Listeners.PlayerListener;
 import org.maxgamer.QuickShop.Listeners.ProtectListener;
@@ -253,11 +254,11 @@ public class QuickShop extends JavaPlugin {
     @Override
     public void onEnable() {
         if (!loadEcon()) { return; }
-        configManager = new ConfigManager(this);
-        // Initialize Util
         Util.initialize();
         // Create the shop manager.
         shopManager = new ShopManager(this);
+        configManager = new ConfigManager(this);
+        // Initialize Util
         if (configManager.isLogAction()) {
             // Logger Handler
             this.logWatcher = new LogWatcher(this, new File(this.getDataFolder(), "qs.log"));
