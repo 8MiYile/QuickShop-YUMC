@@ -46,6 +46,7 @@ public class FakeItem_19_111 extends FakeItem {
         mdf.write(2, location.getX());
         mdf.write(3, location.getY());
         mdf.write(4, location.getZ());
+        mdf.write(10, 2);
         return fakePacket;
     }
 }
