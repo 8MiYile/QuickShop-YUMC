@@ -3,6 +3,9 @@ package org.maxgamer.QuickShop.Shop.Item;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.reflect.StructureModifier;
+
 /**
  * Minecraft 虚拟悬浮物品工具类
  * 需要depend ProtocolLib
@@ -16,7 +19,13 @@ public class FakeItem_18 extends FakeItem_17 {
         super(loc, item);
     }
 
-    private static int getNormalizedDistance(final double value) {
-        return (int) Math.floor(value * 32.0D);
+    @Override
+    protected PacketContainer setSpawnPacket(PacketContainer fakePacket) {
+        StructureModifier<Integer> is = fakePacket.getIntegers();
+        is.write(0, eid);
+        is.write(1, (int) location.getX() * 32);
+        is.write(2, (int) location.getY() * 32);
+        is.write(3, (int) location.getZ() * 32);
+        return fakePacket;
     }
 }

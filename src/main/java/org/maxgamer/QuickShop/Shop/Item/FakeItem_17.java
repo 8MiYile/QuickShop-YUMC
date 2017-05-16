@@ -23,10 +23,6 @@ public class FakeItem_17 extends FakeItem {
         super(loc, item);
     }
 
-    private static int getNormalizedDistance(final double value) {
-        return (int) Math.floor(value * 32.0D);
-    }
-
     @Override
     protected PacketContainer setMetadataPacket(PacketContainer fakePacket) {
         fakePacket.getIntegers().write(0, eid);
@@ -41,9 +37,9 @@ public class FakeItem_17 extends FakeItem {
     protected PacketContainer setSpawnPacket(PacketContainer fakePacket) {
         StructureModifier<Integer> is = fakePacket.getIntegers();
         is.write(0, eid);
-        is.write(1, getNormalizedDistance(location.getX()));
-        is.write(2, getNormalizedDistance(location.getY()));
-        is.write(3, getNormalizedDistance(location.getZ()));
+        is.write(1, (int) location.getX());
+        is.write(2, (int) location.getY());
+        is.write(3, (int) location.getZ());
         is.write(9, 2);
         return fakePacket;
     }
