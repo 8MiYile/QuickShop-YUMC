@@ -52,6 +52,7 @@ import org.maxgamer.QuickShop.Watcher.LogWatcher;
 
 import pw.yumc.YumCore.config.FileConfig;
 import pw.yumc.YumCore.global.L10N;
+import pw.yumc.YumCore.statistic.Statistics;
 import pw.yumc.YumCore.update.SubscribeTask;
 
 public class QuickShop extends JavaPlugin {
@@ -322,6 +323,7 @@ public class QuickShop extends JavaPlugin {
             getLogger().warning("商店查找半径过大 可能导致服务器Lag! 推荐使用低于 100 的配置!");
         }
         this.getLogger().info("载入完成! 版本: " + this.getDescription().getVersion() + " 重制 by 喵♂呜");
+        new Statistics();
         new SubscribeTask();
     }
 
