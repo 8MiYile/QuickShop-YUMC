@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.maxgamer</groupId>
     <artifactId>QuickShop</artifactId>
-    <version>2.1.1</version>
+    <version>2.1.2</version>
     <description>快捷商店重置版本...</description>
     <build>
         <finalName>${project.name}</finalName>
@@ -52,6 +52,7 @@
         <env.GIT_COMMIT>DEBUG</env.GIT_COMMIT>
         <update.description>§a全新版本 §c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比)§e7老板修复逗比BUG...</update.description>
         <update.changes>
+            §b2.1.2 - §e移除过期的监听方法...;
             §b2.1.0 - §c修复大箱子刷物品的问题...;
             §b2.0.1 - §a使用新类库 兼容最新版本...;
             §b1.9.5 - §a1.10+兼容虚拟悬浮物...;
