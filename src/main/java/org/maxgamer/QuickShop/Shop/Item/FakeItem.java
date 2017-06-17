@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -75,24 +74,7 @@ public abstract class FakeItem extends DisplayItem {
                 }
             }
         };
-        final PacketAdapter chunkBulkPacketListener = new PacketAdapter(plugin, PacketType.Play.Server.MAP_CHUNK_BULK) {
-            @Override
-            public void onPacketSending(final PacketEvent event) {
-                try {
-                    final PacketContainer packet = event.getPacket();
-                    final Player p = event.getPlayer();
-                    final int[] chunksX = packet.getIntegerArrays().read(0);
-                    final int[] chunksZ = packet.getIntegerArrays().read(1);
-                    for (int i = 0; i < chunksX.length; i++) {
-                        final List<FakeItem> fakesInChunk = fakes.get(getChunkIdentifyString(p.getWorld().getChunkAt(chunksX[i], chunksZ[i])));
-                        sendChunkPacket(p, fakesInChunk);
-                    }
-                } catch (final Exception ignored) {
-                }
-            }
-        };
         ProtocolLibrary.getProtocolManager().addPacketListener(chunkPacketListener);
-        ProtocolLibrary.getProtocolManager().addPacketListener(chunkBulkPacketListener);
         registered = true;
     }
 
