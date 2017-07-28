@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.maxgamer</groupId>
     <artifactId>QuickShop</artifactId>
-    <version>2.1.2</version>
+    <version>2.2.0</version>
     <description>快捷商店重置版本...</description>
     <build>
         <finalName>${project.name}</finalName>
@@ -52,11 +52,14 @@
         <env.GIT_COMMIT>DEBUG</env.GIT_COMMIT>
         <update.description>§a全新版本 §c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比)§e7老板修复逗比BUG...</update.description>
         <update.changes>
+            §b2.2.0 - §cfix: 修复 1.12 不兼容的问题;
             §b2.1.2 - §e移除过期的监听方法...;
-            §b2.1.0 - §c修复大箱子刷物品的问题...;
+            §b2.1.0 - §c修复大箱子刷物品的问题...
+        </update.changes>
+        <update.changelog>
             §b2.0.1 - §a使用新类库 兼容最新版本...;
             §b1.9.5 - §a1.10+兼容虚拟悬浮物...;
-        </update.changes>
+        </update.changelog>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -79,7 +82,7 @@
             <groupId>pw.yumc</groupId>
             <artifactId>YumCore</artifactId>
             <type>jar</type>
-            <version>1.7</version>
+            <version>[1.8.1,)</version>
         </dependency>
         <dependency>
             <groupId>io.github.Cnly.WowSuchCleaner</groupId>
