@@ -334,6 +334,11 @@ public class ShopManager {
                     p.sendMessage(MsgUtil.p("the-owner-cant-afford-to-buy-from-you", format(amount * shop.getPrice()), format(plugin.getEcon().getBalance(shop.getOwner()))));
                     return;
                 }
+                final ShopPurchaseEvent e = new ShopPurchaseEvent(shop, p, amount);
+				Bukkit.getPluginManager().callEvent(e);
+				if (e.isCancelled()) {
+					return; // Cancelled
+				}
                 // Check for plugins faking econ.has(amount)
                 if (!plugin.getEcon().withdraw(shop.getOwner(), total)) {
                     p.sendMessage(MsgUtil.p("the-owner-cant-afford-to-buy-from-you", format(amount * shop.getPrice()), format(plugin.getEcon().getBalance(shop.getOwner()))));
@@ -464,10 +469,6 @@ public class ShopManager {
             p.sendMessage(MsgUtil.p("not-enough-space", "" + pSpace));
             return;
         }
-        final ShopPurchaseEvent e = new ShopPurchaseEvent(shop, p, amount);
-        Bukkit.getPluginManager().callEvent(e);
-        if (e.isCancelled()) { return; // Cancelled
-        }
         // Money handling
         if (!p.getName().equals(shop.getOwner())) {
             // Check their balance. Works with *most* economy
@@ -476,6 +477,11 @@ public class ShopManager {
                 p.sendMessage(MsgUtil.p("you-cant-afford-to-buy", format(amount * shop.getPrice()), format(plugin.getEcon().getBalance(p.getName()))));
                 return;
             }
+            final ShopPurchaseEvent e = new ShopPurchaseEvent(shop, p, amount);
+			Bukkit.getPluginManager().callEvent(e);
+			if (e.isCancelled()) {
+				return; // Cancelled
+			}
             // Don't tax them if they're purchasing from
             // themselves.
             // Do charge an amount of tax though.
