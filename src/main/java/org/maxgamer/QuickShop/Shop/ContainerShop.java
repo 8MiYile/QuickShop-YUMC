@@ -195,7 +195,13 @@ public class ContainerShop implements Shop {
         final int y = this.getLocation().getBlockY();
         final int z = this.getLocation().getBlockZ();
         final String world = this.getLocation().getWorld().getName();
-        plugin.getDB().execute("DELETE FROM shops WHERE x = '" + x + "' AND y = '" + y + "' AND z = '" + z + "' AND world = '" + world + "'");
+        // Async database execute
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			@Override
+			public void run() {
+				plugin.getDB().execute("DELETE FROM shops WHERE x = '" + x + "' AND y = '" + y + "' AND z = '" + z + "' AND world = '" + world + "'");
+			}
+		});
         // Refund if necessary
         if (plugin.getConfig().getBoolean("shop.refund")) {
             plugin.getEcon().deposit(this.getOwner(), plugin.getConfig().getDouble("shop.cost"));
