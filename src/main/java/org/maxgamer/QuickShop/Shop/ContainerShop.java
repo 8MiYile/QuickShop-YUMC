@@ -656,13 +656,22 @@ public class ContainerShop implements Shop {
         final String world = this.getLocation().getWorld().getName();
         final int unlimited = this.isUnlimited() ? 1 : 0;
         final String q = "UPDATE shops SET owner = ?, itemConfig = ?, unlimited = ?, type = ?, price = ? WHERE x = ? AND y = ? and z = ? and world = ?";
-        try {
-            plugin.getDB().execute(q, this.getOwner(), Util.serialize(this.getItem()), unlimited, shopType.toID(), this.getPrice(), x, y, z, world);
-        } catch (final Exception e) {
-            plugin.getLogger().warning("无法保存商店到数据库!!!");
-            plugin.getLogger().warning("错误信息: " + e.getMessage());
-            e.printStackTrace();
-        }
+        final String owner = this.getOwner();
+		final String item = Util.serialize(this.getItem());
+		double price = this.getPrice();
+		// Async database execute
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			@Override
+			public void run() {
+				try {
+					plugin.getDB().execute(q, owner, item, unlimited, shopType.toID(), price, x, y, z, world);
+				} catch (final Exception e) {
+					plugin.getLogger().warning("无法保存商店到数据库!!!");
+					plugin.getLogger().warning("错误信息: " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		});
     }
 
     private void checkDisplay() {
