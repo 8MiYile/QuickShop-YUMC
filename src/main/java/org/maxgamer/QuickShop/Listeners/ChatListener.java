@@ -23,7 +23,12 @@ public class ChatListener implements Listener {
         if (!plugin.getShopManager().getActions().containsKey(e.getPlayer().getName())) {
             return;
         }
-        plugin.getShopManager().handleChat(e.getPlayer(), e.getMessage());
-        e.setCancelled(true);
+		e.setCancelled(true);
+		Bukkit.getScheduler().runTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				plugin.getShopManager().handleChat(e.getPlayer(), e.getMessage());
+			}
+		});
     }
 }
