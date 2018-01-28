@@ -1,6 +1,6 @@
 package org.maxgamer.QuickShop.Listeners;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -65,7 +65,7 @@ public class PlayerListener implements Listener {
                 p.openInventory(in);
             }
             // Add the new action
-            final HashMap<String, Info> actions = plugin.getShopManager().getActions();
+            final Map<String, Info> actions = plugin.getShopManager().getActions();
             final Info info = new Info(shop.getLocation(), ShopAction.BUY, null, null, shop);
             actions.put(p.getName(), info);
         }
