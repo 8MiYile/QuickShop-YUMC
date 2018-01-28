@@ -36,7 +36,6 @@ import org.maxgamer.QuickShop.Economy.EconomyCore;
 import org.maxgamer.QuickShop.Economy.Economy_Vault;
 import org.maxgamer.QuickShop.Listeners.BlockListener;
 import org.maxgamer.QuickShop.Listeners.ChatListener;
-import org.maxgamer.QuickShop.Listeners.ChunkListener;
 import org.maxgamer.QuickShop.Listeners.LockListener;
 import org.maxgamer.QuickShop.Listeners.PlayerListener;
 import org.maxgamer.QuickShop.Listeners.ProtectListener;
