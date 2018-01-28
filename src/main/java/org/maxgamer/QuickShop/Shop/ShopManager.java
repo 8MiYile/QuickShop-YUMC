@@ -115,7 +115,7 @@ public class ShopManager {
 							serializeItem,
 							x,
 							y,
-							y,
+							z,
 							worldName,
 							(shop.isUnlimited() ? 1 : 0),
 							shop.getShopType().toID());
