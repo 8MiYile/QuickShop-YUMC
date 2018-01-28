@@ -392,9 +392,7 @@ public class Util {
         }
         // Calculate the chunks coordinates. These are 1,2,3 for each chunk, NOT
         // location rounded to the nearest 16.
-        final int x = (int) Math.floor((loc.getBlockX()) / 16.0);
-        final int z = (int) Math.floor((loc.getBlockZ()) / 16.0);
-        if (loc.getWorld().isChunkLoaded(x, z)) {
+        if (loc.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4)) {
             // System.out.println("Chunk is loaded " + x + ", " + z);
             return true;
         }
@@ -476,6 +474,72 @@ public class Util {
                 return false; // one of the item stacks have a display name
             }
         }
+        		if (stack1.getItemMeta().hasLore() || stack2.getItemMeta().hasLore()) {
+			if (stack1.getItemMeta().hasLore() && stack2.getItemMeta().hasLore()) {
+				if (!stack1.getItemMeta().getLore().equals(stack2.getItemMeta().getLore())) {
+					return false; // items have different lore
+				}
+			} else {
+				return false; // one of the item stacks have lore
+			}
+		}
+		// Not the same material and not same durability has returned to false
+		if (stack1.getType() == Material.SKULL_ITEM) {
+			if (stack1.getDurability() == 3) {
+				SkullMeta skullMeta1 = (SkullMeta) stack1.getItemMeta();
+				SkullMeta skullMeta2 = (SkullMeta) stack2.getItemMeta();
+				if (skullMeta1.hasOwner() || skullMeta2.hasOwner()) {
+					if (skullMeta1.hasOwner() && skullMeta2.hasOwner()) {
+						if (!skullMeta1.getOwner().equals(skullMeta1.getOwner())) {
+							return false;
+						}
+					} else {
+						return false;
+					}
+				}
+			}
+
+		}
+		if (stack1.getType() == Material.WRITTEN_BOOK) {
+			if (stack1.hasItemMeta() || stack2.hasItemMeta()) {
+				if (stack1.hasItemMeta() && stack2.hasItemMeta()) {
+					BookMeta bookMeta1 = (BookMeta) stack1.getItemMeta();
+					BookMeta bookMeta2 = (BookMeta) stack2.getItemMeta();
+					// title
+					if (bookMeta1.hasTitle() || bookMeta2.hasTitle()) {
+						if (bookMeta1.hasTitle() && bookMeta2.hasTitle()) {
+							if (!bookMeta1.getTitle().equals(bookMeta2.getTitle())) {
+								return false;
+							}
+						} else {
+							return false;
+						}
+					}
+					// author
+					if (bookMeta1.hasAuthor() || bookMeta2.hasAuthor()) {
+						if (bookMeta1.hasAuthor() && bookMeta2.hasAuthor()) {
+							if (!bookMeta1.getAuthor().equals(bookMeta2.getAuthor())) {
+								return false;
+							}
+						} else {
+							return false;
+						}
+					}
+					// content
+					if (bookMeta1.hasPages() || bookMeta2.hasPages()) {
+						if (bookMeta1.hasPages() && bookMeta2.hasPages()) {
+							if (!bookMeta1.getPages().equals(bookMeta2.getPages())) {
+								return false;
+							}
+						} else {
+							return false;
+						}
+					}
+				} else {
+					return false;
+				}
+			}
+		}
         try {
             Class.forName("org.bukkit.inventory.meta.EnchantmentStorageMeta");
             final boolean book1 = stack1.getItemMeta() instanceof EnchantmentStorageMeta;
