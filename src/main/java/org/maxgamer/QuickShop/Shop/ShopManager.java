@@ -95,29 +95,40 @@ public class ShopManager {
     }
 
     public void createShop(final Shop shop) {
-        final Location loc = shop.getLocation();
-        final ItemStack item = shop.getItem();
-        try {
-            // Write it to the database
-            final String q = "INSERT INTO shops (owner, price, itemConfig, x, y, z, world, unlimited, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            plugin.getDB().execute(q,
-                    shop.getOwner(),
-                    shop.getPrice(),
-                    Util.serialize(item),
-                    loc.getBlockX(),
-                    loc.getBlockY(),
-                    loc.getBlockZ(),
-                    loc.getWorld().getName(),
-                    (shop.isUnlimited() ? 1 : 0),
-                    shop.getShopType().toID());
-            // Add it to the world
-            addShop(loc.getWorld().getName(), shop);
-        } catch (final Exception e) {
-            plugin.getLogger().warning("无法保存商店到数据库! 下次重启商店将会消失!");
-            plugin.getLogger().warning("错误信息: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+		final Location loc = shop.getLocation();
+		final ItemStack item = shop.getItem();
+		final String serializeItem = Util.serialize(item);
+		final String worldName = loc.getWorld().getName();
+		final int x = loc.getBlockX();
+		final int y = loc.getBlockY();
+		final int z = loc.getBlockZ();
+		// Async database execute
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			@Override
+			public void run() {
+				try {
+					// Write it to the database
+					final String q = "INSERT INTO shops (owner, price, itemConfig, x, y, z, world, unlimited, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					plugin.getDB().execute(q,
+							shop.getOwner(),
+							shop.getPrice(),
+							serializeItem,
+							x,
+							y,
+							y,
+							worldName,
+							(shop.isUnlimited() ? 1 : 0),
+							shop.getShopType().toID());
+				} catch (final Exception e) {
+					plugin.getLogger().warning("无法保存商店到数据库! 下次重启商店将会消失!");
+					plugin.getLogger().warning("错误信息: " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		});
+		// Add it to the world
+		addShop(worldName, shop);
+	}
 
     public String format(final double d) {
         return plugin.getEcon().format(d);
