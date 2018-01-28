@@ -18,10 +18,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ShopManager {
-    private final HashMap<String, Info> actions = new HashMap<>();
-
+    
+    private final Map<String, Info> actions = new ConcurrentHashMap<String, Info>();
     private final QuickShop plugin;
     private final HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>> shops = new HashMap<>();
 
@@ -126,7 +127,7 @@ public class ShopManager {
      * @return Returns the HashMap<Player name, shopInfo>. Info contains what
      *         their last question etc was.
      */
-    public HashMap<String, Info> getActions() {
+    public Map<String, Info> getActions() {
         return this.actions;
     }
 
@@ -205,7 +206,7 @@ public class ShopManager {
 
     public void handleChat(final Player p, final String msgs) {
         final String message = ChatColor.stripColor(msgs);
-        final HashMap<String, Info> actions = getActions();
+        final Map<String, Info> actions = getActions();
         // They wanted to do something.
         final Info info = actions.remove(p.getName());
         if (info == null) { return; // multithreaded means this can happen
