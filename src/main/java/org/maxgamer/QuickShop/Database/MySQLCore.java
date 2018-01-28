@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class MySQLCore implements DatabaseCore {
@@ -12,7 +12,7 @@ public class MySQLCore implements DatabaseCore {
     /** The connection properties... user, pass, autoReconnect.. */
     private Properties info;
     private static final int MAX_CONNECTIONS = 8;
-    private static ArrayList<Connection> pool = new ArrayList<>();
+    private static final List<Connection> pool = Collections.synchronizedList(new ArrayList<Connection>());
 
     public MySQLCore(String host, String user, String pass, String database, String port) {
         info = new Properties();
