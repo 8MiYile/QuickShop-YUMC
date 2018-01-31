@@ -106,7 +106,7 @@ public class MsgUtil {
      */
     public static void send(final String player, final String message) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            final OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+            final Player p = Bukkit.getPlayerExact(player);
             if (p == null || !p.isOnline()) {
                 LinkedList<String> msgs = player_messages.computeIfAbsent(player, k -> new LinkedList<>());
                 msgs.add(message);
@@ -166,8 +166,7 @@ public class MsgUtil {
             p.sendMessage("");
             p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
             p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.shop-information"));
-            p.sendMessage(ChatColor.DARK_PURPLE + "| "
-                    + MsgUtil.p("menu.owner", Bukkit.getOfflinePlayer(shop.getOwner()).getName() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : Bukkit.getOfflinePlayer(shop.getOwner()).getName()));
+            p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.owner", shop.getOwner() == null ? (shop.isUnlimited() ? "系统商店" : "未知") : shop.getOwner()));
             final String msg = ChatColor.DARK_PURPLE + "| " + MsgUtil.p("menu.item", shop.getDataName());
             sendItemMessage(p, shop.getItem(), msg);
             if (Util.isTool(item.getType())) {
