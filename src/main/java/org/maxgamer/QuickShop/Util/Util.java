@@ -1,5 +1,6 @@
 package org.maxgamer.QuickShop.Util;
 
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
@@ -29,12 +30,16 @@ import pw.yumc.YumCore.global.L10N;
 
 @SuppressWarnings("deprecation")
 public class Util {
+
 	private static HashSet<Material> blacklist = new HashSet<>();
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 	private static QuickShop plugin;
 	private static HashSet<Material> shoppables = new HashSet<>();
 	private static HashSet<Material> tools = new HashSet<>();
 	private static HashSet<Material> transparent = new HashSet<>();
+
+	private static boolean hasCheckedMethodCompatibility = false;
+	private static boolean useNewGetContentMethod = false;
 
 	public static void addTransparentBlock(final Material m) {
 		if (!transparent.add(m)) {
@@ -72,6 +77,34 @@ public class Util {
 	 * @return The number of items that match in this inventory.
 	 */
 	public static int countItems(final Inventory inv, final ItemStack item) {
+		if (!hasCheckedMethodCompatibility) {
+			if (hasGetStorageContentsMethod()) {
+				useNewGetContentMethod = true;
+				hasCheckedMethodCompatibility = true;
+				return newCountItems(inv, item);
+			} else {
+				useNewGetContentMethod = false;
+				hasCheckedMethodCompatibility = true;
+				return oldCountItems(inv, item);
+			}
+		}
+		return useNewGetContentMethod ? newCountItems(inv, item) : oldCountItems(inv, item);
+	}
+
+	public static int oldCountItems(final Inventory inv, final ItemStack item) {
+		int items = 0;
+		for (final ItemStack iStack : inv.getContents()) {
+			if (iStack == null) {
+				continue;
+			}
+			if (Util.matches(item, iStack)) {
+				items += iStack.getAmount();
+			}
+		}
+		return items;
+	}
+
+	public static int newCountItems(final Inventory inv, final ItemStack item) {
 		int items = 0;
 		for (final ItemStack iStack : inv.getStorageContents()) {
 			if (iStack == null) {
@@ -95,8 +128,35 @@ public class Util {
 	 * @return The number of items that can be given to the inventory safely.
 	 */
 	public static int countSpace(final Inventory inv, final ItemStack item) {
+		if (!hasCheckedMethodCompatibility) {
+			if (hasGetStorageContentsMethod()) {
+				useNewGetContentMethod = true;
+				hasCheckedMethodCompatibility = true;
+				return newCountSpace(inv, item);
+			} else {
+				useNewGetContentMethod = false;
+				hasCheckedMethodCompatibility = true;
+				return oldCountSpace(inv, item);
+			}
+		}
+		return useNewGetContentMethod ? newCountSpace(inv, item) : oldCountSpace(inv, item);
+	}
+
+	public static int newCountSpace(final Inventory inv, final ItemStack item) {
 		int space = 0;
 		for (final ItemStack iStack : inv.getStorageContents()) {
+			if (iStack == null || iStack.getType() == Material.AIR) {
+				space += item.getMaxStackSize();
+			} else if (matches(item, iStack)) {
+				space += item.getMaxStackSize() - iStack.getAmount();
+			}
+		}
+		return space;
+	}
+
+	public static int oldCountSpace(final Inventory inv, final ItemStack item) {
+		int space = 0;
+		for (final ItemStack iStack : inv.getContents()) {
 			if (iStack == null || iStack.getType() == Material.AIR) {
 				space += item.getMaxStackSize();
 			} else if (matches(item, iStack)) {
@@ -593,5 +653,21 @@ public class Util {
 		final YamlConfiguration cfg = new YamlConfiguration();
 		cfg.set("item", iStack);
 		return cfg.saveToString();
+	}
+
+	public static boolean hasGetStorageContentsMethod() {
+		try {
+			Class<?> inventory = Class.forName("org.bukkit.inventory.Inventory");
+			if (inventory != null) {
+				for (Method method : inventory.getDeclaredMethods()) {
+					if (method != null && method.getName().equals("getStorageContents")) {
+						return true;
+					}
+				}
+			}
+			return false;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }
