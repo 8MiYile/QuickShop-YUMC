@@ -50,18 +50,19 @@
     </ciManagement>
     <properties>
         <env.GIT_COMMIT>DEBUG</env.GIT_COMMIT>
-        <update.description>§a全新版本 §c虚拟悬浮物(橙子提供 对 就是那个汉化COI的逗比)§e7老板修复逗比BUG...</update.description>
+        <update.description>§a全新版本 §c修复大量问题§e(有问题找jiongjiong)...</update.description>
         <update.changes>
+            §b2.3.1 - §cfix: 修复低版本服务端不兼容的问题;
             §b2.3.0 - §afeat: 修复大量BUG(感谢jiongjiong提交的PR 下面都是他修复的);
-            §b      - §cfix: 修复不必要的获取离线玩家导致创建大量getProfile线程导致服务端崩溃的问题
-            §b      - §cfix: 连接池线程安全修正
-            §b      - §cfix: 让修改价格等行为异步操作数据库
-            §b      - §cfix: 异步调用数据库删除方法（BlockBreakEvent触发）
-            §b      - §cfix: 异步保存商店到数据库
-            §b      - §cfix: 修复收购商店不触发ShopPurchaseEvent的问题，并且调整触发的时机，避免没钱购买也触发这个事件
-            §b      - §cfix: 修复一些奇怪的问题
-            §b      - §cfix: 修复一处线程安全问题
-            §b      - §cfix: 修复匹配两个物品是否相同的问题
+            §b      - §cfix: 修复不必要的获取离线玩家导致创建大量getProfile线程导致服务端崩溃的问题;
+            §b      - §cfix: 连接池线程安全修正;
+            §b      - §cfix: 让修改价格等行为异步操作数据库;
+            §b      - §cfix: 异步调用数据库删除方法(BlockBreakEvent触发);
+            §b      - §cfix: 异步保存商店到数据库;
+            §b      - §cfix: 修复收购商店不触发ShopPurchaseEvent的问题,并且调整触发的时机,避免没钱购买也触发这个事件;
+            §b      - §cfix: 修复一些奇怪的问题;
+            §b      - §cfix: 修复一处线程安全问题;
+            §b      - §cfix: 修复匹配两个物品是否相同的问题;
             §b      - §cfix: 删除不必要的监听器
         </update.changes>
         <update.changelog>
