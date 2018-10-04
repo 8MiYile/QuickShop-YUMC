@@ -40,7 +40,6 @@ import org.maxgamer.QuickShop.Listeners.LockListener;
 import org.maxgamer.QuickShop.Listeners.PlayerListener;
 import org.maxgamer.QuickShop.Listeners.ProtectListener;
 import org.maxgamer.QuickShop.Listeners.WorldListener;
-import org.maxgamer.QuickShop.Listeners.WowSuchCleanerListener;
 import org.maxgamer.QuickShop.Shop.ContainerShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopManager;
@@ -300,16 +299,6 @@ public class QuickShop extends JavaPlugin {
         MsgUtil.clean();
         // Register events
         final PluginManager pm = this.getServer().getPluginManager();
-        final Plugin wsc = pm.getPlugin("WowSuchCleaner");
-        if (wsc != null && wsc.isEnabled()) {
-            getLogger().info("发现 WowSuchCleaner 插件 开启相关功能...");
-            try {
-                Class.forName("io.github.Cnly.WowSuchCleaner.WowSuchCleaner.ItemPreCleanEvent");
-                pm.registerEvents(new WowSuchCleanerListener(), this);
-            } catch (final ClassNotFoundException e) {
-                getLogger().info("WowSuchCleaner 版本过低 可能造成悬浮物上架...");
-            }
-        }
         pm.registerEvents(new BlockListener(this), this);
         pm.registerEvents(new PlayerListener(this), this);
         pm.registerEvents(new WorldListener(this), this);

@@ -79,14 +79,14 @@
     <repositories>
         <repository>
             <id>yumc-repo</id>
-            <url>http://repo.yumc.pw/content/groups/public/</url>
+            <url>https://repo.yumc.pw/repository/maven-public/</url>
         </repository>
     </repositories>
     <distributionManagement>
         <repository>
             <id>jtb</id>
             <name>YUMC</name>
-            <url>http://repo.yumc.pw/content/repositories/yumcenter/</url>
+            <url>https://repo.yumc.pw/repository/yumcenter/</url>
         </repository>
     </distributionManagement>
     <dependencies>
@@ -95,11 +95,6 @@
             <artifactId>YumCore</artifactId>
             <type>jar</type>
             <version>[1.8.1,)</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.Cnly.WowSuchCleaner</groupId>
-            <artifactId>WowSuchCleaner</artifactId>
-            <version>1.6.5</version>
         </dependency>
     </dependencies>
 </project>
