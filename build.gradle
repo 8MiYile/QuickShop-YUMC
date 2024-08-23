@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.2' // 或者使用最新的版本
+}
+
+group = 'org.maxgamer'
+version = '2.3.1'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.yumc.pw/repository/maven-public/' }
+}
+
+dependencies {
+    implementation group: 'pw.yumc', name: 'YumCore', version: '[1.8.1,)'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.maxgamer.quickshop.Main'
+    }
+    baseName = project.name
+    version = project.version
+}
+
+shadowJar {
+    minimize()
+    relocate 'pw.yumc.YumCore', "${project.groupId}.${project.artifactId}"
+    dependencies {
+        include(dependency('pw.yumc:YumCore'))
+    }
+}
+
+// 如果需要发布到Maven仓库
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact shadowJar
+            groupId = 'org.maxgamer'
+            artifactId = 'QuickShop'
+            version = '2.3.1'
+        }
+    }
+    repositories {
+        maven {
+            url 'https://repo.yumc.pw/repository/yumcenter/'
+        }
+    }
+}
